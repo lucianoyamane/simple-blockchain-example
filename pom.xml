@@ -25,6 +25,19 @@
             <artifactId>bcprov-jdk15to18</artifactId>
             <version>1.72</version>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.9.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>4.10.0</version>
+            <scope>test</scope>
+        </dependency>
+
 
 
     </dependencies>
