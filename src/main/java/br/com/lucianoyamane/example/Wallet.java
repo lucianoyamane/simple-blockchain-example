@@ -37,53 +37,31 @@ public class Wallet {
 		return total;
 	}
 
-	public float getBalance(Map<String, TransactionOutput> unspentUTXOs) {
-		float total = 0;
-		for (Map.Entry<String, TransactionOutput> item: unspentUTXOs.entrySet()){
-			TransactionOutput UTXO = item.getValue();
-			if(UTXO.isMine(this.getPublicKey())) {
-				total += UTXO.value ;
-			}
-		}
-		return total;
-	}
-
-	public Map<String,TransactionOutput> getUnspentUTXOs(Map<String, TransactionOutput> UTXOs) {
-		Map<String, TransactionOutput> unspentUTXOs = new HashMap<>();
+	public TransactionOutput getUnspentUTXO(Map<String, TransactionOutput> UTXOs) {
 		for (Map.Entry<String, TransactionOutput> item: UTXOs.entrySet()) {
 			TransactionOutput UTXO = item.getValue();
 			if(UTXO.isMine(this.getPublicKey())) {
-				unspentUTXOs.put(UTXO.id, UTXO);
+				return UTXO;
 			}
 		}
-		return unspentUTXOs;
+		return null;
 	}
-
-	//Generates and returns a new transaction from this wallet.
 	public Transaction sendFunds(PublicKey _recipient, float value ) {
-		Map<String, TransactionOutput> UTXOs = this.getUnspentUTXOs(NoobChain.UTXOs);
+		TransactionOutput UTXO = this.getUnspentUTXO(NoobChain.UTXOs);
 
-		if(getBalance(UTXOs) < value) { //gather balance and check funds.
+		if(UTXO.value < value) { //gather balance and check funds.
 			System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}
-    //create array list of inputs
-		List<TransactionInput> inputs = new ArrayList();
 
-		float total = 0;
-		for (Map.Entry<String, TransactionOutput> item: UTXOs.entrySet()){
-			TransactionOutput UTXO = item.getValue();
-			total += UTXO.value;
-			inputs.add(new TransactionInput(UTXO.id));
-			if(total > value) break;
-		}
+		TransactionInput input = new TransactionInput(UTXO.id);
+		List<TransactionInput> inputs = new ArrayList();
+		inputs.add(input);
 
 		Transaction newTransaction = new Transaction(this.getPublicKey(), _recipient , value, inputs);
 		newTransaction.generateSignature(this.getPrivateKey());
 
-		for(TransactionInput input: inputs){
-			UTXOs.remove(input.transactionOutputId);
-		}
+
 		return newTransaction;
 	}
 }

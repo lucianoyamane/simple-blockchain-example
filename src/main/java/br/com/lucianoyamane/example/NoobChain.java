@@ -57,15 +57,16 @@ public class NoobChain {
 		Block block3 = Block.init(block2.getHash());
 		System.out.println("\nWalletB is Attempting to send funds (20) to WalletA...");
 		block3.addTransaction(walletB.sendFunds( walletA.getPublicKey(), 20));
-		block3.addTransaction(walletB.sendFunds( walletA.getPublicKey(), 10));
+		addBlock(block3);
 		System.out.println("\nWalletA's balance is: " + walletA.getBalance());
 		System.out.println("WalletB's balance is: " + walletB.getBalance());
 
-//		Block block4 = Block.init(block3.getHash());
-//		System.out.println("\nWalletB is Attempting to send funds (10) to WalletA...");
-//		block4.addTransaction(walletB.sendFunds( walletA.getPublicKey(), 10));
-//		System.out.println("\nWalletA's balance is: " + walletA.getBalance());
-//		System.out.println("WalletB's balance is: " + walletB.getBalance());
+		Block block4 = Block.init(block3.getHash());
+		System.out.println("\nWalletB is Attempting to send funds (10) to WalletA...");
+		block4.addTransaction(walletB.sendFunds( walletA.getPublicKey(), 10));
+		addBlock(block4);
+		System.out.println("\nWalletA's balance is: " + walletA.getBalance());
+		System.out.println("WalletB's balance is: " + walletB.getBalance());
 		
 		isChainValid();
 		
