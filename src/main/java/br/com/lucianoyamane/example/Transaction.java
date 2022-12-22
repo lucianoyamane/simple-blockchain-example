@@ -3,6 +3,7 @@ package br.com.lucianoyamane.example;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Transaction {
 
@@ -12,17 +13,29 @@ public class Transaction {
 	public float value;
 	public byte[] signature; // this is to prevent anybody else from spending funds in our wallet.
 	
-	public ArrayList<TransactionInput> inputs = new ArrayList<TransactionInput>();
+	public List<TransactionInput> inputs = new ArrayList<TransactionInput>();
 	public ArrayList<TransactionOutput> outputs = new ArrayList<TransactionOutput>();
 	
 	private static int sequence = 0; // a rough count of how many transactions have been generated. 
 	
 	// Constructor: 
-	public Transaction(PublicKey from, PublicKey to, float value,  ArrayList<TransactionInput> inputs) {
+	public Transaction(PublicKey from, PublicKey to, float value,  List<TransactionInput> inputs) {
 		this.sender = from;
 		this.reciepient = to;
 		this.value = value;
 		this.inputs = inputs;
+	}
+
+	public static Transaction genesis(Wallet walletFrom, PublicKey to, float value) {
+		Transaction transaction = new Transaction(walletFrom.getPublicKey(), to, value, null);
+		transaction.generateSignature(walletFrom.getPrivateKey());
+		transaction.setTransactionId("0");
+		transaction.addOutputs(transaction);
+		return transaction;
+	}
+
+	public void addOutputs(Transaction transaction) {
+		this.outputs.add(TransactionOutput.create(transaction));
 	}
 
 	public String getTransactionId() {

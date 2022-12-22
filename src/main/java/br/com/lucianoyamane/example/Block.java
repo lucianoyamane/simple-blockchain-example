@@ -1,7 +1,6 @@
 package br.com.lucianoyamane.example;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Block {
@@ -47,13 +46,16 @@ public class Block {
 	}
 
 	public void mineBlock(int difficulty) {
-		this.setMerkleRoot(StringUtil.getMerkleRoot(this.getTransactionsId()));
-		String target = StringUtil.getDificultyString(difficulty); //Create a string with difficulty * "0" 
-		while(!this.getHash().substring( 0, difficulty).equals(target)) {
+		String zeros = StringUtil.getCharsZeroByDifficuty(difficulty);
+		while(!this.testHashCondition(zeros)) {
 			this.increaseNonce();
 			this.setHash(calculateHash());
 		}
 		System.out.println("Block Mined!!! : " + hash);
+	}
+
+	private Boolean testHashCondition(String target) {
+		return this.getHash().startsWith(target);
 	}
 
 	private void increaseNonce() {
@@ -65,16 +67,19 @@ public class Block {
 			return Boolean.FALSE;
 		}
 
-		if((!"0".equals(previousHash))) {
-			if(transaction.processTransaction() != true) {
-				System.out.println("Transaction failed to process. Discarded.");
-				return Boolean.FALSE;
-			}
+		if(!this.previousBlockIsGenesis() && !transaction.processTransaction()) {
+			System.out.println("Transaction failed to process. Discarded.");
+			return Boolean.FALSE;
 		}
 
 		transactions.add(transaction);
+		this.setMerkleRoot(StringUtil.getMerkleRoot(this.getTransactionsId()));
 		System.out.println("Transaction Successfully added to Block");
 		return Boolean.TRUE;
+	}
+
+	private Boolean previousBlockIsGenesis() {
+		return "0".equals(previousHash);
 	}
 
 	public String getHash() {

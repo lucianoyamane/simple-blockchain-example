@@ -15,6 +15,10 @@ public class TransactionOutput {
 		this.parentTransactionId = parentTransactionId;
 		this.id = StringUtil.encode(StringUtil.getStringFromKey(reciepient)+Float.toString(value)+parentTransactionId);
 	}
+
+	public static TransactionOutput create(Transaction transaction) {
+		return new TransactionOutput(transaction.reciepient, transaction.value, transaction.getTransactionId());
+	}
 	
 	//Check if coin belongs to you
 	public boolean isMine(PublicKey publicKey) {
