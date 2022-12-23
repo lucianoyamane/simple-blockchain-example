@@ -49,7 +49,7 @@ public class Wallet {
 	public Transaction sendFunds(PublicKey _recipient, float value ) {
 		TransactionOutput UTXO = this.getUnspentUTXO(NoobChain.UTXOs);
 
-		if(UTXO.value < value) { //gather balance and check funds.
+		if(UTXO.value < value) {
 			System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}
@@ -60,7 +60,6 @@ public class Wallet {
 
 		Transaction newTransaction = new Transaction(this.getPublicKey(), _recipient , value, inputs);
 		newTransaction.generateSignature(this.getPrivateKey());
-
 
 		return newTransaction;
 	}

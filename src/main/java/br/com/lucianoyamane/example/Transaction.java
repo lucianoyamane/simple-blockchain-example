@@ -69,12 +69,11 @@ public class Transaction {
 
     public boolean processTransaction() {
 		
-		if(verifiySignature() == false) {
+		if(!verifiySignature()) {
 			System.out.println("#Transaction Signature failed to verify");
 			return false;
 		}
-				
-		//gather transaction inputs (Make sure they are unspent):
+
 		for(TransactionInput i : inputs) {
 			i.UTXO = NoobChain.UTXOs.get(i.transactionOutputId);
 		}
