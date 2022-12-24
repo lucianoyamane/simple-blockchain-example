@@ -3,26 +3,55 @@ package br.com.lucianoyamane.example;
 import java.security.PublicKey;
 
 public class TransactionOutput {
-    public String id;
-	public PublicKey reciepient; //also known as the new owner of these coins.
-	public float value; //the amount of coins they own
-	public String parentTransactionId; //the id of the transaction this output was created in
+    private String id;
+	private PublicKey receiverPublicKey; //also known as the new owner of these coins.
+	private float value; //the amount of coins they own
 	
-	//Constructor
-	public TransactionOutput(PublicKey reciepient, float value, String parentTransactionId) {
-		this.reciepient = reciepient;
+	//TODO: implementar validacao valor minimo transação
+	//		if(transactionOutput.getValue() < minimumTransaction) {
+//			System.out.println("#Transaction Inputs to small: " + getInputValue());
+//			return false;
+//		}
+	private TransactionOutput(PublicKey receiverPublicKey, float value, String transactionId) {
+		this.setReceiverPublicKey(receiverPublicKey);
+		this.setValue(value);
+		this.setId(StringUtil.encode(StringUtil.getStringFromKey(receiverPublicKey) + value + transactionId));
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public PublicKey getReceiverPublicKey() {
+		return receiverPublicKey;
+	}
+
+	private void setId(String id) {
+		this.id = id;
+	}
+
+	private void setReceiverPublicKey(PublicKey receiverPublicKey) {
+		this.receiverPublicKey = receiverPublicKey;
+	}
+
+	private void setValue(float value) {
 		this.value = value;
-		this.parentTransactionId = parentTransactionId;
-		this.id = StringUtil.encode(StringUtil.getStringFromKey(reciepient)+Float.toString(value)+parentTransactionId);
+	}
+
+	public float getValue() {
+		return value;
 	}
 
 	public static TransactionOutput create(Transaction transaction) {
-		return new TransactionOutput(transaction.reciepient, transaction.value, transaction.getTransactionId());
+		return new TransactionOutput(transaction.getReceiverPublicKey(), transaction.getValue(), transaction.getTransactionId());
 	}
-	
-	//Check if coin belongs to you
+
+	public static TransactionOutput create(PublicKey receiverPublicKey, float value, String transactionId) {
+		return new TransactionOutput(receiverPublicKey, value, transactionId);
+	}
+
 	public boolean isMine(PublicKey publicKey) {
-		return (publicKey == reciepient);
+		return (publicKey == receiverPublicKey);
 	}
     
 }

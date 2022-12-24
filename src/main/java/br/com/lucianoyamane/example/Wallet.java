@@ -31,7 +31,7 @@ public class Wallet {
         for (Map.Entry<String, TransactionOutput> item: NoobChain.UTXOs.entrySet()){
         	TransactionOutput UTXO = item.getValue();
             if(UTXO.isMine(this.getPublicKey())) {
-            	total += UTXO.value ;
+            	total += UTXO.getValue() ;
             }
         }
 		return total;
@@ -49,17 +49,18 @@ public class Wallet {
 	public Transaction sendFunds(PublicKey _recipient, float value ) {
 		TransactionOutput UTXO = this.getUnspentUTXO(NoobChain.UTXOs);
 
-		if(UTXO.value < value) {
+		if(UTXO.getValue() < value) {
 			System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}
 
-		TransactionInput input = new TransactionInput(UTXO.id);
-		List<TransactionInput> inputs = new ArrayList();
-		inputs.add(input);
+		TransactionInput input = new TransactionInput(UTXO.getId());
 
-		Transaction newTransaction = new Transaction(this.getPublicKey(), _recipient , value, inputs);
-		newTransaction.generateSignature(this.getPrivateKey());
+		Transaction newTransaction = Transaction.create(this.getPublicKey(), _recipient , value, input);
+
+		String data = newTransaction.getData();
+		newTransaction.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), data));
+
 
 		return newTransaction;
 	}
