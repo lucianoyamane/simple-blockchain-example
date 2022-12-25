@@ -110,14 +110,8 @@ public class Transaction {
 		}
     }
 
-	private TransactionOutput loadTransactionOutput() {
-		return NoobChain.UTXOs.get(input.transactionOutputId);
-	}
-
 	private void setCurrentOutputInput() {
-		TransactionOutput transactionOutput = loadTransactionOutput();
-		NoobChain.UTXOs.remove(transactionOutput.getId());
-		input.UTXO = transactionOutput;
+		NoobChain.UTXOs.remove(input.transactionOutputId);
 	}
 
 	private void addCurrentTransactionOutput() {

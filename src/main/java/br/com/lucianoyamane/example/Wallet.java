@@ -54,7 +54,7 @@ public class Wallet {
 			return null;
 		}
 
-		TransactionInput input = new TransactionInput(UTXO.getId());
+		TransactionInput input = TransactionInput.create(UTXO.getId(), UTXO);
 
 		Transaction newTransaction = Transaction.create(this.getPublicKey(), _recipient , value, input);
 
