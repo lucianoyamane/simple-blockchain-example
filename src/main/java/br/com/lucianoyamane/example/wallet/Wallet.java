@@ -1,5 +1,6 @@
-package br.com.lucianoyamane.example;
+package br.com.lucianoyamane.example.wallet;
 
+import br.com.lucianoyamane.example.*;
 import br.com.lucianoyamane.example.keypair.BouncyCastleKeyPair;
 
 import java.security.KeyPair;
@@ -46,6 +47,10 @@ public class Wallet {
 		}
 		return null;
 	}
+
+	public void createsignature(Transaction transaction) {
+		transaction.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transaction.getData()));
+	}
 	public Transaction sendFunds(PublicKey _recipient, float value ) {
 		TransactionOutput UTXO = this.getUnspentUTXO(NoobChain.UTXOs);
 
@@ -54,13 +59,9 @@ public class Wallet {
 			return null;
 		}
 
-		TransactionInput input = TransactionInput.create(UTXO.getId(), UTXO);
-
+		TransactionInput input = TransactionInput.create(UTXO);
 		Transaction newTransaction = Transaction.create(this.getPublicKey(), _recipient , value, input);
-
-		String data = newTransaction.getData();
-		newTransaction.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), data));
-
+		this.createsignature(newTransaction);
 
 		return newTransaction;
 	}

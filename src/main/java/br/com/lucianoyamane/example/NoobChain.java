@@ -1,6 +1,8 @@
 package br.com.lucianoyamane.example;
 
 
+import br.com.lucianoyamane.example.wallet.Wallet;
+
 import java.util.ArrayList;
 //import java.util.Base64;
 import java.util.HashMap;
@@ -26,13 +28,12 @@ public class NoobChain {
 		walletA = new Wallet();
 		walletB = new Wallet();		
 		Wallet coinbase = new Wallet();
+
+//		genesisTransaction = coinbase.sendFunds(walletA.getPublicKey(), 100f);
 		
 		//create genesis transaction, which sends 100 NoobCoin to walletA:
 		genesisTransaction = Transaction.genesis(coinbase.getPublicKey(), walletA.getPublicKey(), 100f);
-		String data = StringUtil.getStringFromKey(coinbase.getPublicKey()) + StringUtil.getStringFromKey(walletA.getPublicKey()) + 100f;
-		genesisTransaction.setSignature(StringUtil.applyECDSASig(walletA.getPrivateKey(), data));
-
-		UTXOs.put(genesisTransaction.outputs.get(0).getId(), genesisTransaction.outputs.get(0));
+		walletA.createsignature(genesisTransaction);
 		
 		System.out.println("Creating and Mining Genesis block... ");
 		Block genesis = Block.genesis();
@@ -120,12 +121,12 @@ public class NoobChain {
 					return false;
 				}
 
-				if(currentTransaction.input.UTXO.getValue() != tempOutput.getValue()) {
+				if(currentTransaction.input.getUTXO().getValue() != tempOutput.getValue()) {
 					System.out.println("#Referenced input Transaction(" + t + ") value is Invalid");
 					return false;
 				}
 
-				tempUTXOs.remove(currentTransaction.input.transactionOutputId);
+				tempUTXOs.remove(currentTransaction.input.getTransactionOutputId());
 
 				
 				for(TransactionOutput output: currentTransaction.outputs) {

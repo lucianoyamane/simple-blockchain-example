@@ -75,8 +75,9 @@ public class Transaction {
 		return transaction;
 	}
 
-	public void addOutput(TransactionOutput transactionOutput) {
+	private void addOutput(TransactionOutput transactionOutput) {
 		this.outputs.add(transactionOutput);
+		NoobChain.UTXOs.put(transactionOutput.getId(), transactionOutput);
 	}
 
 	public String getTransactionId() {
@@ -110,8 +111,8 @@ public class Transaction {
 		}
     }
 
-	private void setCurrentOutputInput() {
-		NoobChain.UTXOs.remove(input.transactionOutputId);
+	private void removeCurrentOutput() {
+		NoobChain.UTXOs.remove(input.getTransactionOutputId());
 	}
 
 	private void addCurrentTransactionOutput() {
@@ -122,18 +123,12 @@ public class Transaction {
 		this.addOutput(TransactionOutput.create( this.senderPublicKey, this.getLeftOverValue(), transactionId));
 	}
 
-	private void addUTXOsNoobChain() {
-		for(TransactionOutput o : outputs) {
-			NoobChain.UTXOs.put(o.getId() , o);
-		}
-	}
 
     public boolean processTransaction() {
 		this.verifiySignature();
-		this.setCurrentOutputInput();
+		this.removeCurrentOutput();
 		this.addCurrentTransactionOutput();
 		this.addLeftOverTransactionOutput();
-		this.addUTXOsNoobChain();
 
 		return true;
 	}
@@ -144,7 +139,7 @@ public class Transaction {
 
 
 	public float getInputValue() {
-		return input.UTXO.getValue();
+		return input.getUTXO().getValue();
 	}
 
 	public float getOutputsValue() {
