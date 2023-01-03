@@ -12,12 +12,12 @@ public class Transaction {
     private String transactionId; // this is also the hash of the transaction.
 	private PublicKeyDecorator senderPublicKey; // senders address/public key.
 	private PublicKeyDecorator receiverPublicKey; // Recipients address/public key.
-	private float value;
+	private Integer value;
 	private byte[] signature; // this is to prevent anybody else from spending funds in our wallet.
 	TransactionInput input;
 	public List<TransactionOutput> outputs;
 
-	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, float value) {
+	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, Integer value) {
 		this.setSenderPublicKey(senderPublicKey);
 		this.setReceiverPublicKey(receiverPublicKey);
 		this.setValue(value);
@@ -25,7 +25,7 @@ public class Transaction {
 		this.setOutputs(new ArrayList());
 	}
 
-	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, float value,  TransactionInput input) {
+	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, Integer value,  TransactionInput input) {
 		this.setSenderPublicKey(senderPublicKey);
 		this.setReceiverPublicKey(receiverPublicKey);
 		this.setValue(value);
@@ -42,7 +42,7 @@ public class Transaction {
 		return receiverPublicKey;
 	}
 
-	public float getValue() {
+	public Integer getValue() {
 		return value;
 	}
 
@@ -58,7 +58,7 @@ public class Transaction {
 		this.receiverPublicKey = receiverPublicKey;
 	}
 
-	private void setValue(float value) {
+	private void setValue(Integer value) {
 		this.value = value;
 	}
 
@@ -66,11 +66,11 @@ public class Transaction {
 		this.input = input;
 	}
 
-	public static Transaction create(PublicKeyDecorator sender, PublicKeyDecorator receiver, float value, TransactionInput input) {
+	public static Transaction create(PublicKeyDecorator sender, PublicKeyDecorator receiver, Integer value, TransactionInput input) {
 		return new Transaction(sender, receiver, value, input);
 	}
 
-	public static Transaction genesis(PublicKeyDecorator sender, PublicKeyDecorator receiver, float value) {
+	public static Transaction genesis(PublicKeyDecorator sender, PublicKeyDecorator receiver, Integer value) {
 		Transaction transaction = new Transaction(sender, receiver, value);
 		transaction.setTransactionId("0");
 		transaction.addOutput(TransactionOutput.create(transaction));
@@ -135,12 +135,12 @@ public class Transaction {
 		return true;
 	}
 
-	private float getLeftOverValue() {
+	private Integer getLeftOverValue() {
 		return this.getInputValue() - this.value;
 	}
 
 
-	public float getInputValue() {
+	public Integer getInputValue() {
 		return input.getUTXO().getValue();
 	}
 

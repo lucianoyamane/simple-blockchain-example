@@ -7,14 +7,14 @@ import java.security.PublicKey;
 public class TransactionOutput {
     private String id;
 	private PublicKeyDecorator receiverPublicKey;
-	private float value;
+	private Integer value;
 	
 	//TODO: implementar validacao valor minimo transação
 	//		if(transactionOutput.getValue() < minimumTransaction) {
 //			System.out.println("#Transaction Inputs to small: " + getInputValue());
 //			return false;
 //		}
-	private TransactionOutput(PublicKeyDecorator receiverPublicKey, float value, String transactionId) {
+	private TransactionOutput(PublicKeyDecorator receiverPublicKey, Integer value, String transactionId) {
 		this.setReceiverPublicKey(receiverPublicKey);
 		this.setValue(value);
 		this.setId(StringUtil.encode(this.getReceiverPublicKey().toString() + value + transactionId));
@@ -36,11 +36,11 @@ public class TransactionOutput {
 		this.receiverPublicKey = receiverPublicKey;
 	}
 
-	private void setValue(float value) {
+	private void setValue(Integer value) {
 		this.value = value;
 	}
 
-	public float getValue() {
+	public Integer getValue() {
 		return value;
 	}
 
@@ -48,7 +48,7 @@ public class TransactionOutput {
 		return new TransactionOutput(transaction.getReceiverPublicKey(), transaction.getValue(), transaction.getTransactionId());
 	}
 
-	public static TransactionOutput create(PublicKeyDecorator receiverPublicKey, float value, String transactionId) {
+	public static TransactionOutput create(PublicKeyDecorator receiverPublicKey, Integer value, String transactionId) {
 		return new TransactionOutput(receiverPublicKey, value, transactionId);
 	}
 
