@@ -37,22 +37,14 @@ public class Wallet {
 	}
 
     public Integer getBalance(List<TransactionOutput> UTXOs) {
-		Integer total = 0;
-        for (TransactionOutput item: UTXOs){
-            if(item.isMine(this.getPublicKeyDecorator())) {
-            	total += item.getValue() ;
-            }
-        }
-		return total;
+		return UTXOs.stream()
+				.filter(output -> output.isMine(this.getPublicKeyDecorator()))
+				.mapToInt(output -> output.getValue()).sum();
 	}
 
 	public TransactionOutput getUnspentUTXO(List<TransactionOutput> UTXOs) {
-		for (TransactionOutput item: UTXOs) {
-			if(item.isMine(this.getPublicKeyDecorator())) {
-				return item;
-			}
-		}
-		return null;
+		return UTXOs.stream()
+				.filter(output -> output.isMine(this.getPublicKeyDecorator())).findFirst().orElse(null);
 	}
 
 	public void createSignatureTransaction(Transaction transaction) {
