@@ -31,17 +31,13 @@ public class Wallet {
 		return publicKeyDecorator;
 	}
 
-	public PublicKey getPublicKey() {
-		return this.keyPair.getPublic();
-	}
-
-	public PrivateKey getPrivateKey() {
+	private PrivateKey getPrivateKey() {
 		return this.keyPair.getPrivate();
 	}
 
-    public float getBalance() {
+    public float getBalance(Map<String, TransactionOutput> UTXOs) {
 		float total = 0;
-        for (Map.Entry<String, TransactionOutput> item: NoobChain.UTXOs.entrySet()){
+        for (Map.Entry<String, TransactionOutput> item: UTXOs.entrySet()){
         	TransactionOutput UTXO = item.getValue();
             if(UTXO.isMine(this.getPublicKeyDecorator())) {
             	total += UTXO.getValue() ;
@@ -63,7 +59,7 @@ public class Wallet {
 	public void createSignatureTransaction(Transaction transaction) {
 		transaction.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transaction.getData()));
 	}
-	public Transaction sendFunds(PublicKeyDecorator recipentPublicKey, float value ) {
+	public Transaction sendFunds(PublicKeyDecorator recipentPublicKeyDecorator, float value ) {
 		TransactionOutput UTXO = this.getUnspentUTXO(NoobChain.UTXOs);
 
 		if(UTXO.getValue() < value) {
@@ -72,7 +68,7 @@ public class Wallet {
 		}
 
 		TransactionInput input = TransactionInput.create(UTXO);
-		Transaction newTransaction = Transaction.create(this.getPublicKeyDecorator(), recipentPublicKey , value, input);
+		Transaction newTransaction = Transaction.create(this.getPublicKeyDecorator(), recipentPublicKeyDecorator , value, input);
 		this.createSignatureTransaction(newTransaction);
 
 		return newTransaction;

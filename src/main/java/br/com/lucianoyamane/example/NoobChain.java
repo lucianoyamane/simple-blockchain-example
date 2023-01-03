@@ -42,33 +42,33 @@ public class NoobChain {
 		
 		//testing
 		Block block1 = Block.init(genesis.getHash());
-		System.out.println("\nWalletA's balance is: " + walletA.getBalance());
+		System.out.println("\nWalletA's balance is: " + walletA.getBalance(NoobChain.UTXOs));
 		System.out.println("\nWalletA is Attempting to send funds (40) to WalletB...");
 		block1.addTransaction(walletA.sendFunds(walletB.getPublicKeyDecorator(), 40f));
 		addBlock(block1);
-		System.out.println("\nWalletA's balance is: " + walletA.getBalance());
-		System.out.println("WalletB's balance is: " + walletB.getBalance());
+		System.out.println("\nWalletA's balance is: " + walletA.getBalance(NoobChain.UTXOs));
+		System.out.println("WalletB's balance is: " + walletB.getBalance(NoobChain.UTXOs));
 		
 		Block block2 = Block.init(block1.getHash());
 		System.out.println("\nWalletA Attempting to send more funds (1000) than it has...");
 		block2.addTransaction(walletA.sendFunds(walletB.getPublicKeyDecorator(), 1000f));
 		addBlock(block2);
-		System.out.println("\nWalletA's balance is: " + walletA.getBalance());
-		System.out.println("WalletB's balance is: " + walletB.getBalance());
+		System.out.println("\nWalletA's balance is: " + walletA.getBalance(NoobChain.UTXOs));
+		System.out.println("WalletB's balance is: " + walletB.getBalance(NoobChain.UTXOs));
 		
 		Block block3 = Block.init(block2.getHash());
 		System.out.println("\nWalletB is Attempting to send funds (20) to WalletA...");
 		block3.addTransaction(walletB.sendFunds( walletA.getPublicKeyDecorator(), 20));
 		addBlock(block3);
-		System.out.println("\nWalletA's balance is: " + walletA.getBalance());
-		System.out.println("WalletB's balance is: " + walletB.getBalance());
+		System.out.println("\nWalletA's balance is: " + walletA.getBalance(NoobChain.UTXOs));
+		System.out.println("WalletB's balance is: " + walletB.getBalance(NoobChain.UTXOs));
 
 		Block block4 = Block.init(block3.getHash());
 		System.out.println("\nWalletB is Attempting to send funds (10) to WalletA...");
 		block4.addTransaction(walletB.sendFunds( walletA.getPublicKeyDecorator(), 10));
 		addBlock(block4);
-		System.out.println("\nWalletA's balance is: " + walletA.getBalance());
-		System.out.println("WalletB's balance is: " + walletB.getBalance());
+		System.out.println("\nWalletA's balance is: " + walletA.getBalance(NoobChain.UTXOs));
+		System.out.println("WalletB's balance is: " + walletB.getBalance(NoobChain.UTXOs));
 		
 		isChainValid();
 		
