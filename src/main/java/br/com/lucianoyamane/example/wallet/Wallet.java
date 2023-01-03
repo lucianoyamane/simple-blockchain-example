@@ -3,6 +3,7 @@ package br.com.lucianoyamane.example.wallet;
 import br.com.lucianoyamane.example.*;
 import br.com.lucianoyamane.example.keypair.BouncyCastleKeyPair;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
+import br.com.lucianoyamane.example.transactions.UnspentTransactions;
 
 import java.security.KeyPair;
 import java.security.PrivateKey;
@@ -51,7 +52,7 @@ public class Wallet {
 		transaction.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transaction.getData()));
 	}
 	public Transaction sendFunds(PublicKeyDecorator recipentPublicKeyDecorator, Integer value ) {
-		TransactionOutput UTXO = this.getUnspentUTXO(NoobChain.UTXOs);
+		TransactionOutput UTXO = this.getUnspentUTXO(UnspentTransactions.getInstance().get());
 
 		if(UTXO.getValue() < value) {
 			System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");

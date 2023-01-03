@@ -1,8 +1,8 @@
 package br.com.lucianoyamane.example;
 
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
+import br.com.lucianoyamane.example.transactions.UnspentTransactions;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -79,7 +79,7 @@ public class Transaction {
 
 	private void addOutput(TransactionOutput transactionOutput) {
 		this.outputs.add(transactionOutput);
-		NoobChain.UTXOs.add(transactionOutput);
+		UnspentTransactions.getInstance().add(transactionOutput);
 	}
 
 	public String getTransactionId() {
@@ -114,7 +114,7 @@ public class Transaction {
     }
 
 	private void removeCurrentOutput() {
-		NoobChain.UTXOs.remove(input.getUTXO());
+		UnspentTransactions.getInstance().remove(input.getUnspentTransaction());
 	}
 
 	private void addCurrentTransactionOutput() {
@@ -141,7 +141,7 @@ public class Transaction {
 
 
 	public Integer getInputValue() {
-		return input.getUTXO().getValue();
+		return input.getUnspentTransaction().getValue();
 	}
 
 	public float getOutputsValue() {

@@ -1,20 +1,18 @@
 package br.com.lucianoyamane.example;
 
 
+import br.com.lucianoyamane.example.transactions.UnspentTransactions;
 import br.com.lucianoyamane.example.wallet.Wallet;
 
 import java.util.ArrayList;
 //import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 //import com.google.gson.GsonBuilder;
 
 
 public class NoobChain {
 	
 	public static ArrayList<Block> blockchain = new ArrayList();
-	public static List<TransactionOutput> UTXOs = new ArrayList();
-	
 	public static int difficulty = 5;
 	public static Wallet walletA;
 	public static Wallet walletB;
@@ -40,33 +38,33 @@ public class NoobChain {
 		
 		//testing
 		Block block1 = Block.init(genesis.getHash());
-		System.out.println("\nWalletA's balance is: " + walletA.getBalance(NoobChain.UTXOs));
+		System.out.println("\nWalletA's balance is: " + walletA.getBalance(UnspentTransactions.getInstance().get()));
 		System.out.println("\nWalletA is Attempting to send funds (40) to WalletB...");
 		block1.addTransaction(walletA.sendFunds(walletB.getPublicKeyDecorator(), 4000));
 		addBlock(block1);
-		System.out.println("\nWalletA's balance is: " + walletA.getBalance(NoobChain.UTXOs));
-		System.out.println("WalletB's balance is: " + walletB.getBalance(NoobChain.UTXOs));
+		System.out.println("\nWalletA's balance is: " + walletA.getBalance(UnspentTransactions.getInstance().get()));
+		System.out.println("WalletB's balance is: " + walletB.getBalance(UnspentTransactions.getInstance().get()));
 		
 		Block block2 = Block.init(block1.getHash());
 		System.out.println("\nWalletA Attempting to send more funds (1000) than it has...");
 		block2.addTransaction(walletA.sendFunds(walletB.getPublicKeyDecorator(), 100000));
 		addBlock(block2);
-		System.out.println("\nWalletA's balance is: " + walletA.getBalance(NoobChain.UTXOs));
-		System.out.println("WalletB's balance is: " + walletB.getBalance(NoobChain.UTXOs));
+		System.out.println("\nWalletA's balance is: " + walletA.getBalance(UnspentTransactions.getInstance().get()));
+		System.out.println("WalletB's balance is: " + walletB.getBalance(UnspentTransactions.getInstance().get()));
 		
 		Block block3 = Block.init(block2.getHash());
 		System.out.println("\nWalletB is Attempting to send funds (20) to WalletA...");
 		block3.addTransaction(walletB.sendFunds( walletA.getPublicKeyDecorator(), 2000));
 		addBlock(block3);
-		System.out.println("\nWalletA's balance is: " + walletA.getBalance(NoobChain.UTXOs));
-		System.out.println("WalletB's balance is: " + walletB.getBalance(NoobChain.UTXOs));
+		System.out.println("\nWalletA's balance is: " + walletA.getBalance(UnspentTransactions.getInstance().get()));
+		System.out.println("WalletB's balance is: " + walletB.getBalance(UnspentTransactions.getInstance().get()));
 
 		Block block4 = Block.init(block3.getHash());
 		System.out.println("\nWalletB is Attempting to send funds (10) to WalletA...");
 		block4.addTransaction(walletB.sendFunds( walletA.getPublicKeyDecorator(), 1000));
 		addBlock(block4);
-		System.out.println("\nWalletA's balance is: " + walletA.getBalance(NoobChain.UTXOs));
-		System.out.println("WalletB's balance is: " + walletB.getBalance(NoobChain.UTXOs));
+		System.out.println("\nWalletA's balance is: " + walletA.getBalance(UnspentTransactions.getInstance().get()));
+		System.out.println("WalletB's balance is: " + walletB.getBalance(UnspentTransactions.getInstance().get()));
 		
 		isChainValid();
 		
@@ -119,12 +117,12 @@ public class NoobChain {
 					return false;
 				}
 
-				if(currentTransaction.input.getUTXO().getValue() != tempOutput.getValue()) {
+				if(currentTransaction.input.getUnspentTransaction().getValue() != tempOutput.getValue()) {
 					System.out.println("#Referenced input Transaction(" + t + ") value is Invalid");
 					return false;
 				}
 
-				tempUTXOs.remove(currentTransaction.input.getTransactionOutputId());
+				tempUTXOs.remove(currentTransaction.input.getUnspentTransactionId());
 
 				
 				for(TransactionOutput output: currentTransaction.outputs) {
