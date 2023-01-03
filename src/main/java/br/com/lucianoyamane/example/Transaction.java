@@ -144,12 +144,8 @@ public class Transaction {
 		return input.getUnspentTransaction().getValue();
 	}
 
-	public float getOutputsValue() {
-		float total = 0;
-		for(TransactionOutput o : outputs) {
-			total += o.getValue();
-		}
-		return total;
+	public Integer getOutputsValue() {
+		return this.outputs.stream().mapToInt(output -> output.getValue()).sum();
 	}
     
 }

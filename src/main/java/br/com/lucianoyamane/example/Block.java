@@ -78,6 +78,25 @@ public class Block {
 		return Boolean.TRUE;
 	}
 
+	public Boolean isConsistent(String previousHash, int difficulty) {
+		//compare registered hash and calculated hash:
+		if (!this.getHash().equals(this.calculateHash())) {
+			System.out.println("#Current Hashes not equal");
+			return Boolean.FALSE;
+		}
+		//compare previous hash and registered previous hash
+		if (!previousHash.equals(this.getPreviousHash())) {
+			System.out.println("#Previous Hashes not equal");
+			return Boolean.FALSE;
+		}
+		//check if hash is solved
+		if(!this.getHash().substring( 0, difficulty).equals(StringUtil.getCharsZeroByDifficuty(difficulty))) {
+			System.out.println("#This block hasn't been mined");
+			return Boolean.FALSE;
+		}
+		return Boolean.TRUE;
+	}
+
 	private Boolean previousBlockIsGenesis() {
 		return "0".equals(previousHash);
 	}

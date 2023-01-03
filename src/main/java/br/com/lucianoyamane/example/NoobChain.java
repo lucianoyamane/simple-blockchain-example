@@ -7,7 +7,6 @@ import br.com.lucianoyamane.example.wallet.Wallet;
 import java.util.ArrayList;
 //import java.util.Base64;
 import java.util.HashMap;
-//import com.google.gson.GsonBuilder;
 
 
 public class NoobChain {
@@ -24,8 +23,6 @@ public class NoobChain {
 		walletA = new Wallet();
 		walletB = new Wallet();		
 		Wallet coinbase = new Wallet();
-
-//		genesisTransaction = coinbase.sendFunds(walletA.getPublicKey(), 100f);
 		
 		//create genesis transaction, which sends 100 NoobCoin to walletA:
 		genesisTransaction = Transaction.genesis(coinbase.getPublicKeyDecorator(), walletA.getPublicKeyDecorator(), 10000);
@@ -73,7 +70,6 @@ public class NoobChain {
 	public static Boolean isChainValid() {
 		Block currentBlock; 
 		Block previousBlock;
-		String hashTarget = new String(new char[difficulty]).replace('\0', '0');
 		HashMap<String,TransactionOutput> tempUTXOs = new HashMap<String,TransactionOutput>(); //a temporary working list of unspent transactions at a given block state.
 		tempUTXOs.put(genesisTransaction.outputs.get(0).getId(), genesisTransaction.outputs.get(0));
 		
@@ -81,20 +77,9 @@ public class NoobChain {
 		for(int i = 1; i < blockchain.size(); i++) {
 			
 			currentBlock = blockchain.get(i);
-			previousBlock = blockchain.get(i-1);
-			//compare registered hash and calculated hash:
-			if(!currentBlock.getHash().equals(currentBlock.calculateHash()) ){
-				System.out.println("#Current Hashes not equal");
-				return false;
-			}
-			//compare previous hash and registered previous hash
-			if(!previousBlock.getHash().equals(currentBlock.getPreviousHash()) ) {
-				System.out.println("#Previous Hashes not equal");
-				return false;
-			}
-			//check if hash is solved
-			if(!currentBlock.getHash().substring( 0, difficulty).equals(hashTarget)) {
-				System.out.println("#This block hasn't been mined");
+			previousBlock = blockchain.get(i - 1);
+
+			if (!currentBlock.isConsistent(previousBlock.getHash(), difficulty)) {
 				return false;
 			}
 			
@@ -105,12 +90,12 @@ public class NoobChain {
 				
 				currentTransaction.verifiySignature();
 
-				if(currentTransaction.getInputValue() != currentTransaction.getOutputsValue()) {
+				if(!currentTransaction.getInputValue().equals(currentTransaction.getOutputsValue())) {
 					System.out.println("#Inputs are note equal to outputs on Transaction(" + t + ")");
 					return false; 
 				}
 
-				tempOutput = tempUTXOs.get(currentTransaction.input);
+				tempOutput = tempUTXOs.get(currentTransaction.input.getUnspentTransactionId());
 
 				if(tempOutput == null) {
 					System.out.println("#Referenced input on Transaction(" + t + ") is Missing");
