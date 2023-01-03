@@ -37,10 +37,12 @@ public class PublicKeyDecorator {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
-        if (!(obj instanceof PublicKeyDecorator))
+        }
+        if (!(obj instanceof PublicKeyDecorator)) {
             return false;
+        }
         PublicKeyDecorator other = (PublicKeyDecorator) obj;
         return this.toString().equals(other.toString());
     }

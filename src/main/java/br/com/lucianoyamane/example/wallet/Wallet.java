@@ -7,6 +7,7 @@ import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.List;
 import java.util.Map;
 
 public class Wallet {
@@ -35,22 +36,20 @@ public class Wallet {
 		return this.keyPair.getPrivate();
 	}
 
-    public Integer getBalance(Map<String, TransactionOutput> UTXOs) {
+    public Integer getBalance(List<TransactionOutput> UTXOs) {
 		Integer total = 0;
-        for (Map.Entry<String, TransactionOutput> item: UTXOs.entrySet()){
-        	TransactionOutput UTXO = item.getValue();
-            if(UTXO.isMine(this.getPublicKeyDecorator())) {
-            	total += UTXO.getValue() ;
+        for (TransactionOutput item: UTXOs){
+            if(item.isMine(this.getPublicKeyDecorator())) {
+            	total += item.getValue() ;
             }
         }
 		return total;
 	}
 
-	public TransactionOutput getUnspentUTXO(Map<String, TransactionOutput> UTXOs) {
-		for (Map.Entry<String, TransactionOutput> item: UTXOs.entrySet()) {
-			TransactionOutput UTXO = item.getValue();
-			if(UTXO.isMine(this.getPublicKeyDecorator())) {
-				return UTXO;
+	public TransactionOutput getUnspentUTXO(List<TransactionOutput> UTXOs) {
+		for (TransactionOutput item: UTXOs) {
+			if(item.isMine(this.getPublicKeyDecorator())) {
+				return item;
 			}
 		}
 		return null;

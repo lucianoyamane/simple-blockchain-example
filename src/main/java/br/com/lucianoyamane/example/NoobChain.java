@@ -6,13 +6,14 @@ import br.com.lucianoyamane.example.wallet.Wallet;
 import java.util.ArrayList;
 //import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 //import com.google.gson.GsonBuilder;
 
 
 public class NoobChain {
 	
 	public static ArrayList<Block> blockchain = new ArrayList();
-	public static HashMap<String,TransactionOutput> UTXOs = new HashMap();
+	public static List<TransactionOutput> UTXOs = new ArrayList();
 	
 	public static int difficulty = 5;
 	public static Wallet walletA;

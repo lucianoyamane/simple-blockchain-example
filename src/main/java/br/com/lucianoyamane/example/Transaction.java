@@ -79,7 +79,7 @@ public class Transaction {
 
 	private void addOutput(TransactionOutput transactionOutput) {
 		this.outputs.add(transactionOutput);
-		NoobChain.UTXOs.put(transactionOutput.getId(), transactionOutput);
+		NoobChain.UTXOs.add(transactionOutput);
 	}
 
 	public String getTransactionId() {
@@ -114,7 +114,7 @@ public class Transaction {
     }
 
 	private void removeCurrentOutput() {
-		NoobChain.UTXOs.remove(input.getTransactionOutputId());
+		NoobChain.UTXOs.remove(input.getUTXO());
 	}
 
 	private void addCurrentTransactionOutput() {

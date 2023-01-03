@@ -55,5 +55,17 @@ public class TransactionOutput {
 	public boolean isMine(PublicKeyDecorator publicKey) {
 		return publicKey.equals(receiverPublicKey);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		}
+		if (!(obj instanceof TransactionOutput)) {
+			return false;
+		}
+		TransactionOutput other = (TransactionOutput) obj;
+		return this.getId().equals(other.getId());
+	}
     
 }
