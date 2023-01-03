@@ -2,21 +2,33 @@ package br.com.lucianoyamane.example.wallet;
 
 import br.com.lucianoyamane.example.*;
 import br.com.lucianoyamane.example.keypair.BouncyCastleKeyPair;
+import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Wallet {
 
 	private KeyPair keyPair;
+	private PublicKeyDecorator publicKeyDecorator;
     
     public Wallet(){
-		this.keyPair = BouncyCastleKeyPair.init().getKeyPair();
+		this.setKeyPair(BouncyCastleKeyPair.init().getKeyPair());
+	}
+
+	private void setKeyPair(KeyPair keyPair) {
+		this.keyPair = keyPair;
+		this.setPublicKeyDecorator(this.keyPair.getPublic());
+	}
+
+	private void setPublicKeyDecorator(PublicKey publicKey) {
+		this.publicKeyDecorator = PublicKeyDecorator.inicia(publicKey);
+	}
+
+	public PublicKeyDecorator getPublicKeyDecorator() {
+		return publicKeyDecorator;
 	}
 
 	public PublicKey getPublicKey() {
@@ -31,7 +43,7 @@ public class Wallet {
 		float total = 0;
         for (Map.Entry<String, TransactionOutput> item: NoobChain.UTXOs.entrySet()){
         	TransactionOutput UTXO = item.getValue();
-            if(UTXO.isMine(this.getPublicKey())) {
+            if(UTXO.isMine(this.getPublicKeyDecorator())) {
             	total += UTXO.getValue() ;
             }
         }
@@ -41,17 +53,17 @@ public class Wallet {
 	public TransactionOutput getUnspentUTXO(Map<String, TransactionOutput> UTXOs) {
 		for (Map.Entry<String, TransactionOutput> item: UTXOs.entrySet()) {
 			TransactionOutput UTXO = item.getValue();
-			if(UTXO.isMine(this.getPublicKey())) {
+			if(UTXO.isMine(this.getPublicKeyDecorator())) {
 				return UTXO;
 			}
 		}
 		return null;
 	}
 
-	public void createsignature(Transaction transaction) {
+	public void createSignatureTransaction(Transaction transaction) {
 		transaction.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transaction.getData()));
 	}
-	public Transaction sendFunds(PublicKey _recipient, float value ) {
+	public Transaction sendFunds(PublicKeyDecorator recipentPublicKey, float value ) {
 		TransactionOutput UTXO = this.getUnspentUTXO(NoobChain.UTXOs);
 
 		if(UTXO.getValue() < value) {
@@ -60,8 +72,8 @@ public class Wallet {
 		}
 
 		TransactionInput input = TransactionInput.create(UTXO);
-		Transaction newTransaction = Transaction.create(this.getPublicKey(), _recipient , value, input);
-		this.createsignature(newTransaction);
+		Transaction newTransaction = Transaction.create(this.getPublicKeyDecorator(), recipentPublicKey , value, input);
+		this.createSignatureTransaction(newTransaction);
 
 		return newTransaction;
 	}

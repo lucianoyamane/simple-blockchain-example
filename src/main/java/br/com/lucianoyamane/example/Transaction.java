@@ -1,5 +1,7 @@
 package br.com.lucianoyamane.example;
 
+import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
+
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,14 +10,14 @@ import java.util.UUID;
 public class Transaction {
 
     private String transactionId; // this is also the hash of the transaction.
-	private PublicKey senderPublicKey; // senders address/public key.
-	private PublicKey receiverPublicKey; // Recipients address/public key.
+	private PublicKeyDecorator senderPublicKey; // senders address/public key.
+	private PublicKeyDecorator receiverPublicKey; // Recipients address/public key.
 	private float value;
 	private byte[] signature; // this is to prevent anybody else from spending funds in our wallet.
 	TransactionInput input;
 	public List<TransactionOutput> outputs;
 
-	private Transaction(PublicKey senderPublicKey, PublicKey receiverPublicKey, float value) {
+	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, float value) {
 		this.setSenderPublicKey(senderPublicKey);
 		this.setReceiverPublicKey(receiverPublicKey);
 		this.setValue(value);
@@ -23,7 +25,7 @@ public class Transaction {
 		this.setOutputs(new ArrayList());
 	}
 
-	private Transaction(PublicKey senderPublicKey, PublicKey receiverPublicKey, float value,  TransactionInput input) {
+	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, float value,  TransactionInput input) {
 		this.setSenderPublicKey(senderPublicKey);
 		this.setReceiverPublicKey(receiverPublicKey);
 		this.setValue(value);
@@ -32,11 +34,11 @@ public class Transaction {
 		this.setInput(input);
 	}
 
-	public PublicKey getSenderPublicKey() {
+	public PublicKeyDecorator getSenderPublicKey() {
 		return senderPublicKey;
 	}
 
-	public PublicKey getReceiverPublicKey() {
+	public PublicKeyDecorator getReceiverPublicKey() {
 		return receiverPublicKey;
 	}
 
@@ -48,11 +50,11 @@ public class Transaction {
 		this.outputs = outputs;
 	}
 
-	private void setSenderPublicKey(PublicKey senderPublicKey) {
+	private void setSenderPublicKey(PublicKeyDecorator senderPublicKey) {
 		this.senderPublicKey = senderPublicKey;
 	}
 
-	private void setReceiverPublicKey(PublicKey receiverPublicKey) {
+	private void setReceiverPublicKey(PublicKeyDecorator receiverPublicKey) {
 		this.receiverPublicKey = receiverPublicKey;
 	}
 
@@ -64,11 +66,11 @@ public class Transaction {
 		this.input = input;
 	}
 
-	public static Transaction create(PublicKey sender, PublicKey receiver, float value, TransactionInput input) {
+	public static Transaction create(PublicKeyDecorator sender, PublicKeyDecorator receiver, float value, TransactionInput input) {
 		return new Transaction(sender, receiver, value, input);
 	}
 
-	public static Transaction genesis(PublicKey sender, PublicKey receiver, float value) {
+	public static Transaction genesis(PublicKeyDecorator sender, PublicKeyDecorator receiver, float value) {
 		Transaction transaction = new Transaction(sender, receiver, value);
 		transaction.setTransactionId("0");
 		transaction.addOutput(TransactionOutput.create(transaction));
@@ -94,8 +96,8 @@ public class Transaction {
 	}
 
 	public String getData() {
-		return StringUtil.getStringFromKey(senderPublicKey) +
-				StringUtil.getStringFromKey(receiverPublicKey) +
+		return getSenderPublicKey().toString() +
+				getReceiverPublicKey().toString() +
 				value;
 	}
 
@@ -105,7 +107,7 @@ public class Transaction {
 
     //Verifies the data we signed hasnt been tampered with
     public void verifiySignature() {
-        Boolean verify = StringUtil.verifyECDSASig(senderPublicKey, this.getData(), signature);
+        Boolean verify = StringUtil.verifyECDSASig(senderPublicKey.getPublicKey(), this.getData(), signature);
 		if (!verify) {
 			System.out.println("#Transaction Signature failed to verify");
 		}

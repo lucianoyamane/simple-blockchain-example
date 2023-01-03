@@ -1,28 +1,30 @@
 package br.com.lucianoyamane.example;
 
+import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
+
 import java.security.PublicKey;
 
 public class TransactionOutput {
     private String id;
-	private PublicKey receiverPublicKey; //also known as the new owner of these coins.
-	private float value; //the amount of coins they own
+	private PublicKeyDecorator receiverPublicKey;
+	private float value;
 	
 	//TODO: implementar validacao valor minimo transação
 	//		if(transactionOutput.getValue() < minimumTransaction) {
 //			System.out.println("#Transaction Inputs to small: " + getInputValue());
 //			return false;
 //		}
-	private TransactionOutput(PublicKey receiverPublicKey, float value, String transactionId) {
+	private TransactionOutput(PublicKeyDecorator receiverPublicKey, float value, String transactionId) {
 		this.setReceiverPublicKey(receiverPublicKey);
 		this.setValue(value);
-		this.setId(StringUtil.encode(StringUtil.getStringFromKey(receiverPublicKey) + value + transactionId));
+		this.setId(StringUtil.encode(this.getReceiverPublicKey().toString() + value + transactionId));
 	}
 
 	public String getId() {
 		return id;
 	}
 
-	public PublicKey getReceiverPublicKey() {
+	public PublicKeyDecorator getReceiverPublicKey() {
 		return receiverPublicKey;
 	}
 
@@ -30,7 +32,7 @@ public class TransactionOutput {
 		this.id = id;
 	}
 
-	private void setReceiverPublicKey(PublicKey receiverPublicKey) {
+	private void setReceiverPublicKey(PublicKeyDecorator receiverPublicKey) {
 		this.receiverPublicKey = receiverPublicKey;
 	}
 
@@ -46,12 +48,12 @@ public class TransactionOutput {
 		return new TransactionOutput(transaction.getReceiverPublicKey(), transaction.getValue(), transaction.getTransactionId());
 	}
 
-	public static TransactionOutput create(PublicKey receiverPublicKey, float value, String transactionId) {
+	public static TransactionOutput create(PublicKeyDecorator receiverPublicKey, float value, String transactionId) {
 		return new TransactionOutput(receiverPublicKey, value, transactionId);
 	}
 
-	public boolean isMine(PublicKey publicKey) {
-		return (publicKey == receiverPublicKey);
+	public boolean isMine(PublicKeyDecorator publicKey) {
+		return publicKey.equals(receiverPublicKey);
 	}
     
 }
