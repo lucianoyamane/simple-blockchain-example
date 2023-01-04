@@ -15,7 +15,7 @@ public class Transaction {
 	private Integer value;
 	private byte[] signature; // this is to prevent anybody else from spending funds in our wallet.
 
-	private TransactionInput input;
+	private List<TransactionInput> inputs;
 
 	private List<TransactionOutput> outputs;
 
@@ -27,13 +27,13 @@ public class Transaction {
 		this.setOutputs(new ArrayList());
 	}
 
-	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, Integer value,  TransactionInput input) {
+	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, Integer value,  List<TransactionInput> inputs) {
 		this.setSenderPublicKey(senderPublicKey);
 		this.setReceiverPublicKey(receiverPublicKey);
 		this.setValue(value);
 		this.setTransactionId(calulateHash());
 		this.setOutputs(new ArrayList());
-		this.setInput(input);
+		this.setInputs(inputs);
 	}
 
 	public PublicKeyDecorator getSenderPublicKey() {
@@ -64,21 +64,21 @@ public class Transaction {
 		this.value = value;
 	}
 
-	private void setInput(TransactionInput input) {
-		this.input = input;
+	private void setInputs(List<TransactionInput> inputs) {
+		this.inputs = inputs;
 	}
 
-	public TransactionInput getInput() {
-		return input;
+	public List<TransactionInput> getInputs() {
+		return this.inputs;
 	}
 
 	public List<TransactionOutput> getOutputs() {
-		return outputs;
+		return this.outputs;
 	}
 
 
-	public static Transaction create(PublicKeyDecorator sender, PublicKeyDecorator receiver, Integer value, TransactionInput input) {
-		return new Transaction(sender, receiver, value, input);
+	public static Transaction create(PublicKeyDecorator sender, PublicKeyDecorator receiver, Integer value, List<TransactionInput> inputs) {
+		return new Transaction(sender, receiver, value, inputs);
 	}
 
 	public static Transaction genesis(PublicKeyDecorator sender, PublicKeyDecorator receiver, Integer value) {
@@ -127,7 +127,9 @@ public class Transaction {
     }
 
 	private void removeCurrentOutput() {
-		UnspentTransactions.getInstance().remove(input.getUnspentTransaction());
+		for(TransactionInput transactionInput : this.inputs) {
+			UnspentTransactions.getInstance().remove(transactionInput.getUnspentTransaction());
+		}
 	}
 
 	private void addCurrentTransactionOutput() {
@@ -154,7 +156,7 @@ public class Transaction {
 
 
 	public Integer getInputValue() {
-		return input.getUnspentTransaction().getValue();
+		return this.inputs.stream().mapToInt(input -> input.getUnspentTransaction().getValue()).sum();
 	}
 
 	public Integer getOutputsValue() {

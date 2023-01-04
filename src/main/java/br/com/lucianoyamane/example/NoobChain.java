@@ -13,22 +13,26 @@ import java.util.Optional;
 
 public class NoobChain {
 	
-	public static ArrayList<Block> blockchain = new ArrayList();
+	public static List<Block> blockchain = new ArrayList();
 	public static int difficulty = 5;
-	public static Wallet walletA;
-	public static Wallet walletB;
-	public static Transaction genesisTransaction;
+	public static TransactionOutput genesisTransactionOutput;
+
+	private static Transaction bootstrapTransaction(Wallet baseWallet, Wallet receiverWallet) {
+		Transaction transaction = Transaction.genesis(baseWallet.getPublicKeyDecorator(), receiverWallet.getPublicKeyDecorator(), 10000);
+		receiverWallet.createSignatureTransaction(transaction);
+		return transaction;
+	}
 
 	public static void main(String[] args) {	
 
 		//Create wallets:
-		walletA = new Wallet();
-		walletB = new Wallet();		
-		Wallet coinbase = new Wallet();
+		Wallet walletA = Wallet.create("A");
+		Wallet walletB = Wallet.create("B");
+		Wallet coinbase = Wallet.create("Genesis");
 		
 		//create genesis transaction, which sends 100 NoobCoin to walletA:
-		genesisTransaction = Transaction.genesis(coinbase.getPublicKeyDecorator(), walletA.getPublicKeyDecorator(), 10000);
-		walletA.createSignatureTransaction(genesisTransaction);
+		Transaction genesisTransaction = bootstrapTransaction(coinbase, walletA);
+		genesisTransactionOutput = TransactionOutput.create(genesisTransaction);
 		
 		System.out.println("Creating and Mining Genesis block... ");
 		Block genesis = Block.genesis();
@@ -76,7 +80,7 @@ public class NoobChain {
 	
 	public static Boolean isChainValid() {
 		List<TransactionOutput> tempTransactionsOutputs = new ArrayList<>(); //a temporary working list of unspent transactions at a given block state.
-		tempTransactionsOutputs.add(genesisTransaction.getOutputs().get(0));
+		tempTransactionsOutputs.add(genesisTransactionOutput);
 		
 		//loop through blockchain to check hashes:
 		for(int i = 1; i < blockchain.size(); i++) {
@@ -97,12 +101,18 @@ public class NoobChain {
 					return false; 
 				}
 
-				TransactionInput transactionInput = currentTransaction.getInput();
-				TransactionOutput transactionOutputFromOutside = tempTransactionsOutputs.stream().filter(output -> output.equals(transactionInput.getUnspentTransaction())).findFirst().orElse(null);
-				if (!transactionInput.isConsistent(transactionOutputFromOutside)) {
-					return false;
+				List<TransactionInput> transactionInputs = currentTransaction.getInputs();
+
+				for(TransactionInput input : transactionInputs) {
+					TransactionOutput transactionOutputFromOutside = tempTransactionsOutputs.stream().filter(output -> output.equals(input.getUnspentTransaction())).findFirst().orElse(null);
+					if (!input.isConsistent(transactionOutputFromOutside)) {
+						return false;
+					}
 				}
-				tempTransactionsOutputs.remove(transactionInput.getUnspentTransaction());
+
+				for(TransactionInput input : transactionInputs) {
+					tempTransactionsOutputs.remove(input.getUnspentTransaction());
+				}
 				for(TransactionOutput output: currentTransaction.getOutputs()) {
 					tempTransactionsOutputs.add(output);
 				}

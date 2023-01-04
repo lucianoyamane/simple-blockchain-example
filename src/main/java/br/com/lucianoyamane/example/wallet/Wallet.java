@@ -15,8 +15,15 @@ public class Wallet {
 
 	private KeyPair keyPair;
 	private PublicKeyDecorator publicKeyDecorator;
-    
-    public Wallet(){
+
+	private String name;
+
+	public static Wallet create(String name) {
+		return new Wallet(name);
+	}
+
+    private Wallet(String name){
+		this.setName(name);
 		this.setKeyPair(BouncyCastleKeyPair.init().getKeyPair());
 	}
 
@@ -27,6 +34,15 @@ public class Wallet {
 
 	private void setPublicKeyDecorator(PublicKey publicKey) {
 		this.publicKeyDecorator = PublicKeyDecorator.inicia(publicKey);
+		System.out.println("****** " + this.publicKeyDecorator + " **** " + this.name);
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	private void setName(String name) {
+		this.name = name;
 	}
 
 	public PublicKeyDecorator getPublicKeyDecorator() {
@@ -43,24 +59,24 @@ public class Wallet {
 				.mapToInt(output -> output.getValue()).sum();
 	}
 
-	public TransactionOutput getUnspentUTXO(List<TransactionOutput> UTXOs) {
+	public List<TransactionOutput> getUnspentUTXO(List<TransactionOutput> UTXOs) {
 		return UTXOs.stream()
-				.filter(output -> output.isMine(this.getPublicKeyDecorator())).findFirst().orElse(null);
+				.filter(output -> output.isMine(this.getPublicKeyDecorator())).toList();
 	}
 
 	public void createSignatureTransaction(Transaction transaction) {
 		transaction.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transaction.getData()));
 	}
 	public Transaction sendFunds(PublicKeyDecorator recipentPublicKeyDecorator, Integer value ) {
-		TransactionOutput UTXO = this.getUnspentUTXO(UnspentTransactions.getInstance().get());
+		List<TransactionOutput> UTXOs = this.getUnspentUTXO(UnspentTransactions.getInstance().get());
+		List<TransactionInput> inputs = UTXOs.stream().map(TransactionInput::create).toList();
 
-		if(UTXO.getValue() < value) {
+		Transaction newTransaction = Transaction.create(this.getPublicKeyDecorator(), recipentPublicKeyDecorator , value, inputs);
+		if (this.getBalance(UTXOs) < value) {
 			System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}
 
-		TransactionInput input = TransactionInput.create(UTXO);
-		Transaction newTransaction = Transaction.create(this.getPublicKeyDecorator(), recipentPublicKeyDecorator , value, input);
 		this.createSignatureTransaction(newTransaction);
 
 		return newTransaction;
