@@ -8,6 +8,7 @@ import java.util.ArrayList;
 //import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 
 public class NoobChain {
@@ -67,18 +68,21 @@ public class NoobChain {
 		isChainValid();
 		
 	}
+
+	public static void addBlock(Block newBlock) {
+		newBlock.mineBlock(difficulty);
+		blockchain.add(newBlock);
+	}
 	
 	public static Boolean isChainValid() {
-		Block currentBlock; 
-		Block previousBlock;
-		HashMap<String,TransactionOutput> tempUTXOs = new HashMap<String,TransactionOutput>(); //a temporary working list of unspent transactions at a given block state.
-		tempUTXOs.put(genesisTransaction.outputs.get(0).getId(), genesisTransaction.outputs.get(0));
+		List<TransactionOutput> tempTransactionsOutputs = new ArrayList<>(); //a temporary working list of unspent transactions at a given block state.
+		tempTransactionsOutputs.add(genesisTransaction.getOutputs().get(0));
 		
 		//loop through blockchain to check hashes:
 		for(int i = 1; i < blockchain.size(); i++) {
 			
-			currentBlock = blockchain.get(i);
-			previousBlock = blockchain.get(i - 1);
+			Block currentBlock = blockchain.get(i);
+			Block previousBlock = blockchain.get(i - 1);
 
 			if (!currentBlock.isConsistent(previousBlock.getHash(), difficulty)) {
 				return false;
@@ -86,57 +90,27 @@ public class NoobChain {
 
 			List<Transaction> currentBlockTransactions = currentBlock.getTransactions();
 
-			//loop thru blockchains transactions:
-			TransactionOutput tempOutput;
 			for(int t = 0; t < currentBlockTransactions.size(); t++) {
 				Transaction currentTransaction = currentBlockTransactions.get(t);
-				
-				currentTransaction.verifiySignature();
 
-				if(!currentTransaction.isConsistent()) {
-					System.out.println("#Inputs are note equal to outputs on Transaction(" + t + ")");
+				if(!currentTransaction.verifiySignature() || !currentTransaction.isConsistent() || !currentTransaction.isReceiverOutputConsistent() || !currentTransaction.isSenderOutputConsistent()) {
 					return false; 
 				}
 
-				TransactionInput transactionInput = currentTransaction.input;
-
-				tempOutput = tempUTXOs.get(transactionInput.getUnspentTransactionId());
-
-				if(tempOutput == null) {
-					System.out.println("#Referenced input on Transaction(" + t + ") is Missing");
+				TransactionInput transactionInput = currentTransaction.getInput();
+				TransactionOutput transactionOutputFromOutside = tempTransactionsOutputs.stream().filter(output -> output.equals(transactionInput.getUnspentTransaction())).findFirst().orElse(null);
+				if (!transactionInput.isConsistent(transactionOutputFromOutside)) {
 					return false;
 				}
-
-				if(transactionInput.getUnspentTransaction().getValue() != tempOutput.getValue()) {
-					System.out.println("#Referenced input Transaction(" + t + ") value is Invalid");
-					return false;
+				tempTransactionsOutputs.remove(transactionInput.getUnspentTransaction());
+				for(TransactionOutput output: currentTransaction.getOutputs()) {
+					tempTransactionsOutputs.add(output);
 				}
-
-				tempUTXOs.remove(transactionInput.getUnspentTransactionId());
-
-				
-				for(TransactionOutput output: currentTransaction.outputs) {
-					tempUTXOs.put(output.getId(), output);
-				}
-				
-				if( currentTransaction.outputs.get(0).getReceiverPublicKey() != currentTransaction.getReceiverPublicKey()) {
-					System.out.println("#Transaction(" + t + ") output reciepient is not who it should be");
-					return false;
-				}
-				if( currentTransaction.outputs.get(1).getReceiverPublicKey() != currentTransaction.getSenderPublicKey()) {
-					System.out.println("#Transaction(" + t + ") output 'change' is not sender.");
-					return false;
-				}
-				
 			}
-			
 		}
 		System.out.println("Blockchain is valid");
 		return true;
 	}
 	
-	public static void addBlock(Block newBlock) {
-		newBlock.mineBlock(difficulty);
-		blockchain.add(newBlock);
-	}
+
 }

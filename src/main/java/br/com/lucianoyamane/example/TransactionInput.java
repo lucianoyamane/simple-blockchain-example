@@ -12,11 +12,19 @@ public class TransactionInput {
 		return new TransactionInput(unspentTransaction);
 	}
 
-	public String getUnspentTransactionId() {
-		return this.getUnspentTransaction().getId();
-	}
-
 	public TransactionOutput getUnspentTransaction() {
 		return unspentTransaction;
+	}
+
+	public Boolean isConsistent(TransactionOutput referenceTransactionOutput) {
+		if(referenceTransactionOutput == null) {
+			System.out.println("#Referenced input on Transaction(" + this.getUnspentTransaction().getId() + ") is Missing");
+			return Boolean.FALSE;
+		}
+		if(this.getUnspentTransaction().getValue() != referenceTransactionOutput.getValue()) {
+			System.out.println("#Referenced input Transaction(" + this.getUnspentTransaction().getId() + ") value is Invalid");
+			return Boolean.FALSE;
+		}
+		return Boolean.TRUE;
 	}
 }

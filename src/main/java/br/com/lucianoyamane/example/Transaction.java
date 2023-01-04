@@ -14,8 +14,10 @@ public class Transaction {
 	private PublicKeyDecorator receiverPublicKey; // Recipients address/public key.
 	private Integer value;
 	private byte[] signature; // this is to prevent anybody else from spending funds in our wallet.
-	TransactionInput input;
-	public List<TransactionOutput> outputs;
+
+	private TransactionInput input;
+
+	private List<TransactionOutput> outputs;
 
 	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, Integer value) {
 		this.setSenderPublicKey(senderPublicKey);
@@ -66,6 +68,15 @@ public class Transaction {
 		this.input = input;
 	}
 
+	public TransactionInput getInput() {
+		return input;
+	}
+
+	public List<TransactionOutput> getOutputs() {
+		return outputs;
+	}
+
+
 	public static Transaction create(PublicKeyDecorator sender, PublicKeyDecorator receiver, Integer value, TransactionInput input) {
 		return new Transaction(sender, receiver, value, input);
 	}
@@ -106,11 +117,13 @@ public class Transaction {
 	}
 
     //Verifies the data we signed hasnt been tampered with
-    public void verifiySignature() {
+    public Boolean verifiySignature() {
         Boolean verify = StringUtil.verifyECDSASig(senderPublicKey.getPublicKey(), this.getData(), signature);
 		if (!verify) {
 			System.out.println("#Transaction Signature failed to verify");
+			return Boolean.FALSE;
 		}
+		return Boolean.TRUE;
     }
 
 	private void removeCurrentOutput() {
@@ -154,6 +167,24 @@ public class Transaction {
 			return Boolean.FALSE;
 		}
 
+		return Boolean.TRUE;
+	}
+
+	public Boolean isReceiverOutputConsistent() {
+		TransactionOutput receiverOutput = this.outputs.get(0);
+		if(!receiverOutput.getReceiverPublicKey().equals(this.getReceiverPublicKey())) {
+			System.out.println("#Transaction(" + getTransactionId() + ") output reciepient is not who it should be");
+			return Boolean.FALSE;
+		}
+		return Boolean.TRUE;
+	}
+
+	public Boolean isSenderOutputConsistent() {
+		TransactionOutput senderOutput = this.outputs.get(1);
+		if( !senderOutput.getReceiverPublicKey().equals(this.getSenderPublicKey())) {
+			System.out.println("#Transaction(" + getTransactionId() + ") output 'change' is not sender.");
+			return Boolean.FALSE;
+		}
 		return Boolean.TRUE;
 	}
     
