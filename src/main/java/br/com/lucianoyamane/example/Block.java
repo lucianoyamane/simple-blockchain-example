@@ -78,19 +78,28 @@ public class Block {
 		return Boolean.TRUE;
 	}
 
+	private Boolean compareRegisteredAndCalculatedHash() {
+		return this.getHash().equals(this.calculateHash());
+	}
+
+	private Boolean comparePreviousHash(String previousHash) {
+		return previousHash.equals(this.getPreviousHash());
+	}
+
+	private Boolean hashIsSolved(int difficulty) {
+		return this.getHash().substring( 0, difficulty).equals(StringUtil.getCharsZeroByDifficuty(difficulty));
+	}
+
 	public Boolean isConsistent(String previousHash, int difficulty) {
-		//compare registered hash and calculated hash:
-		if (!this.getHash().equals(this.calculateHash())) {
+		if (!this.compareRegisteredAndCalculatedHash()) {
 			System.out.println("#Current Hashes not equal");
 			return Boolean.FALSE;
 		}
-		//compare previous hash and registered previous hash
-		if (!previousHash.equals(this.getPreviousHash())) {
+		if (!comparePreviousHash(previousHash)) {
 			System.out.println("#Previous Hashes not equal");
 			return Boolean.FALSE;
 		}
-		//check if hash is solved
-		if(!this.getHash().substring( 0, difficulty).equals(StringUtil.getCharsZeroByDifficuty(difficulty))) {
+		if(!hashIsSolved(difficulty)) {
 			System.out.println("#This block hasn't been mined");
 			return Boolean.FALSE;
 		}

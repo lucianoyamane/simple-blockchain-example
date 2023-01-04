@@ -7,6 +7,7 @@ import br.com.lucianoyamane.example.wallet.Wallet;
 import java.util.ArrayList;
 //import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class NoobChain {
@@ -82,32 +83,36 @@ public class NoobChain {
 			if (!currentBlock.isConsistent(previousBlock.getHash(), difficulty)) {
 				return false;
 			}
-			
+
+			List<Transaction> currentBlockTransactions = currentBlock.getTransactions();
+
 			//loop thru blockchains transactions:
 			TransactionOutput tempOutput;
-			for(int t=0; t <currentBlock.getTransactions().size(); t++) {
-				Transaction currentTransaction = currentBlock.getTransactions().get(t);
+			for(int t = 0; t < currentBlockTransactions.size(); t++) {
+				Transaction currentTransaction = currentBlockTransactions.get(t);
 				
 				currentTransaction.verifiySignature();
 
-				if(!currentTransaction.getInputValue().equals(currentTransaction.getOutputsValue())) {
+				if(!currentTransaction.isConsistent()) {
 					System.out.println("#Inputs are note equal to outputs on Transaction(" + t + ")");
 					return false; 
 				}
 
-				tempOutput = tempUTXOs.get(currentTransaction.input.getUnspentTransactionId());
+				TransactionInput transactionInput = currentTransaction.input;
+
+				tempOutput = tempUTXOs.get(transactionInput.getUnspentTransactionId());
 
 				if(tempOutput == null) {
 					System.out.println("#Referenced input on Transaction(" + t + ") is Missing");
 					return false;
 				}
 
-				if(currentTransaction.input.getUnspentTransaction().getValue() != tempOutput.getValue()) {
+				if(transactionInput.getUnspentTransaction().getValue() != tempOutput.getValue()) {
 					System.out.println("#Referenced input Transaction(" + t + ") value is Invalid");
 					return false;
 				}
 
-				tempUTXOs.remove(currentTransaction.input.getUnspentTransactionId());
+				tempUTXOs.remove(transactionInput.getUnspentTransactionId());
 
 				
 				for(TransactionOutput output: currentTransaction.outputs) {

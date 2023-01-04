@@ -147,5 +147,14 @@ public class Transaction {
 	public Integer getOutputsValue() {
 		return this.outputs.stream().mapToInt(output -> output.getValue()).sum();
 	}
+
+	public Boolean isConsistent() {
+		if (!this.getInputValue().equals(this.getOutputsValue())) {
+			System.out.println("#Inputs are note equal to outputs on Transaction(" + this.getTransactionId() + ")");
+			return Boolean.FALSE;
+		}
+
+		return Boolean.TRUE;
+	}
     
 }
