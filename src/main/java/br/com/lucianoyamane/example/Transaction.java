@@ -25,6 +25,7 @@ public class Transaction {
 		this.setValue(value);
 		this.setTransactionId(calulateHash());
 		this.setOutputs(new ArrayList());
+		this.setInputs(new ArrayList<>());
 	}
 
 	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, Integer value,  List<TransactionInput> inputs) {

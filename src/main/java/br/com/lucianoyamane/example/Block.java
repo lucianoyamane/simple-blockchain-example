@@ -27,6 +27,10 @@ public class Block {
 		this.setHash(calculateHash());
 		this.setMerkleRoot("");
 	}
+
+	public Boolean isGenesis() {
+		return this.getPreviousHash().equals("0");
+	}
 	public String calculateHash() {
 		return StringUtil.encode(this.createCompositionToHash());
 	}
@@ -43,6 +47,16 @@ public class Block {
 
 	public List<String> getTransactionsId() {
 		return this.getTransactions().stream().map(transaction -> transaction.getTransactionId()).toList();
+	}
+
+	public List<TransactionOutput> getTransactionOutputs() {
+		List<TransactionOutput> transactionOutputs = new ArrayList<>();
+		for(Transaction transaction : this.transactions) {
+			for(TransactionOutput transactionOutput : transaction.getOutputs()) {
+				transactionOutputs.add(transactionOutput);
+			}
+		}
+		return transactionOutputs;
 	}
 
 	public void mineBlock(int difficulty) {

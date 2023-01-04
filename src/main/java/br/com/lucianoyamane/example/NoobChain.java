@@ -6,21 +6,22 @@ import br.com.lucianoyamane.example.wallet.Wallet;
 
 import java.util.ArrayList;
 //import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 
 public class NoobChain {
 	
 	public static List<Block> blockchain = new ArrayList();
 	public static int difficulty = 5;
-	public static TransactionOutput genesisTransactionOutput;
 
-	private static Transaction bootstrapTransaction(Wallet baseWallet, Wallet receiverWallet) {
+	private static String bootstrapBlock(Wallet baseWallet, Wallet receiverWallet) {
 		Transaction transaction = Transaction.genesis(baseWallet.getPublicKeyDecorator(), receiverWallet.getPublicKeyDecorator(), 10000);
 		receiverWallet.createSignatureTransaction(transaction);
-		return transaction;
+		System.out.println("Creating and Mining Genesis block... ");
+		Block genesis = Block.genesis();
+		genesis.addTransaction(transaction);
+		addBlock(genesis);
+		return genesis.getHash();
 	}
 
 	public static void main(String[] args) {	
@@ -31,16 +32,10 @@ public class NoobChain {
 		Wallet coinbase = Wallet.create("Genesis");
 		
 		//create genesis transaction, which sends 100 NoobCoin to walletA:
-		Transaction genesisTransaction = bootstrapTransaction(coinbase, walletA);
-		genesisTransactionOutput = TransactionOutput.create(genesisTransaction);
-		
-		System.out.println("Creating and Mining Genesis block... ");
-		Block genesis = Block.genesis();
-		genesis.addTransaction(genesisTransaction);
-		addBlock(genesis);
-		
+		String genesisHash = bootstrapBlock(coinbase, walletA);
+
 		//testing
-		Block block1 = Block.init(genesis.getHash());
+		Block block1 = Block.init(genesisHash);
 		System.out.println("\nWalletA's balance is: " + walletA.getBalance(UnspentTransactions.getInstance().get()));
 		System.out.println("\nWalletA is Attempting to send funds (40) to WalletB...");
 		block1.addTransaction(walletA.sendFunds(walletB.getPublicKeyDecorator(), 4000));
@@ -79,14 +74,19 @@ public class NoobChain {
 	}
 	
 	public static Boolean isChainValid() {
-		List<TransactionOutput> tempTransactionsOutputs = new ArrayList<>(); //a temporary working list of unspent transactions at a given block state.
-		tempTransactionsOutputs.add(genesisTransactionOutput);
-		
-		//loop through blockchain to check hashes:
+		List<TransactionOutput> tempTransactionsOutputs = new ArrayList<>();
+
 		for(int i = 1; i < blockchain.size(); i++) {
 			
 			Block currentBlock = blockchain.get(i);
 			Block previousBlock = blockchain.get(i - 1);
+
+			if (previousBlock.isGenesis()) {
+				List<TransactionOutput> unspentTransactions = previousBlock.getTransactionOutputs();
+				for(TransactionOutput transactionOutput : unspentTransactions) {
+					tempTransactionsOutputs.add(transactionOutput);
+				}
+			}
 
 			if (!currentBlock.isConsistent(previousBlock.getHash(), difficulty)) {
 				return false;
