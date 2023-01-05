@@ -1,5 +1,6 @@
 package br.com.lucianoyamane.example;
 
+import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import br.com.lucianoyamane.example.transactions.UnspentTransactions;
 
@@ -118,14 +119,7 @@ public class Transaction {
 	}
 
     //Verifies the data we signed hasnt been tampered with
-    public Boolean verifiySignature() {
-        Boolean verify = StringUtil.verifyECDSASig(senderPublicKey.getPublicKey(), this.getData(), signature);
-		if (!verify) {
-			System.out.println("#Transaction Signature failed to verify");
-			return Boolean.FALSE;
-		}
-		return Boolean.TRUE;
-    }
+
 
 	private void removeCurrentOutput() {
 		for(TransactionInput transactionInput : this.inputs) {
@@ -164,35 +158,40 @@ public class Transaction {
 		return this.outputs.stream().mapToInt(output -> output.getValue()).sum();
 	}
 
-	public Boolean isConsistent() {
-		return this.verifiySignature() || this.isInputEqualOutputValue() || this.isReceiverOutputConsistent() || this.isSenderOutputConsistent();
+	public void isConsistent() {
+		if (!this.verifiySignature()) {
+			throw new BlockChainException("Transaction Signature failed to verify");
+		}
+
+		if (!this.isInputEqualOutputValue()) {
+			throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.getTransactionId() + ")");
+		}
+
+		if (!this.isReceiverOutputConsistent()) {
+			throw new BlockChainException("#Transaction(" + getTransactionId() + ") output reciepient is not who it should be");
+		}
+
+		if (!this.isSenderOutputConsistent()) {
+			throw new BlockChainException("#Transaction(" + getTransactionId() + ") output 'change' is not sender.");
+		}
+	}
+
+	public Boolean verifiySignature() {
+		return StringUtil.verifyECDSASig(senderPublicKey.getPublicKey(), this.getData(), signature);
 	}
 
 	public Boolean isInputEqualOutputValue() {
-		if (!this.getInputValue().equals(this.getOutputsValue())) {
-			System.out.println("#Inputs are note equal to outputs on Transaction(" + this.getTransactionId() + ")");
-			return Boolean.FALSE;
-		}
-
-		return Boolean.TRUE;
+		return this.getInputValue().equals(this.getOutputsValue());
 	}
 
 	public Boolean isReceiverOutputConsistent() {
 		TransactionOutput receiverOutput = this.outputs.get(0);
-		if(!receiverOutput.getReceiverPublicKey().equals(this.getReceiverPublicKey())) {
-			System.out.println("#Transaction(" + getTransactionId() + ") output reciepient is not who it should be");
-			return Boolean.FALSE;
-		}
-		return Boolean.TRUE;
+		return receiverOutput.getReceiverPublicKey().equals(this.getReceiverPublicKey());
 	}
 
 	public Boolean isSenderOutputConsistent() {
 		TransactionOutput senderOutput = this.outputs.get(1);
-		if( !senderOutput.getReceiverPublicKey().equals(this.getSenderPublicKey())) {
-			System.out.println("#Transaction(" + getTransactionId() + ") output 'change' is not sender.");
-			return Boolean.FALSE;
-		}
-		return Boolean.TRUE;
+		return senderOutput.getReceiverPublicKey().equals(this.getSenderPublicKey());
 	}
     
 }

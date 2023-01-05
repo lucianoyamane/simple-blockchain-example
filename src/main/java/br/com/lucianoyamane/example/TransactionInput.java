@@ -1,5 +1,7 @@
 package br.com.lucianoyamane.example;
 
+import br.com.lucianoyamane.example.exception.BlockChainException;
+
 public class TransactionInput {
 
 	private TransactionOutput unspentTransaction;
@@ -16,15 +18,12 @@ public class TransactionInput {
 		return unspentTransaction;
 	}
 
-	public Boolean isConsistent(TransactionOutput referenceTransactionOutput) {
+	public void isConsistent(TransactionOutput referenceTransactionOutput) {
 		if(referenceTransactionOutput == null) {
-			System.out.println("#Referenced input on Transaction(" + this.getUnspentTransaction().getId() + ") is Missing");
-			return Boolean.FALSE;
+			throw new BlockChainException("#Referenced input on Transaction(" + this.getUnspentTransaction().getId() + ") is Missing");
 		}
 		if(this.getUnspentTransaction().getValue() != referenceTransactionOutput.getValue()) {
-			System.out.println("#Referenced input Transaction(" + this.getUnspentTransaction().getId() + ") value is Invalid");
-			return Boolean.FALSE;
+			throw new BlockChainException("#Referenced input Transaction(" + this.getUnspentTransaction().getId() + ") value is Invalid");
 		}
-		return Boolean.TRUE;
 	}
 }

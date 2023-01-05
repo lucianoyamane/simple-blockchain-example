@@ -1,5 +1,7 @@
 package br.com.lucianoyamane.example;
 
+import br.com.lucianoyamane.example.exception.BlockChainException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,20 +106,16 @@ public class Block {
 		return this.getHash().substring( 0, difficulty).equals(StringUtil.getCharsZeroByDifficuty(difficulty));
 	}
 
-	public Boolean isConsistent(String previousHash, int difficulty) {
+	public void isConsistent(String previousHash, int difficulty) {
 		if (!this.compareRegisteredAndCalculatedHash()) {
-			System.out.println("#Current Hashes not equal");
-			return Boolean.FALSE;
+			throw new BlockChainException("Current Hashes not equal");
 		}
 		if (!comparePreviousHash(previousHash)) {
-			System.out.println("#Previous Hashes not equal");
-			return Boolean.FALSE;
+			throw new BlockChainException("Previous Hashes not equal");
 		}
 		if(!hashIsSolved(difficulty)) {
-			System.out.println("#This block hasn't been mined");
-			return Boolean.FALSE;
+			throw new BlockChainException("This block hasn't been mined");
 		}
-		return Boolean.TRUE;
 	}
 
 	private Boolean previousBlockIsGenesis() {

@@ -68,7 +68,7 @@ public class BlockChain {
 		newBlock.mineBlock(difficulty);
 	}
 	
-	public static Boolean isChainValid() {
+	public static void isChainValid() {
 		List<TransactionOutput> tempTransactionsOutputs = new ArrayList<>();
 
 		for(int i = 1; i < blockchain.size(); i++) {
@@ -79,25 +79,18 @@ public class BlockChain {
 			if (previousBlock.isGenesis()) {
 				tempTransactionsOutputs.addAll(previousBlock.getTransactionOutputs());
 			}
-
-			if (!currentBlock.isConsistent(previousBlock.getHash(), difficulty)) {
-				return false;
-			}
+			currentBlock.isConsistent(previousBlock.getHash(), difficulty);
 
 			List<Transaction> currentBlockTransactions = currentBlock.getTransactions();
 
 			for(Transaction transaction : currentBlockTransactions) {
-				if(!transaction.isConsistent()) {
-					return false;
-				}
+				transaction.isConsistent();
 
 				List<TransactionInput> transactionInputs = transaction.getInputs();
 
 				for(TransactionInput input : transactionInputs) {
 					TransactionOutput transactionOutputFromOutside = tempTransactionsOutputs.stream().filter(output -> output.equals(input.getUnspentTransaction())).findFirst().orElse(null);
-					if (!input.isConsistent(transactionOutputFromOutside)) {
-						return false;
-					}
+					input.isConsistent(transactionOutputFromOutside);
 				}
 
 				for(TransactionInput input : transactionInputs) {
@@ -109,7 +102,6 @@ public class BlockChain {
 			}
 		}
 		System.out.println("Blockchain is valid");
-		return true;
 	}
 	
 
