@@ -18,8 +18,9 @@ public class Transaction {
 
 	private List<TransactionInput> inputs;
 
-	private List<TransactionOutput> outputs;
+	private TransactionOutput currentTransactionOutput;
 
+	private TransactionOutput leftOverTransactionOutput;
 	private String owner;
 
 	private String receiver;
@@ -29,7 +30,6 @@ public class Transaction {
 		this.setReceiverPublicKey(receiverPublicKey);
 		this.setValue(value);
 		this.setTransactionId(calulateHash());
-		this.setOutputs(new ArrayList());
 		this.setInputs(new ArrayList<>());
 	}
 
@@ -38,13 +38,27 @@ public class Transaction {
 		this.setReceiverPublicKey(receiverPublicKey);
 		this.setValue(value);
 		this.setTransactionId(calulateHash());
-		this.setOutputs(new ArrayList());
 		this.setInputs(inputs);
 		this.setOwner(owner);
 		this.setReceiver(receiver);
 	}
 
 
+	public TransactionOutput getCurrentTransactionOutput() {
+		return currentTransactionOutput;
+	}
+
+	public void setCurrentTransactionOutput(TransactionOutput currentTransactionOutput) {
+		this.currentTransactionOutput = currentTransactionOutput;
+	}
+
+	public TransactionOutput getLeftOverTransactionOutput() {
+		return leftOverTransactionOutput;
+	}
+
+	public void setLeftOverTransactionOutput(TransactionOutput leftOverTransactionOutput) {
+		this.leftOverTransactionOutput = leftOverTransactionOutput;
+	}
 
 	public String getOwner() {
 		return owner;
@@ -74,10 +88,6 @@ public class Transaction {
 		return value;
 	}
 
-	public void setOutputs(List<TransactionOutput> outputs) {
-		this.outputs = outputs;
-	}
-
 	private void setSenderPublicKey(PublicKeyDecorator senderPublicKey) {
 		this.senderPublicKey = senderPublicKey;
 	}
@@ -98,11 +108,6 @@ public class Transaction {
 		return this.inputs;
 	}
 
-	public List<TransactionOutput> getOutputs() {
-		return this.outputs;
-	}
-
-
 	public static Transaction create(PublicKeyDecorator sender, PublicKeyDecorator receiver, Integer value, List<TransactionInput> inputs, String owner, String nameReceiver) {
 		return new Transaction(sender, receiver, value, inputs, owner, nameReceiver);
 	}
@@ -110,12 +115,13 @@ public class Transaction {
 	public static Transaction genesis(PublicKeyDecorator sender, PublicKeyDecorator receiver, Integer value) {
 		Transaction transaction = new Transaction(sender, receiver, value);
 		transaction.setTransactionId("0");
-		transaction.addOutput(TransactionOutput.create(transaction, "genesis", "Leftover"));
+		TransactionOutput leftover = TransactionOutput.create(transaction, "genesis", "Leftover");
+		transaction.setLeftOverTransactionOutput(leftover);
+		transaction.addOutput(leftover);
 		return transaction;
 	}
 
 	private void addOutput(TransactionOutput transactionOutput) {
-		this.outputs.add(transactionOutput);
 		UnspentTransactions.getInstance().add(transactionOutput);
 	}
 
@@ -142,8 +148,6 @@ public class Transaction {
 		this.signature = signature;
 	}
 
-    //Verifies the data we signed hasnt been tampered with
-
 
 	private void removeCurrentOutput() {
 		for(TransactionInput transactionInput : this.inputs) {
@@ -152,11 +156,15 @@ public class Transaction {
 	}
 
 	private void addCurrentTransactionOutput() {
-		this.addOutput(TransactionOutput.create( this.receiverPublicKey, value, transactionId, this.getReceiver(), "current"));
+		TransactionOutput current = TransactionOutput.create( this.receiverPublicKey, value, transactionId, this.getReceiver(), "current");
+		this.setCurrentTransactionOutput(current);
+		this.addOutput(current);
 	}
 
 	private void addLeftOverTransactionOutput() {
-		this.addOutput(TransactionOutput.create( this.senderPublicKey, this.getLeftOverValue(), transactionId, this.getOwner(), "leftover"));
+		TransactionOutput leftover = TransactionOutput.create( this.senderPublicKey, this.getLeftOverValue(), transactionId, this.getOwner(), "leftover");
+		this.setLeftOverTransactionOutput(leftover);
+		this.addOutput(leftover);
 	}
 
 
@@ -179,7 +187,7 @@ public class Transaction {
 	}
 
 	public Integer getOutputsValue() {
-		return this.outputs.stream().mapToInt(output -> output.getValue()).sum();
+		return this.getCurrentTransactionOutput().getValue() + this.getLeftOverTransactionOutput().getValue();
 	}
 
 	public void isConsistent() {
@@ -191,11 +199,11 @@ public class Transaction {
 			throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.getTransactionId() + ")");
 		}
 
-		if (!this.isReceiverOutputConsistent()) {
+		if (!this.isCurrentOutputConsistent()) {
 			throw new BlockChainException("#Transaction(" + getTransactionId() + ") output reciepient is not who it should be");
 		}
 
-		if (!this.isSenderOutputConsistent()) {
+		if (!this.isLeftoverOutputConsistent()) {
 			throw new BlockChainException("#Transaction(" + getTransactionId() + ") output 'change' is not sender.");
 		}
 	}
@@ -208,13 +216,13 @@ public class Transaction {
 		return this.getInputValue().equals(this.getOutputsValue());
 	}
 
-	public Boolean isReceiverOutputConsistent() {
-		TransactionOutput receiverOutput = this.outputs.get(0);
+	public Boolean isCurrentOutputConsistent() {
+		TransactionOutput receiverOutput = this.getCurrentTransactionOutput();
 		return receiverOutput.getReceiverPublicKey().equals(this.getReceiverPublicKey());
 	}
 
-	public Boolean isSenderOutputConsistent() {
-		TransactionOutput senderOutput = this.outputs.get(1);
+	public Boolean isLeftoverOutputConsistent() {
+		TransactionOutput senderOutput = this.getLeftOverTransactionOutput();
 		return senderOutput.getReceiverPublicKey().equals(this.getSenderPublicKey());
 	}
     

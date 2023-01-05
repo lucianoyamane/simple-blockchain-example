@@ -52,10 +52,8 @@ public class Wallet {
 		return this.keyPair.getPrivate();
 	}
 
-    public Integer getBalance(List<TransactionOutput> UTXOs) {
-		return UTXOs.stream()
-				.filter(output -> output.isMine(this.getPublicKeyDecorator()))
-				.mapToInt(output -> output.getValue()).sum();
+    public Integer getBalance() {
+		return UnspentTransactions.getInstance().getWalletBalance(this.getPublicKeyDecorator());
 	}
 
 	public List<TransactionOutput> getUnspentUTXO(List<TransactionOutput> UTXOs) {
@@ -71,7 +69,7 @@ public class Wallet {
 		List<TransactionInput> inputs = unspentTransactionOutputs.stream().map(TransactionInput::create).toList();
 
 		Transaction newTransaction = Transaction.create(this.getPublicKeyDecorator(), receiverPublicKeyDecorator , value, inputs, this.getName(), nameReceiver);
-		if (this.getBalance(unspentTransactionOutputs) < value) {
+		if (this.getBalance() < value) {
 			System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}

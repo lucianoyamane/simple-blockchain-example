@@ -54,8 +54,11 @@ public class Block {
 	public List<TransactionOutput> getTransactionOutputs() {
 		List<TransactionOutput> transactionOutputs = new ArrayList<>();
 		for(Transaction transaction : this.transactions) {
-			for(TransactionOutput transactionOutput : transaction.getOutputs()) {
-				transactionOutputs.add(transactionOutput);
+			if (transaction.getCurrentTransactionOutput() != null) {
+				transactionOutputs.add(transaction.getCurrentTransactionOutput());
+			}
+			if (transaction.getLeftOverTransactionOutput() != null) {
+				transactionOutputs.add(transaction.getLeftOverTransactionOutput());
 			}
 		}
 		return transactionOutputs;

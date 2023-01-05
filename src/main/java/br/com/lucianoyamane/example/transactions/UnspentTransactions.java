@@ -1,6 +1,7 @@
 package br.com.lucianoyamane.example.transactions;
 
 import br.com.lucianoyamane.example.TransactionOutput;
+import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,12 @@ public class UnspentTransactions {
 
     public void remove(TransactionOutput transactionOutput) {
         this.transactionOutputs.remove(transactionOutput);
+    }
+
+    public Integer getWalletBalance(PublicKeyDecorator publicKeyDecorator) {
+        return this.transactionOutputs.stream()
+                .filter(output -> output.isMine(publicKeyDecorator))
+                .mapToInt(TransactionOutput::getValue).sum();
     }
 
 }

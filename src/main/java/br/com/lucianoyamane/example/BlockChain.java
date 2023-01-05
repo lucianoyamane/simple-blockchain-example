@@ -26,13 +26,13 @@ public class BlockChain {
 
 	private static String transactionBlock(String previousHash, Wallet senderWallet, Wallet receiverWallet, Integer value) {
 		Block block = Block.init(previousHash);
-		System.out.println("\nWallet's " + senderWallet.getName() + " balance is: " + senderWallet.getBalance(UnspentTransactions.getInstance().get()));
+		System.out.println("\nWallet's " + senderWallet.getName() + " balance is: " + senderWallet.getBalance());
 		System.out.println("\nWallet " + senderWallet.getName() + " is Attempting to send funds (" + value + ") to Wallet " + receiverWallet.getName());
 		block.addTransaction(senderWallet.sendFunds(receiverWallet.getName(), receiverWallet.getPublicKeyDecorator(), value));
 		mine(block);
 		addBlock(block);
-		System.out.println("\nWallet's " + senderWallet.getName() + " balance is: " + senderWallet.getBalance(UnspentTransactions.getInstance().get()));
-		System.out.println("Wallet's " + receiverWallet.getName() + " balance is: " + receiverWallet.getBalance(UnspentTransactions.getInstance().get()));
+		System.out.println("\nWallet's " + senderWallet.getName() + " balance is: " + senderWallet.getBalance());
+		System.out.println("Wallet's " + receiverWallet.getName() + " balance is: " + receiverWallet.getBalance());
 		return block.getHash();
 	}
 
@@ -45,15 +45,18 @@ public class BlockChain {
 		String genesisHash = bootstrapBlock(coinbase, walletA);
 
 		String block1Hash = transactionBlock(genesisHash, walletA, walletB, 4000);
-//		isChainValid();
+		isChainValid();
 
-//		String block2Hash = transactionBlock(block1Hash, walletA, walletB, 100000);
-//		isChainValid();
-//
-		String block3Hash = transactionBlock(block1Hash,walletB, walletA, 2000);
-//		isChainValid();
-//
-		String block4Hash =transactionBlock(block3Hash,walletA, walletB, 8000);
+		String block2Hash = transactionBlock(block1Hash, walletA, walletB, 100000);
+		isChainValid();
+
+		String block3Hash = transactionBlock(block2Hash,walletB, walletA, 2000);
+		isChainValid();
+
+		String block4Hash =transactionBlock(block3Hash,walletA, walletB, 1000);
+		isChainValid();
+
+		String block5Hash =transactionBlock(block4Hash,walletA, walletB, 7000);
 		isChainValid();
 		
 	}
@@ -80,7 +83,6 @@ public class BlockChain {
 			currentBlock.isConsistent(previousBlock.getHash(), difficulty);
 
 			List<Transaction> currentBlockTransactions = currentBlock.getTransactions();
-			List<Transaction> previousBlockTransactions = previousBlock.getTransactions();
 
 			for(Transaction transaction : currentBlockTransactions) {
 				transaction.isConsistent();
