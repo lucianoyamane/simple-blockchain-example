@@ -165,6 +165,10 @@ public class Transaction {
 	}
 
 	public Boolean isConsistent() {
+		return this.verifiySignature() || this.isInputEqualOutputValue() || this.isReceiverOutputConsistent() || this.isSenderOutputConsistent();
+	}
+
+	public Boolean isInputEqualOutputValue() {
 		if (!this.getInputValue().equals(this.getOutputsValue())) {
 			System.out.println("#Inputs are note equal to outputs on Transaction(" + this.getTransactionId() + ")");
 			return Boolean.FALSE;
