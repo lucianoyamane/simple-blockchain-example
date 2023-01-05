@@ -40,4 +40,9 @@ public class UnspentTransactions {
                 .mapToInt(TransactionOutput::getValue).sum();
     }
 
+    public List<TransactionOutput> loadUnspentUTXO(PublicKeyDecorator publicKeyDecorator) {
+        return this.transactionOutputs.stream()
+                .filter(output -> output.isMine(publicKeyDecorator)).toList();
+    }
+
 }

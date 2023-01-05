@@ -9,13 +9,11 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.List;
-import java.util.Map;
 
 public class Wallet {
 
 	private KeyPair keyPair;
 	private PublicKeyDecorator publicKeyDecorator;
-
 	private String name;
 
 	public static Wallet create(String name) {
@@ -56,24 +54,17 @@ public class Wallet {
 		return UnspentTransactions.getInstance().getWalletBalance(this.getPublicKeyDecorator());
 	}
 
-	public List<TransactionOutput> getUnspentUTXO(List<TransactionOutput> UTXOs) {
-		return UTXOs.stream()
-				.filter(output -> output.isMine(this.getPublicKeyDecorator())).toList();
-	}
-
 	public void createSignatureTransaction(Transaction transaction) {
 		transaction.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transaction.getData()));
 	}
 	public Transaction sendFunds(String nameReceiver, PublicKeyDecorator receiverPublicKeyDecorator, Integer value ) {
-		List<TransactionOutput> unspentTransactionOutputs = this.getUnspentUTXO(UnspentTransactions.getInstance().get());
-		List<TransactionInput> inputs = unspentTransactionOutputs.stream().map(TransactionInput::create).toList();
-
-		Transaction newTransaction = Transaction.create(this.getPublicKeyDecorator(), receiverPublicKeyDecorator , value, inputs, this.getName(), nameReceiver);
 		if (this.getBalance() < value) {
 			System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}
-
+		List<TransactionOutput> unspentTransactionOutputs = UnspentTransactions.getInstance().loadUnspentUTXO(this.getPublicKeyDecorator());
+		List<TransactionInput> inputs = unspentTransactionOutputs.stream().map(TransactionInput::create).toList();
+		Transaction newTransaction = Transaction.create(this.getPublicKeyDecorator(), receiverPublicKeyDecorator , value, inputs, this.getName(), nameReceiver);
 		this.createSignatureTransaction(newTransaction);
 
 		return newTransaction;
