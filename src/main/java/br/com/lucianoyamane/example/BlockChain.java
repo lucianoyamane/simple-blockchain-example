@@ -27,7 +27,7 @@ public class BlockChain {
 	private static String transactionBlock(String previousHash, Wallet senderWallet, Wallet receiverWallet, Integer value) {
 		Block block = Block.init(previousHash);
 		System.out.println("\nWallet's " + senderWallet.getName() + " balance is: " + senderWallet.getBalance(UnspentTransactions.getInstance().get()));
-		System.out.println("\nWallet " + senderWallet.getName() + " is Attempting to send funds (40) to Wallet " + receiverWallet.getName());
+		System.out.println("\nWallet " + senderWallet.getName() + " is Attempting to send funds (" + value + ") to Wallet " + receiverWallet.getName());
 		block.addTransaction(senderWallet.sendFunds(receiverWallet.getPublicKeyDecorator(), value));
 		mine(block);
 		addBlock(block);
@@ -38,25 +38,23 @@ public class BlockChain {
 
 	public static void main(String[] args) {	
 
-		//Create wallets:
 		Wallet walletA = Wallet.create("A");
 		Wallet walletB = Wallet.create("B");
 		Wallet coinbase = Wallet.create("Genesis");
 
 		String genesisHash = bootstrapBlock(coinbase, walletA);
-		isChainValid();
 
 		String block1Hash = transactionBlock(genesisHash, walletA, walletB, 4000);
-		isChainValid();
+//		isChainValid();
 
-		String block2Hash = transactionBlock(block1Hash, walletA, walletB, 100000);
+//		String block2Hash = transactionBlock(block1Hash, walletA, walletB, 100000);
+//		isChainValid();
+//
+		String block3Hash = transactionBlock(block1Hash,walletB, walletA, 2000);
 		isChainValid();
-
-		String block3Hash = transactionBlock(block2Hash,walletB, walletA, 2000);
-		isChainValid();
-
-		String block4Hash = transactionBlock(block3Hash,walletB, walletA, 1000);
-		isChainValid();
+//
+//		transactionBlock(block3Hash,walletB, walletA, 1000);
+//		isChainValid();
 		
 	}
 
@@ -96,9 +94,10 @@ public class BlockChain {
 				for(TransactionInput input : transactionInputs) {
 					tempTransactionsOutputs.remove(input.getUnspentTransaction());
 				}
-				for(TransactionOutput output: transaction.getOutputs()) {
-					tempTransactionsOutputs.add(output);
-				}
+			}
+
+			for(TransactionOutput output: currentBlock.getTransactionOutputs()) {
+				tempTransactionsOutputs.add(output);
 			}
 		}
 		System.out.println("Blockchain is valid");

@@ -68,11 +68,11 @@ public class Wallet {
 		transaction.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transaction.getData()));
 	}
 	public Transaction sendFunds(PublicKeyDecorator recipentPublicKeyDecorator, Integer value ) {
-		List<TransactionOutput> UTXOs = this.getUnspentUTXO(UnspentTransactions.getInstance().get());
-		List<TransactionInput> inputs = UTXOs.stream().map(TransactionInput::create).toList();
+		List<TransactionOutput> unspentTransactionOutputs = this.getUnspentUTXO(UnspentTransactions.getInstance().get());
+		List<TransactionInput> inputs = unspentTransactionOutputs.stream().map(TransactionInput::create).toList();
 
 		Transaction newTransaction = Transaction.create(this.getPublicKeyDecorator(), recipentPublicKeyDecorator , value, inputs);
-		if (this.getBalance(UTXOs) < value) {
+		if (this.getBalance(unspentTransactionOutputs) < value) {
 			System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}
