@@ -115,13 +115,13 @@ public class Transaction {
 	public static Transaction genesis(PublicKeyDecorator sender, PublicKeyDecorator receiver, Integer value) {
 		Transaction transaction = new Transaction(sender, receiver, value);
 		transaction.setTransactionId("0");
-		TransactionOutput leftover = TransactionOutput.create(transaction, "genesis", "Leftover");
+		TransactionOutput leftover = TransactionOutput.leftover(transaction.getReceiverPublicKey(), transaction.getValue(), transaction.getTransactionId(), "genesis");
 		transaction.setLeftOverTransactionOutput(leftover);
-		transaction.addOutput(leftover);
+		transaction.addUnspentTransaction(leftover);
 		return transaction;
 	}
 
-	private void addOutput(TransactionOutput transactionOutput) {
+	private void addUnspentTransaction(TransactionOutput transactionOutput) {
 		UnspentTransactions.getInstance().add(transactionOutput);
 	}
 
@@ -156,15 +156,15 @@ public class Transaction {
 	}
 
 	private void addCurrentTransactionOutput() {
-		TransactionOutput current = TransactionOutput.create( this.receiverPublicKey, value, transactionId, this.getReceiver(), "current");
+		TransactionOutput current = TransactionOutput.current( this.receiverPublicKey, value, transactionId, this.getReceiver());
 		this.setCurrentTransactionOutput(current);
-		this.addOutput(current);
+		this.addUnspentTransaction(current);
 	}
 
 	private void addLeftOverTransactionOutput() {
-		TransactionOutput leftover = TransactionOutput.create( this.senderPublicKey, this.getLeftOverValue(), transactionId, this.getOwner(), "leftover");
+		TransactionOutput leftover = TransactionOutput.leftover( this.senderPublicKey, this.getLeftOverValue(), transactionId, this.getOwner());
 		this.setLeftOverTransactionOutput(leftover);
-		this.addOutput(leftover);
+		this.addUnspentTransaction(leftover);
 	}
 
 

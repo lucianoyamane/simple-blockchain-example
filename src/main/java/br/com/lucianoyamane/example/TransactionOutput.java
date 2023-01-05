@@ -66,12 +66,12 @@ public class TransactionOutput {
 		return value;
 	}
 
-	public static TransactionOutput create(Transaction transaction, String owner, String type) {
-		return new TransactionOutput(transaction.getReceiverPublicKey(), transaction.getValue(), transaction.getTransactionId(), owner, type);
+	public static TransactionOutput leftover(PublicKeyDecorator receiverPublicKey, Integer value, String transactionId, String owner) {
+		return new TransactionOutput(receiverPublicKey, value, transactionId, owner, "LEFTOVER");
 	}
 
-	public static TransactionOutput create(PublicKeyDecorator receiverPublicKey, Integer value, String transactionId, String owner, String type) {
-		return new TransactionOutput(receiverPublicKey, value, transactionId, owner, type);
+	public static TransactionOutput current(PublicKeyDecorator receiverPublicKey, Integer value, String transactionId, String owner) {
+		return new TransactionOutput(receiverPublicKey, value, transactionId, owner, "CURRENT");
 	}
 
 	public boolean isMine(PublicKeyDecorator publicKey) {

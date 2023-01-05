@@ -25,6 +25,7 @@ public class BlockChain {
 	}
 
 	private static String transactionBlock(String previousHash, Wallet senderWallet, Wallet receiverWallet, Integer value) {
+		System.out.println("******************************************************");
 		Block block = Block.init(previousHash);
 		System.out.println("\nWallet's " + senderWallet.getName() + " balance is: " + senderWallet.getBalance());
 		System.out.println("\nWallet " + senderWallet.getName() + " is Attempting to send funds (" + value + ") to Wallet " + receiverWallet.getName());
