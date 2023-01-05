@@ -34,7 +34,6 @@ public class Wallet {
 
 	private void setPublicKeyDecorator(PublicKey publicKey) {
 		this.publicKeyDecorator = PublicKeyDecorator.inicia(publicKey);
-		System.out.println("****** " + this.publicKeyDecorator + " **** " + this.name);
 	}
 
 	public String getName() {
@@ -67,11 +66,11 @@ public class Wallet {
 	public void createSignatureTransaction(Transaction transaction) {
 		transaction.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transaction.getData()));
 	}
-	public Transaction sendFunds(PublicKeyDecorator recipentPublicKeyDecorator, Integer value ) {
+	public Transaction sendFunds(String nameReceiver, PublicKeyDecorator receiverPublicKeyDecorator, Integer value ) {
 		List<TransactionOutput> unspentTransactionOutputs = this.getUnspentUTXO(UnspentTransactions.getInstance().get());
 		List<TransactionInput> inputs = unspentTransactionOutputs.stream().map(TransactionInput::create).toList();
 
-		Transaction newTransaction = Transaction.create(this.getPublicKeyDecorator(), recipentPublicKeyDecorator , value, inputs);
+		Transaction newTransaction = Transaction.create(this.getPublicKeyDecorator(), receiverPublicKeyDecorator , value, inputs, this.getName(), nameReceiver);
 		if (this.getBalance(unspentTransactionOutputs) < value) {
 			System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");
 			return null;

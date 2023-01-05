@@ -20,6 +20,10 @@ public class Transaction {
 
 	private List<TransactionOutput> outputs;
 
+	private String owner;
+
+	private String receiver;
+
 	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, Integer value) {
 		this.setSenderPublicKey(senderPublicKey);
 		this.setReceiverPublicKey(receiverPublicKey);
@@ -29,13 +33,33 @@ public class Transaction {
 		this.setInputs(new ArrayList<>());
 	}
 
-	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, Integer value,  List<TransactionInput> inputs) {
+	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, Integer value,  List<TransactionInput> inputs, String owner, String receiver) {
 		this.setSenderPublicKey(senderPublicKey);
 		this.setReceiverPublicKey(receiverPublicKey);
 		this.setValue(value);
 		this.setTransactionId(calulateHash());
 		this.setOutputs(new ArrayList());
 		this.setInputs(inputs);
+		this.setOwner(owner);
+		this.setReceiver(receiver);
+	}
+
+
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public String getReceiver() {
+		return receiver;
+	}
+
+	public void setReceiver(String receiver) {
+		this.receiver = receiver;
 	}
 
 	public PublicKeyDecorator getSenderPublicKey() {
@@ -79,14 +103,14 @@ public class Transaction {
 	}
 
 
-	public static Transaction create(PublicKeyDecorator sender, PublicKeyDecorator receiver, Integer value, List<TransactionInput> inputs) {
-		return new Transaction(sender, receiver, value, inputs);
+	public static Transaction create(PublicKeyDecorator sender, PublicKeyDecorator receiver, Integer value, List<TransactionInput> inputs, String owner, String nameReceiver) {
+		return new Transaction(sender, receiver, value, inputs, owner, nameReceiver);
 	}
 
 	public static Transaction genesis(PublicKeyDecorator sender, PublicKeyDecorator receiver, Integer value) {
 		Transaction transaction = new Transaction(sender, receiver, value);
 		transaction.setTransactionId("0");
-		transaction.addOutput(TransactionOutput.create(transaction));
+		transaction.addOutput(TransactionOutput.create(transaction, "genesis", "Leftover"));
 		return transaction;
 	}
 
@@ -128,11 +152,11 @@ public class Transaction {
 	}
 
 	private void addCurrentTransactionOutput() {
-		this.addOutput(TransactionOutput.create( this.receiverPublicKey, value, transactionId));
+		this.addOutput(TransactionOutput.create( this.receiverPublicKey, value, transactionId, this.getReceiver(), "current"));
 	}
 
 	private void addLeftOverTransactionOutput() {
-		this.addOutput(TransactionOutput.create( this.senderPublicKey, this.getLeftOverValue(), transactionId));
+		this.addOutput(TransactionOutput.create( this.senderPublicKey, this.getLeftOverValue(), transactionId, this.getOwner(), "leftover"));
 	}
 
 

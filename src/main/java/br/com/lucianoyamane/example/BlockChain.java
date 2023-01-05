@@ -28,7 +28,7 @@ public class BlockChain {
 		Block block = Block.init(previousHash);
 		System.out.println("\nWallet's " + senderWallet.getName() + " balance is: " + senderWallet.getBalance(UnspentTransactions.getInstance().get()));
 		System.out.println("\nWallet " + senderWallet.getName() + " is Attempting to send funds (" + value + ") to Wallet " + receiverWallet.getName());
-		block.addTransaction(senderWallet.sendFunds(receiverWallet.getPublicKeyDecorator(), value));
+		block.addTransaction(senderWallet.sendFunds(receiverWallet.getName(), receiverWallet.getPublicKeyDecorator(), value));
 		mine(block);
 		addBlock(block);
 		System.out.println("\nWallet's " + senderWallet.getName() + " balance is: " + senderWallet.getBalance(UnspentTransactions.getInstance().get()));
@@ -51,10 +51,10 @@ public class BlockChain {
 //		isChainValid();
 //
 		String block3Hash = transactionBlock(block1Hash,walletB, walletA, 2000);
-		isChainValid();
-//
-//		transactionBlock(block3Hash,walletB, walletA, 1000);
 //		isChainValid();
+//
+		String block4Hash =transactionBlock(block3Hash,walletA, walletB, 8000);
+		isChainValid();
 		
 	}
 
@@ -80,6 +80,7 @@ public class BlockChain {
 			currentBlock.isConsistent(previousBlock.getHash(), difficulty);
 
 			List<Transaction> currentBlockTransactions = currentBlock.getTransactions();
+			List<Transaction> previousBlockTransactions = previousBlock.getTransactions();
 
 			for(Transaction transaction : currentBlockTransactions) {
 				transaction.isConsistent();
