@@ -24,7 +24,7 @@ public class Transaction {
 	private byte[] signature; // this is to prevent anybody else from spending funds in our wallet.
 	private List<TransactionInput> inputs;
 
-	private Transaction(Operator senderOperator, Operator receiverOperator, Integer value) {
+	protected Transaction(Operator senderOperator, Operator receiverOperator, Integer value) {
 		this.setSenderOperator(senderOperator);
 		this.setReceiverOperator(receiverOperator);
 		this.setValue(value);
@@ -32,7 +32,7 @@ public class Transaction {
 		this.setInputs(new ArrayList<>());
 	}
 
-	private Transaction(Operator senderOperator, Operator receiverOperator, Integer value, List<TransactionInput> inputs) {
+	protected Transaction(Operator senderOperator, Operator receiverOperator, Integer value, List<TransactionInput> inputs) {
 		this.setSenderOperator(senderOperator);
 		this.setReceiverOperator(receiverOperator);
 		this.setValue(value);
@@ -109,14 +109,7 @@ public class Transaction {
 		return new Transaction(senderOperator, receiverOperator, value, inputs);
 	}
 
-	public static Transaction genesis(Operator senderOperator, Operator receiverOperator, Integer value) {
-		Transaction transaction = new Transaction(senderOperator, receiverOperator, value);
-		transaction.setHash("0");
-		TransactionOutput leftover = TransactionOutput.leftover(receiverOperator, transaction.getValue(), transaction.getHash());
-		transaction.setReceiverTransactionOutput(leftover);
-		transaction.addUnspentTransaction(leftover);
-		return transaction;
-	}
+
 
 	private void addUnspentTransaction(TransactionOutput transactionOutput) {
 		UnspentTransactions.getInstance().add(transactionOutput);
@@ -126,7 +119,7 @@ public class Transaction {
 		return hash;
 	}
 
-	private void setHash(String hash) {
+	protected void setHash(String hash) {
 		this.hash = hash;
 	}
 

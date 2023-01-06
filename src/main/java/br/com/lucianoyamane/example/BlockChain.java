@@ -1,6 +1,7 @@
 package br.com.lucianoyamane.example;
 
 
+import br.com.lucianoyamane.example.transaction.GenesisTransaction;
 import br.com.lucianoyamane.example.transaction.Transaction;
 import br.com.lucianoyamane.example.wallet.Wallet;
 
@@ -15,8 +16,9 @@ public class BlockChain {
 	public static int difficulty = 5;
 
 	private static String bootstrapBlock(Wallet baseWallet, Wallet receiverWallet) {
-		Transaction transaction = Transaction.genesis(baseWallet.toOperator(), receiverWallet.toOperator(), 10000);
-		receiverWallet.createSignatureTransaction(transaction);
+		Transaction transaction = GenesisTransaction.create(baseWallet.toOperator(), receiverWallet.toOperator(), 10000);
+		transaction.setSignature(receiverWallet.createSignatureTransaction(transaction.getHash()));
+		transaction.processTransaction();
 		System.out.println("Creating and Mining Genesis block... ");
 		Block genesis = Block.genesis();
 		genesis.addTransaction(transaction);

@@ -56,8 +56,8 @@ public class Wallet {
 		return UnspentTransactions.getInstance().getWalletBalance(this.getPublicKeyDecorator());
 	}
 
-	public void createSignatureTransaction(Transaction transaction) {
-		transaction.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transaction.getHash()));
+	public byte[] createSignatureTransaction(String hash) {
+		return StringUtil.applyECDSASig(this.getPrivateKey(), hash);
 	}
 
 	public Boolean hasFunds(Integer value) {
@@ -71,7 +71,7 @@ public class Wallet {
 		List<TransactionOutput> unspentTransactionOutputs = UnspentTransactions.getInstance().loadUnspentUTXO(this.getPublicKeyDecorator());
 		List<TransactionInput> inputs = unspentTransactionOutputs.stream().map(TransactionInput::create).toList();
 		Transaction newTransaction = Transaction.create(this.toOperator(), receiverOperator, value, inputs);
-		this.createSignatureTransaction(newTransaction);
+		newTransaction.setSignature(createSignatureTransaction(newTransaction.getHash()));
 
 		return newTransaction;
 	}
