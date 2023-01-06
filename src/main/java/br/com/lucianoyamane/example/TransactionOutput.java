@@ -2,14 +2,12 @@ package br.com.lucianoyamane.example;
 
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
+import br.com.lucianoyamane.example.transaction.Operator;
 
 public class TransactionOutput {
     private String id;
-	private PublicKeyDecorator publicKeyDecorator;
+	private Operator operator;
 	private Integer value;
-
-	private String owner;
-
 	private String type;
 	
 	//TODO: implementar validacao valor minimo transação
@@ -17,24 +15,19 @@ public class TransactionOutput {
 //			System.out.println("#Transaction Inputs to small: " + getInputValue());
 //			return false;
 //		}
-	private TransactionOutput(PublicKeyDecorator publicKeyDecorator, Integer value, String transactionId, String owner, String type) {
-		this.setPublicKeyDecorator(publicKeyDecorator);
+	private TransactionOutput(Operator operator, Integer value, String transactionId, String type) {
+		this.setOperator(operator);
 		this.setValue(value);
-		this.setId(StringUtil.encode(this.getPublicKeyDecorator().toString() + value + transactionId));
-		this.setOwner(owner);
+		this.setId(StringUtil.encode(operator.getPublicKeyDecorator().toString() + value + transactionId));
 		this.setType(type);
 	}
 
-	public String getOwner() {
-		return owner;
+	public Operator getOperator() {
+		return operator;
 	}
 
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
-
-	public String getType() {
-		return type;
+	public void setOperator(Operator operator) {
+		this.operator = operator;
 	}
 
 	public void setType(String type) {
@@ -45,16 +38,8 @@ public class TransactionOutput {
 		return id;
 	}
 
-	public PublicKeyDecorator getPublicKeyDecorator() {
-		return publicKeyDecorator;
-	}
-
 	private void setId(String id) {
 		this.id = id;
-	}
-
-	private void setPublicKeyDecorator(PublicKeyDecorator publicKeyDecorator) {
-		this.publicKeyDecorator = publicKeyDecorator;
 	}
 
 	private void setValue(Integer value) {
@@ -65,16 +50,16 @@ public class TransactionOutput {
 		return value;
 	}
 
-	public static TransactionOutput leftover(PublicKeyDecorator publicKeyDecorator, Integer value, String transactionId, String owner) {
-		return new TransactionOutput(publicKeyDecorator, value, transactionId, owner, "LEFTOVER");
+	public static TransactionOutput leftover(Operator operator, Integer value, String transactionId) {
+		return new TransactionOutput(operator, value, transactionId, "LEFTOVER");
 	}
 
-	public static TransactionOutput current(PublicKeyDecorator publicKeyDecorator, Integer value, String transactionId, String owner) {
-		return new TransactionOutput(publicKeyDecorator, value, transactionId, owner, "CURRENT");
+	public static TransactionOutput current(Operator operator, Integer value, String transactionId) {
+		return new TransactionOutput(operator, value, transactionId, "CURRENT");
 	}
 
 	public Boolean isMine(PublicKeyDecorator publicKey) {
-		return publicKey.equals(publicKeyDecorator);
+		return publicKey.equals(this.getOperator().getPublicKeyDecorator());
 	}
 
 	public void isConsistent(PublicKeyDecorator publicKeyDecorator) {

@@ -14,6 +14,11 @@ import java.util.UUID;
 public class Transaction {
 	private Operator senderOperator;
 	private Operator receiverOperator;
+
+	private TransactionOutput senderTransactionOutput;
+
+	private TransactionOutput receiverTransactionOutput;
+
 	private String hash; // this is also the hash of the transaction.
 	private Integer value;
 	private byte[] signature; // this is to prevent anybody else from spending funds in our wallet.
@@ -52,28 +57,20 @@ public class Transaction {
 		this.receiverOperator = receiverOperator;
 	}
 
-	private void setSenderTransactionOutput(TransactionOutput senderCurrentTransactionOutput) {
-		this.getSenderOperator().setTransactionOutput(senderCurrentTransactionOutput);
+	private void setSenderTransactionOutput(TransactionOutput senderTransactionOutput) {
+		this.senderTransactionOutput = senderTransactionOutput;
 	}
 
 	public TransactionOutput getReceiverTransactionOutput() {
-		return this.getReceiverOperator().getTransactionOutput();
+		return this.receiverTransactionOutput;
 	}
 
 	private void setReceiverTransactionOutput(TransactionOutput receiverTransactionOutput) {
-		this.getReceiverOperator().setTransactionOutput(receiverTransactionOutput);
-	}
-
-	public String getOwner() {
-		return this.getSenderOperator().getName();
-	}
-
-	public String getReceiver() {
-		return this.getReceiverOperator().getName();
+		this.receiverTransactionOutput = receiverTransactionOutput;
 	}
 
 	private PublicKeyDecorator getSenderPublicKey() {
-		return this.getSenderOperator().getPublicKey();
+		return this.getSenderOperator().getPublicKeyDecorator();
 	}
 
 	private String getSenderPublicKeyString() {
@@ -81,11 +78,11 @@ public class Transaction {
 	}
 
 	private PublicKeyDecorator getReceiverPublicKey() {
-		return this.getReceiverOperator().getPublicKey();
+		return this.getReceiverOperator().getPublicKeyDecorator();
 	}
 
 	public TransactionOutput getSenderTransactionOutput() {
-		return this.getSenderOperator().getTransactionOutput();
+		return this.senderTransactionOutput;
 	}
 
 	private String getReceiverPublicKeyString() {
@@ -115,7 +112,7 @@ public class Transaction {
 	public static Transaction genesis(Operator senderOperator, Operator receiverOperator, Integer value) {
 		Transaction transaction = new Transaction(senderOperator, receiverOperator, value);
 		transaction.setHash("0");
-		TransactionOutput leftover = TransactionOutput.leftover(transaction.getReceiverPublicKey(), transaction.getValue(), transaction.getHash(), receiverOperator.getName());
+		TransactionOutput leftover = TransactionOutput.leftover(receiverOperator, transaction.getValue(), transaction.getHash());
 		transaction.setReceiverTransactionOutput(leftover);
 		transaction.addUnspentTransaction(leftover);
 		return transaction;
@@ -156,13 +153,13 @@ public class Transaction {
 	}
 
 	private void addCurrentTransactionOutput() {
-		TransactionOutput current = TransactionOutput.current( this.getReceiverPublicKey(), this.getValue(), this.getHash(), this.getReceiver());
+		TransactionOutput current = TransactionOutput.current( this.getReceiverOperator(), this.getValue(), this.getHash());
 		this.setSenderTransactionOutput(current);
 		this.addUnspentTransaction(current);
 	}
 
 	private void addLeftOverTransactionOutput() {
-		TransactionOutput leftover = TransactionOutput.leftover( this.getSenderPublicKey(), this.getLeftOverValue(), this.getHash(), this.getOwner());
+		TransactionOutput leftover = TransactionOutput.leftover( this.getSenderOperator(), this.getLeftOverValue(), this.getHash());
 		this.setReceiverTransactionOutput(leftover);
 		this.addUnspentTransaction(leftover);
 	}
