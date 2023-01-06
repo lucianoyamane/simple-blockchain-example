@@ -2,7 +2,7 @@ package br.com.lucianoyamane.example;
 
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
-import br.com.lucianoyamane.example.transaction.Operator;
+import br.com.lucianoyamane.example.wallet.Operator;
 
 public class TransactionOutput {
     private String id;

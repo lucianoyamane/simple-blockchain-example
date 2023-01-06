@@ -87,7 +87,7 @@ public class Block {
 			return Boolean.FALSE;
 		}
 
-		if(!this.previousBlockIsGenesis() && !transaction.processTransaction()) {
+		if(!transaction.processTransaction()) {
 			System.out.println("Transaction failed to process. Discarded.");
 			return Boolean.FALSE;
 		}

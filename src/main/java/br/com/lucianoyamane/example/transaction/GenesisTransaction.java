@@ -1,5 +1,7 @@
 package br.com.lucianoyamane.example.transaction;
 
+import br.com.lucianoyamane.example.wallet.Operator;
+
 public class GenesisTransaction extends Transaction{
 
     private GenesisTransaction(Operator senderOperator, Operator receiverOperator, Integer value) {

@@ -3,7 +3,6 @@ package br.com.lucianoyamane.example.wallet;
 import br.com.lucianoyamane.example.*;
 import br.com.lucianoyamane.example.keypair.BouncyCastleKeyPair;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
-import br.com.lucianoyamane.example.transaction.Operator;
 import br.com.lucianoyamane.example.transaction.Transaction;
 import br.com.lucianoyamane.example.transactions.UnspentTransactions;
 
@@ -22,7 +21,7 @@ public class Wallet {
 		return new Wallet(name);
 	}
 
-    private Wallet(String name){
+    protected Wallet(String name){
 		this.setName(name);
 		this.setKeyPair(BouncyCastleKeyPair.init().getKeyPair());
 	}

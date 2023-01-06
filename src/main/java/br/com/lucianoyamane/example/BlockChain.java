@@ -3,6 +3,7 @@ package br.com.lucianoyamane.example;
 
 import br.com.lucianoyamane.example.transaction.GenesisTransaction;
 import br.com.lucianoyamane.example.transaction.Transaction;
+import br.com.lucianoyamane.example.wallet.GenesisWallet;
 import br.com.lucianoyamane.example.wallet.Wallet;
 
 import java.util.ArrayList;
@@ -15,13 +16,10 @@ public class BlockChain {
 	public static List<Block> blockchain = new ArrayList();
 	public static int difficulty = 5;
 
-	private static String bootstrapBlock(Wallet baseWallet, Wallet receiverWallet) {
-		Transaction transaction = GenesisTransaction.create(baseWallet.toOperator(), receiverWallet.toOperator(), 10000);
-		transaction.setSignature(receiverWallet.createSignatureTransaction(transaction.getHash()));
-		transaction.processTransaction();
+	private static String bootstrapBlock(GenesisWallet baseWallet, Wallet receiverWallet, Integer value) {
 		System.out.println("Creating and Mining Genesis block... ");
 		Block genesis = Block.genesis();
-		genesis.addTransaction(transaction);
+		genesis.addTransaction(baseWallet.sendFunds(receiverWallet.toOperator(), value));
 		addBlock(genesis);
 		return genesis.getHash();
 	}
@@ -43,9 +41,9 @@ public class BlockChain {
 
 		Wallet walletA = Wallet.create("A");
 		Wallet walletB = Wallet.create("B");
-		Wallet coinbase = Wallet.create("Genesis");
+		GenesisWallet coinbase = GenesisWallet.create("Genesis");
 
-		String genesisHash = bootstrapBlock(coinbase, walletA);
+		String genesisHash = bootstrapBlock(coinbase, walletA, 10000);
 
 		String block1Hash = transactionBlock(genesisHash, walletA, walletB, 4000);
 		isChainValid();

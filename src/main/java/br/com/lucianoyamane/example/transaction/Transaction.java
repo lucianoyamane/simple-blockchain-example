@@ -6,6 +6,7 @@ import br.com.lucianoyamane.example.TransactionOutput;
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import br.com.lucianoyamane.example.transactions.UnspentTransactions;
+import br.com.lucianoyamane.example.wallet.Operator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,8 +110,6 @@ public class Transaction {
 		return new Transaction(senderOperator, receiverOperator, value, inputs);
 	}
 
-
-
 	private void addUnspentTransaction(TransactionOutput transactionOutput) {
 		UnspentTransactions.getInstance().add(transactionOutput);
 	}
@@ -139,6 +138,10 @@ public class Transaction {
 		this.signature = signature;
 	}
 
+	private byte[] getSignature() {
+		return signature;
+	}
+
 	private void removeCurrentOutput() {
 		for(TransactionInput transactionInput : this.inputs) {
 			UnspentTransactions.getInstance().remove(transactionInput.getUnspentTransaction());
@@ -159,18 +162,18 @@ public class Transaction {
 
 
     public boolean processTransaction() {
-		this.verifiySignature();
-		this.removeCurrentOutput();
-		this.addCurrentTransactionOutput();
-		this.addLeftOverTransactionOutput();
-
-		return true;
+		Boolean signatureVerified = this.verifiySignature();
+		if (signatureVerified) {
+			this.removeCurrentOutput();
+			this.addCurrentTransactionOutput();
+			this.addLeftOverTransactionOutput();
+		}
+		return signatureVerified;
 	}
 
 	private Integer getLeftOverValue() {
-		return this.getInputValue() - this.value;
+		return this.getInputValue() - this.getValue();
 	}
-
 
 	public Integer getInputValue() {
 		return this.inputs.stream().mapToInt(input -> input.getUnspentTransaction().getValue()).sum();
@@ -194,7 +197,7 @@ public class Transaction {
 	}
 
 	public Boolean verifiySignature() {
-		return StringUtil.verifyECDSASig(this.getSenderPublicKey().getPublicKey(), this.getHash(), signature);
+		return StringUtil.verifyECDSASig(this.getSenderPublicKey().getPublicKey(), this.getHash(), this.getSignature());
 	}
 
 	public Boolean isInputEqualOutputValue() {
