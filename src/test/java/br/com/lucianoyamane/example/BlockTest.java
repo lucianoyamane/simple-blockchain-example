@@ -12,7 +12,7 @@ class BlockTest {
     void testMineBlock() {
         Transaction transaction = mock(Transaction.class);
         when(transaction.processTransaction()).thenReturn(true);
-        when(transaction.getTransactionId()).thenReturn("transaction_one");
+        when(transaction.getHash()).thenReturn("transaction_one");
 
         Block block = Block.init("teste");
         block.addTransaction(transaction);

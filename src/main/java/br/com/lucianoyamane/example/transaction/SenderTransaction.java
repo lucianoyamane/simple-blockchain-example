@@ -1,7 +1,6 @@
 package br.com.lucianoyamane.example.transaction;
 
 import br.com.lucianoyamane.example.TransactionOutput;
-import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 
 public class SenderTransaction {
@@ -12,6 +11,15 @@ public class SenderTransaction {
 
     private String name;
 
+    public static SenderTransaction create(PublicKeyDecorator publicKeyDecorator, String name) {
+        return new SenderTransaction(publicKeyDecorator, name);
+    }
+
+    private SenderTransaction(PublicKeyDecorator publicKey, String name) {
+        this.setPublicKey(publicKey);
+        this.setName(name);
+    }
+
     public PublicKeyDecorator getPublicKey() {
         return publicKey;
     }
@@ -20,7 +28,7 @@ public class SenderTransaction {
         return publicKey.toString();
     }
 
-    public void setPublicKey(PublicKeyDecorator publicKey) {
+    private void setPublicKey(PublicKeyDecorator publicKey) {
         this.publicKey = publicKey;
     }
 
@@ -36,7 +44,7 @@ public class SenderTransaction {
         return name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
 

@@ -15,7 +15,7 @@ public class BlockChain {
 	public static int difficulty = 5;
 
 	private static String bootstrapBlock(Wallet baseWallet, Wallet receiverWallet) {
-		Transaction transaction = Transaction.genesis(baseWallet.getPublicKeyDecorator(), receiverWallet.getPublicKeyDecorator(), 10000);
+		Transaction transaction = Transaction.genesis(baseWallet.getPublicKeyDecorator(), receiverWallet.getPublicKeyDecorator(), 10000, receiverWallet.getName());
 		receiverWallet.createSignatureTransaction(transaction);
 		System.out.println("Creating and Mining Genesis block... ");
 		Block genesis = Block.genesis();

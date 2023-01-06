@@ -49,7 +49,7 @@ public class Block {
 	}
 
 	public List<String> getTransactionsId() {
-		return this.getTransactions().stream().map(transaction -> transaction.getTransactionId()).toList();
+		return this.getTransactions().stream().map(transaction -> transaction.getHash()).toList();
 	}
 
 	public List<TransactionOutput> getTransactionOutputs() {

@@ -56,10 +56,14 @@ public class Wallet {
 	}
 
 	public void createSignatureTransaction(Transaction transaction) {
-		transaction.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transaction.getData()));
+		transaction.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transaction.getHash()));
+	}
+
+	public Boolean hasFunds(Integer value) {
+		return this.getBalance() < value;
 	}
 	public Transaction sendFunds(String nameReceiver, PublicKeyDecorator receiverPublicKeyDecorator, Integer value ) {
-		if (this.getBalance() < value) {
+		if (this.hasFunds(value)) {
 			System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}

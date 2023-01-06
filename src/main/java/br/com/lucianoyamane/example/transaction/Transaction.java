@@ -14,38 +14,32 @@ import java.util.UUID;
 public class Transaction {
 	private SenderTransaction senderTransaction;
 	private ReceiverTransaction receiverTransaction;
-	private String transactionId; // this is also the hash of the transaction.
+	private String hash; // this is also the hash of the transaction.
 	private Integer value;
 	private byte[] signature; // this is to prevent anybody else from spending funds in our wallet.
 	private List<TransactionInput> inputs;
 
-	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, Integer value) {
-		SenderTransaction senderTransaction = new SenderTransaction();
-		senderTransaction.setPublicKey(senderPublicKey);
+	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, Integer value, String sender, String receiver) {
+		SenderTransaction senderTransaction = SenderTransaction.create(senderPublicKey, sender);
 		this.setSenderTransaction(senderTransaction);
 
-		ReceiverTransaction receiverTransaction = new ReceiverTransaction();
-		receiverTransaction.setPublicKey(receiverPublicKey);
+		ReceiverTransaction receiverTransaction = ReceiverTransaction.create(receiverPublicKey, receiver);
 		this.setReceiverTransaction(receiverTransaction);
 
 		this.setValue(value);
-		this.setTransactionId(calulateHash());
+		this.setHash(calculateHash());
 		this.setInputs(new ArrayList<>());
 	}
 
 	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, Integer value,  List<TransactionInput> inputs, String owner, String receiver) {
-		SenderTransaction senderTransaction = new SenderTransaction();
-		senderTransaction.setPublicKey(senderPublicKey);
-		senderTransaction.setName(owner);
+		SenderTransaction senderTransaction = SenderTransaction.create(senderPublicKey, owner);
 		this.setSenderTransaction(senderTransaction);
 
-		ReceiverTransaction receiverTransaction = new ReceiverTransaction();
-		receiverTransaction.setPublicKey(receiverPublicKey);
-		receiverTransaction.setName(receiver);
+		ReceiverTransaction receiverTransaction = ReceiverTransaction.create(receiverPublicKey, receiver);
 		this.setReceiverTransaction(receiverTransaction);
 
 		this.setValue(value);
-		this.setTransactionId(calulateHash());
+		this.setHash(calculateHash());
 		this.setInputs(inputs);
 	}
 
@@ -126,10 +120,11 @@ public class Transaction {
 		return new Transaction(sender, receiver, value, inputs, owner, nameReceiver);
 	}
 
-	public static Transaction genesis(PublicKeyDecorator sender, PublicKeyDecorator receiver, Integer value) {
-		Transaction transaction = new Transaction(sender, receiver, value);
-		transaction.setTransactionId("0");
-		TransactionOutput leftover = TransactionOutput.leftover(transaction.getReceiverPublicKey(), transaction.getValue(), transaction.getTransactionId(), "genesis");
+	public static Transaction genesis(PublicKeyDecorator sender, PublicKeyDecorator receiver, Integer value, String receiverName) {
+		String senderName = "genesis";
+		Transaction transaction = new Transaction(sender, receiver, value, senderName, receiverName);
+		transaction.setHash("0");
+		TransactionOutput leftover = TransactionOutput.leftover(transaction.getReceiverPublicKey(), transaction.getValue(), transaction.getHash(), senderName);
 		transaction.setReceiverTransactionOutput(leftover);
 		transaction.addUnspentTransaction(leftover);
 		return transaction;
@@ -139,29 +134,29 @@ public class Transaction {
 		UnspentTransactions.getInstance().add(transactionOutput);
 	}
 
-	public String getTransactionId() {
-		return transactionId;
+	public String getHash() {
+		return hash;
 	}
 
-	private void setTransactionId(String transactionId) {
-		this.transactionId = transactionId;
+	private void setHash(String hash) {
+		this.hash = hash;
 	}
 
-	private String calulateHash() {
-		return StringUtil.encode(
-				this.getData() + UUID.randomUUID());
+	private String calculateHash() {
+		return StringUtil.encode(this.getData());
 	}
 
-	public String getData() {
-		return this.getSenderPublicKeyString() +
-				this.getReceiverPublicKeyString() +
-				this.getValue();
+	private String getData() {
+		return new StringBuilder(UUID.randomUUID().toString())
+				.append(this.getSenderPublicKeyString())
+				.append(this.getReceiverPublicKeyString())
+				.append(this.getValue())
+				.toString();
 	}
 
 	public void setSignature(byte[] signature) {
 		this.signature = signature;
 	}
-
 
 	private void removeCurrentOutput() {
 		for(TransactionInput transactionInput : this.inputs) {
@@ -170,13 +165,13 @@ public class Transaction {
 	}
 
 	private void addCurrentTransactionOutput() {
-		TransactionOutput current = TransactionOutput.current( this.getReceiverPublicKey(), value, transactionId, this.getReceiver());
+		TransactionOutput current = TransactionOutput.current( this.getReceiverPublicKey(), this.getValue(), this.getHash(), this.getReceiver());
 		this.setSenderTransactionOutput(current);
 		this.addUnspentTransaction(current);
 	}
 
 	private void addLeftOverTransactionOutput() {
-		TransactionOutput leftover = TransactionOutput.leftover( this.getSenderPublicKey(), this.getLeftOverValue(), transactionId, this.getOwner());
+		TransactionOutput leftover = TransactionOutput.leftover( this.getSenderPublicKey(), this.getLeftOverValue(), this.getHash(), this.getOwner());
 		this.setReceiverTransactionOutput(leftover);
 		this.addUnspentTransaction(leftover);
 	}
@@ -210,7 +205,7 @@ public class Transaction {
 		}
 
 		if (!this.isInputEqualOutputValue()) {
-			throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.getTransactionId() + ")");
+			throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.getHash() + ")");
 		}
 
 		this.getSenderTransactionOutput().isConsistent(this.getReceiverPublicKey());
@@ -218,7 +213,7 @@ public class Transaction {
 	}
 
 	public Boolean verifiySignature() {
-		return StringUtil.verifyECDSASig(this.getSenderPublicKey().getPublicKey(), this.getData(), signature);
+		return StringUtil.verifyECDSASig(this.getSenderPublicKey().getPublicKey(), this.getHash(), signature);
 	}
 
 	public Boolean isInputEqualOutputValue() {

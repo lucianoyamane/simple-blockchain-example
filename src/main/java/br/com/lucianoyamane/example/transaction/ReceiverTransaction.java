@@ -11,11 +11,20 @@ public class ReceiverTransaction {
 
     private String name;
 
+    public static ReceiverTransaction create(PublicKeyDecorator publicKey, String name) {
+        return new ReceiverTransaction(publicKey, name);
+    }
+
+    private ReceiverTransaction(PublicKeyDecorator publicKey, String name) {
+        this.setPublicKey(publicKey);
+        this.setName(name);
+    }
+
     public PublicKeyDecorator getPublicKey() {
         return publicKey;
     }
 
-    public void setPublicKey(PublicKeyDecorator publicKey) {
+    private void setPublicKey(PublicKeyDecorator publicKey) {
         this.publicKey = publicKey;
     }
 
@@ -31,7 +40,7 @@ public class ReceiverTransaction {
         return name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
 
