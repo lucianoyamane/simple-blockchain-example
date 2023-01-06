@@ -3,6 +3,7 @@ package br.com.lucianoyamane.example.wallet;
 import br.com.lucianoyamane.example.*;
 import br.com.lucianoyamane.example.keypair.BouncyCastleKeyPair;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
+import br.com.lucianoyamane.example.transaction.Operator;
 import br.com.lucianoyamane.example.transaction.Transaction;
 import br.com.lucianoyamane.example.transactions.UnspentTransactions;
 
@@ -62,16 +63,20 @@ public class Wallet {
 	public Boolean hasFunds(Integer value) {
 		return this.getBalance() < value;
 	}
-	public Transaction sendFunds(String nameReceiver, PublicKeyDecorator receiverPublicKeyDecorator, Integer value ) {
+	public Transaction sendFunds(Operator receiverOperator, Integer value ) {
 		if (this.hasFunds(value)) {
 			System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}
 		List<TransactionOutput> unspentTransactionOutputs = UnspentTransactions.getInstance().loadUnspentUTXO(this.getPublicKeyDecorator());
 		List<TransactionInput> inputs = unspentTransactionOutputs.stream().map(TransactionInput::create).toList();
-		Transaction newTransaction = Transaction.create(this.getPublicKeyDecorator(), receiverPublicKeyDecorator , value, inputs, this.getName(), nameReceiver);
+		Transaction newTransaction = Transaction.create(this.toOperator(), receiverOperator, value, inputs);
 		this.createSignatureTransaction(newTransaction);
 
 		return newTransaction;
+	}
+
+	public Operator toOperator() {
+		return Operator.create(this.getPublicKeyDecorator(), this.getName());
 	}
 }

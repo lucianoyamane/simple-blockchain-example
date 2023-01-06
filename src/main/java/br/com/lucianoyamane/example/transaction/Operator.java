@@ -3,19 +3,19 @@ package br.com.lucianoyamane.example.transaction;
 import br.com.lucianoyamane.example.TransactionOutput;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 
-public class ReceiverTransaction {
+public class Operator {
 
-    private PublicKeyDecorator publicKey; // senders address/public key.
+    private PublicKeyDecorator publicKey;
 
     private TransactionOutput transactionOutput;
 
     private String name;
 
-    public static ReceiverTransaction create(PublicKeyDecorator publicKey, String name) {
-        return new ReceiverTransaction(publicKey, name);
+    public static Operator create(PublicKeyDecorator publicKey, String name) {
+        return new Operator(publicKey, name);
     }
 
-    private ReceiverTransaction(PublicKeyDecorator publicKey, String name) {
+    private Operator(PublicKeyDecorator publicKey, String name) {
         this.setPublicKey(publicKey);
         this.setName(name);
     }
@@ -47,5 +47,4 @@ public class ReceiverTransaction {
     public String getPublicKeyString() {
         return publicKey.toString();
     }
-
 }

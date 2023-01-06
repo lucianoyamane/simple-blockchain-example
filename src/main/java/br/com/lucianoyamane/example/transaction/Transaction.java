@@ -12,92 +12,84 @@ import java.util.List;
 import java.util.UUID;
 
 public class Transaction {
-	private SenderTransaction senderTransaction;
-	private ReceiverTransaction receiverTransaction;
+	private Operator senderOperator;
+	private Operator receiverOperator;
 	private String hash; // this is also the hash of the transaction.
 	private Integer value;
 	private byte[] signature; // this is to prevent anybody else from spending funds in our wallet.
 	private List<TransactionInput> inputs;
 
-	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, Integer value, String sender, String receiver) {
-		SenderTransaction senderTransaction = SenderTransaction.create(senderPublicKey, sender);
-		this.setSenderTransaction(senderTransaction);
-
-		ReceiverTransaction receiverTransaction = ReceiverTransaction.create(receiverPublicKey, receiver);
-		this.setReceiverTransaction(receiverTransaction);
-
+	private Transaction(Operator senderOperator, Operator receiverOperator, Integer value) {
+		this.setSenderOperator(senderOperator);
+		this.setReceiverOperator(receiverOperator);
 		this.setValue(value);
 		this.setHash(calculateHash());
 		this.setInputs(new ArrayList<>());
 	}
 
-	private Transaction(PublicKeyDecorator senderPublicKey, PublicKeyDecorator receiverPublicKey, Integer value,  List<TransactionInput> inputs, String owner, String receiver) {
-		SenderTransaction senderTransaction = SenderTransaction.create(senderPublicKey, owner);
-		this.setSenderTransaction(senderTransaction);
-
-		ReceiverTransaction receiverTransaction = ReceiverTransaction.create(receiverPublicKey, receiver);
-		this.setReceiverTransaction(receiverTransaction);
-
+	private Transaction(Operator senderOperator, Operator receiverOperator, Integer value, List<TransactionInput> inputs) {
+		this.setSenderOperator(senderOperator);
+		this.setReceiverOperator(receiverOperator);
 		this.setValue(value);
 		this.setHash(calculateHash());
 		this.setInputs(inputs);
 	}
 
 
-	public SenderTransaction getSenderTransaction() {
-		return senderTransaction;
+	public Operator getSenderOperator() {
+		return senderOperator;
 	}
 
-	public void setSenderTransaction(SenderTransaction senderTransaction) {
-		this.senderTransaction = senderTransaction;
+	public void setSenderOperator(Operator senderOperator) {
+		this.senderOperator = senderOperator;
 	}
 
-	public ReceiverTransaction getReceiverTransaction() {
-		return receiverTransaction;
+	public Operator getReceiverOperator() {
+		return receiverOperator;
 	}
 
-	private void setReceiverTransaction(ReceiverTransaction receiverTransaction) {
-		this.receiverTransaction = receiverTransaction;
+	private void setReceiverOperator(Operator receiverOperator) {
+		this.receiverOperator = receiverOperator;
 	}
 
 	private void setSenderTransactionOutput(TransactionOutput senderCurrentTransactionOutput) {
-		this.getSenderTransaction().setTransactionOutput(senderCurrentTransactionOutput);
+		this.getSenderOperator().setTransactionOutput(senderCurrentTransactionOutput);
 	}
 
 	public TransactionOutput getReceiverTransactionOutput() {
-		return this.getReceiverTransaction().getTransactionOutput();
+		return this.getReceiverOperator().getTransactionOutput();
 	}
 
 	private void setReceiverTransactionOutput(TransactionOutput receiverTransactionOutput) {
-		this.getReceiverTransaction().setTransactionOutput(receiverTransactionOutput);
+		this.getReceiverOperator().setTransactionOutput(receiverTransactionOutput);
 	}
 
 	public String getOwner() {
-		return this.getSenderTransaction().getName();
+		return this.getSenderOperator().getName();
 	}
 
 	public String getReceiver() {
-		return this.getReceiverTransaction().getName();
+		return this.getReceiverOperator().getName();
 	}
 
 	private PublicKeyDecorator getSenderPublicKey() {
-		return this.getSenderTransaction().getPublicKey();
+		return this.getSenderOperator().getPublicKey();
 	}
 
 	private String getSenderPublicKeyString() {
-		return this.getSenderTransaction().getPublicKeyString();
+		return this.getSenderOperator().getPublicKeyString();
 	}
 
 	private PublicKeyDecorator getReceiverPublicKey() {
-		return this.getReceiverTransaction().getPublicKey();
+		return this.getReceiverOperator().getPublicKey();
 	}
 
 	public TransactionOutput getSenderTransactionOutput() {
-		return this.getSenderTransaction().getTransactionOutput();
+		return this.getSenderOperator().getTransactionOutput();
 	}
 
 	private String getReceiverPublicKeyString() {
-		return this.getReceiverTransaction().getPublicKeyString();
+		return this.getReceiverOperator().getPublicKeyString();
 	}
 
 	public Integer getValue() {
@@ -116,15 +108,14 @@ public class Transaction {
 		return this.inputs;
 	}
 
-	public static Transaction create(PublicKeyDecorator sender, PublicKeyDecorator receiver, Integer value, List<TransactionInput> inputs, String owner, String nameReceiver) {
-		return new Transaction(sender, receiver, value, inputs, owner, nameReceiver);
+	public static Transaction create(Operator senderOperator, Operator receiverOperator, Integer value, List<TransactionInput> inputs) {
+		return new Transaction(senderOperator, receiverOperator, value, inputs);
 	}
 
-	public static Transaction genesis(PublicKeyDecorator sender, PublicKeyDecorator receiver, Integer value, String receiverName) {
-		String senderName = "genesis";
-		Transaction transaction = new Transaction(sender, receiver, value, senderName, receiverName);
+	public static Transaction genesis(Operator senderOperator, Operator receiverOperator, Integer value) {
+		Transaction transaction = new Transaction(senderOperator, receiverOperator, value);
 		transaction.setHash("0");
-		TransactionOutput leftover = TransactionOutput.leftover(transaction.getReceiverPublicKey(), transaction.getValue(), transaction.getHash(), senderName);
+		TransactionOutput leftover = TransactionOutput.leftover(transaction.getReceiverPublicKey(), transaction.getValue(), transaction.getHash(), receiverOperator.getName());
 		transaction.setReceiverTransactionOutput(leftover);
 		transaction.addUnspentTransaction(leftover);
 		return transaction;
