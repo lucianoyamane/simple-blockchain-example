@@ -5,7 +5,6 @@ import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 public class Operator {
 
     private PublicKeyDecorator publicKey;
-
     private String name;
 
     public static Operator create(PublicKeyDecorator publicKey, String name) {

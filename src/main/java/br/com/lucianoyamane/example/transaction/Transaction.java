@@ -15,11 +15,8 @@ import java.util.UUID;
 public class Transaction {
 	private Operator senderOperator;
 	private Operator receiverOperator;
-
 	private TransactionOutput senderTransactionOutput;
-
 	private TransactionOutput receiverTransactionOutput;
-
 	private String hash; // this is also the hash of the transaction.
 	private Integer value;
 	private byte[] signature; // this is to prevent anybody else from spending funds in our wallet.
@@ -41,6 +38,13 @@ public class Transaction {
 		this.setInputs(inputs);
 	}
 
+	public static Transaction genesis(Operator senderOperator, Operator receiverOperator, Integer value) {
+		return new Transaction(senderOperator, receiverOperator, value);
+	}
+
+	public static Transaction create(Operator senderOperator, Operator receiverOperator, Integer value, List<TransactionInput> inputs) {
+		return new Transaction(senderOperator, receiverOperator, value, inputs);
+	}
 
 	public Operator getSenderOperator() {
 		return senderOperator;
@@ -106,9 +110,7 @@ public class Transaction {
 		return this.inputs;
 	}
 
-	public static Transaction create(Operator senderOperator, Operator receiverOperator, Integer value, List<TransactionInput> inputs) {
-		return new Transaction(senderOperator, receiverOperator, value, inputs);
-	}
+
 
 	private void addUnspentTransaction(TransactionOutput transactionOutput) {
 		UnspentTransactions.getInstance().add(transactionOutput);
@@ -122,7 +124,7 @@ public class Transaction {
 		this.hash = hash;
 	}
 
-	private String calculateHash() {
+	protected String calculateHash() {
 		return StringUtil.encode(this.getData());
 	}
 
