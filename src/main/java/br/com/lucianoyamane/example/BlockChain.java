@@ -1,7 +1,7 @@
 package br.com.lucianoyamane.example;
 
 
-import br.com.lucianoyamane.example.transactions.UnspentTransactions;
+import br.com.lucianoyamane.example.transaction.Transaction;
 import br.com.lucianoyamane.example.wallet.Wallet;
 
 import java.util.ArrayList;
@@ -46,16 +46,16 @@ public class BlockChain {
 		String genesisHash = bootstrapBlock(coinbase, walletA);
 
 		String block1Hash = transactionBlock(genesisHash, walletA, walletB, 4000);
-//		isChainValid();
+		isChainValid();
 
 		String block2Hash = transactionBlock(block1Hash, walletA, walletB, 100000);
-//		isChainValid();
+		isChainValid();
 
 		String block3Hash = transactionBlock(block2Hash,walletB, walletA, 2000);
-//		isChainValid();
+		isChainValid();
 
 		String block4Hash = transactionBlock(block3Hash,walletA, walletB, 1000);
-//		isChainValid();
+		isChainValid();
 
 		String block5Hash = transactionBlock(block4Hash,walletA, walletB, 7000);
 		isChainValid();

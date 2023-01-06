@@ -3,6 +3,7 @@ package br.com.lucianoyamane.example.wallet;
 import br.com.lucianoyamane.example.*;
 import br.com.lucianoyamane.example.keypair.BouncyCastleKeyPair;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
+import br.com.lucianoyamane.example.transaction.Transaction;
 import br.com.lucianoyamane.example.transactions.UnspentTransactions;
 
 import java.security.KeyPair;

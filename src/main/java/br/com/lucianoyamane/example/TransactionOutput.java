@@ -1,12 +1,11 @@
 package br.com.lucianoyamane.example;
 
+import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
-
-import java.security.PublicKey;
 
 public class TransactionOutput {
     private String id;
-	private PublicKeyDecorator receiverPublicKey;
+	private PublicKeyDecorator publicKeyDecorator;
 	private Integer value;
 
 	private String owner;
@@ -18,10 +17,10 @@ public class TransactionOutput {
 //			System.out.println("#Transaction Inputs to small: " + getInputValue());
 //			return false;
 //		}
-	private TransactionOutput(PublicKeyDecorator receiverPublicKey, Integer value, String transactionId, String owner, String type) {
-		this.setReceiverPublicKey(receiverPublicKey);
+	private TransactionOutput(PublicKeyDecorator publicKeyDecorator, Integer value, String transactionId, String owner, String type) {
+		this.setPublicKeyDecorator(publicKeyDecorator);
 		this.setValue(value);
-		this.setId(StringUtil.encode(this.getReceiverPublicKey().toString() + value + transactionId));
+		this.setId(StringUtil.encode(this.getPublicKeyDecorator().toString() + value + transactionId));
 		this.setOwner(owner);
 		this.setType(type);
 	}
@@ -46,16 +45,16 @@ public class TransactionOutput {
 		return id;
 	}
 
-	public PublicKeyDecorator getReceiverPublicKey() {
-		return receiverPublicKey;
+	public PublicKeyDecorator getPublicKeyDecorator() {
+		return publicKeyDecorator;
 	}
 
 	private void setId(String id) {
 		this.id = id;
 	}
 
-	private void setReceiverPublicKey(PublicKeyDecorator receiverPublicKey) {
-		this.receiverPublicKey = receiverPublicKey;
+	private void setPublicKeyDecorator(PublicKeyDecorator publicKeyDecorator) {
+		this.publicKeyDecorator = publicKeyDecorator;
 	}
 
 	private void setValue(Integer value) {
@@ -66,16 +65,22 @@ public class TransactionOutput {
 		return value;
 	}
 
-	public static TransactionOutput leftover(PublicKeyDecorator receiverPublicKey, Integer value, String transactionId, String owner) {
-		return new TransactionOutput(receiverPublicKey, value, transactionId, owner, "LEFTOVER");
+	public static TransactionOutput leftover(PublicKeyDecorator publicKeyDecorator, Integer value, String transactionId, String owner) {
+		return new TransactionOutput(publicKeyDecorator, value, transactionId, owner, "LEFTOVER");
 	}
 
-	public static TransactionOutput current(PublicKeyDecorator receiverPublicKey, Integer value, String transactionId, String owner) {
-		return new TransactionOutput(receiverPublicKey, value, transactionId, owner, "CURRENT");
+	public static TransactionOutput current(PublicKeyDecorator publicKeyDecorator, Integer value, String transactionId, String owner) {
+		return new TransactionOutput(publicKeyDecorator, value, transactionId, owner, "CURRENT");
 	}
 
-	public boolean isMine(PublicKeyDecorator publicKey) {
-		return publicKey.equals(receiverPublicKey);
+	public Boolean isMine(PublicKeyDecorator publicKey) {
+		return publicKey.equals(publicKeyDecorator);
+	}
+
+	public void isConsistent(PublicKeyDecorator publicKeyDecorator) {
+		if (!this.isMine(publicKeyDecorator)) {
+			throw new BlockChainException("#TransactionOutput(" + getId() + ") is not who it should be");
+		}
 	}
 
 	@Override

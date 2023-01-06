@@ -1,6 +1,7 @@
 package br.com.lucianoyamane.example;
 
 import br.com.lucianoyamane.example.exception.BlockChainException;
+import br.com.lucianoyamane.example.transaction.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,11 +55,11 @@ public class Block {
 	public List<TransactionOutput> getTransactionOutputs() {
 		List<TransactionOutput> transactionOutputs = new ArrayList<>();
 		for(Transaction transaction : this.transactions) {
-			if (transaction.getCurrentTransactionOutput() != null) {
-				transactionOutputs.add(transaction.getCurrentTransactionOutput());
+			if (transaction.getSenderTransactionOutput() != null) {
+				transactionOutputs.add(transaction.getSenderTransactionOutput());
 			}
-			if (transaction.getLeftOverTransactionOutput() != null) {
-				transactionOutputs.add(transaction.getLeftOverTransactionOutput());
+			if (transaction.getReceiverTransactionOutput() != null) {
+				transactionOutputs.add(transaction.getReceiverTransactionOutput());
 			}
 		}
 		return transactionOutputs;
