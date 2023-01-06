@@ -2,16 +2,16 @@ package br.com.lucianoyamane.example.wallet;
 
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 
-public class Operator {
+public class PublicData {
 
     private PublicKeyDecorator publicKey;
     private String name;
 
-    public static Operator create(PublicKeyDecorator publicKey, String name) {
-        return new Operator(publicKey, name);
+    public static PublicData create(PublicKeyDecorator publicKey, String name) {
+        return new PublicData(publicKey, name);
     }
 
-    private Operator(PublicKeyDecorator publicKey, String name) {
+    private PublicData(PublicKeyDecorator publicKey, String name) {
         this.setPublicKey(publicKey);
         this.setName(name);
     }

@@ -18,7 +18,7 @@ public class BlockChain {
 	private static String bootstrapBlock(Wallet genesisWallet, Wallet receiverWallet, Integer value) {
 		System.out.println("Creating and Mining Genesis block... ");
 		Block genesis = Block.genesis();
-		genesis.addTransaction(genesisWallet.sendFunds(receiverWallet.toOperator(), value));
+		genesis.addTransaction(genesisWallet.sendFunds(receiverWallet.toPublicData(), value));
 		mine(genesis);
 		addBlock(genesis);
 		return genesis.getHash();
@@ -27,13 +27,13 @@ public class BlockChain {
 	private static String transactionBlock(String previousHash, Wallet senderWallet, Wallet receiverWallet, Integer value) {
 		System.out.println("******************************************************");
 		Block block = Block.init(previousHash);
-		System.out.println("\nWallet's " + senderWallet.getName() + " balance is: " + senderWallet.getBalance());
-		System.out.println("\nWallet " + senderWallet.getName() + " is Attempting to send funds (" + value + ") to Wallet " + receiverWallet.getName());
-		block.addTransaction(senderWallet.sendFunds(receiverWallet.toOperator(), value));
+		System.out.println("\nWallet's " + senderWallet.toPublicData().getName() + " balance is: " + senderWallet.getBalance());
+		System.out.println("\nWallet " + senderWallet.toPublicData().getName() + " is Attempting to send funds (" + value + ") to Wallet " + receiverWallet.toPublicData().getName());
+		block.addTransaction(senderWallet.sendFunds(receiverWallet.toPublicData(), value));
 		mine(block);
 		addBlock(block);
-		System.out.println("\nWallet's " + senderWallet.getName() + " balance is: " + senderWallet.getBalance());
-		System.out.println("Wallet's " + receiverWallet.getName() + " balance is: " + receiverWallet.getBalance());
+		System.out.println("\nWallet's " + senderWallet.toPublicData().getName() + " balance is: " + senderWallet.getBalance());
+		System.out.println("Wallet's " + receiverWallet.toPublicData().getName() + " balance is: " + receiverWallet.getBalance());
 		return block.getHash();
 	}
 

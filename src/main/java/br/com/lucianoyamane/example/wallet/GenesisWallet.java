@@ -13,8 +13,8 @@ public class GenesisWallet extends Wallet {
     }
 
     @Override
-    public Transaction sendFunds(Operator receiverOperator, Integer value) {
-        Transaction newTransaction = Transaction.genesis(this.toOperator(), receiverOperator, value);
+    public Transaction sendFunds(PublicData receiverPublicData, Integer value) {
+        Transaction newTransaction = Transaction.genesis(this.toPublicData(), receiverPublicData, value);
         newTransaction.setSignature(createSignatureTransaction(newTransaction.getHash()));
         return newTransaction;
 

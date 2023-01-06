@@ -2,11 +2,11 @@ package br.com.lucianoyamane.example;
 
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
-import br.com.lucianoyamane.example.wallet.Operator;
+import br.com.lucianoyamane.example.wallet.PublicData;
 
 public class TransactionOutput {
     private String id;
-	private Operator operator;
+	private PublicData publicData;
 	private Integer value;
 	private String type;
 	
@@ -15,19 +15,19 @@ public class TransactionOutput {
 //			System.out.println("#Transaction Inputs to small: " + getInputValue());
 //			return false;
 //		}
-	private TransactionOutput(Operator operator, Integer value, String transactionId, String type) {
-		this.setOperator(operator);
+	private TransactionOutput(PublicData publicData, Integer value, String transactionId, String type) {
+		this.setOperator(publicData);
 		this.setValue(value);
-		this.setId(StringUtil.encode(operator.getPublicKeyDecorator().toString() + value + transactionId));
+		this.setId(StringUtil.encode(publicData.getPublicKeyDecorator().toString() + value + transactionId));
 		this.setType(type);
 	}
 
-	public Operator getOperator() {
-		return operator;
+	public PublicData getOperator() {
+		return publicData;
 	}
 
-	public void setOperator(Operator operator) {
-		this.operator = operator;
+	public void setOperator(PublicData publicData) {
+		this.publicData = publicData;
 	}
 
 	public void setType(String type) {
@@ -50,12 +50,12 @@ public class TransactionOutput {
 		return value;
 	}
 
-	public static TransactionOutput leftover(Operator operator, Integer value, String transactionId) {
-		return new TransactionOutput(operator, value, transactionId, "LEFTOVER");
+	public static TransactionOutput leftover(PublicData publicData, Integer value, String transactionId) {
+		return new TransactionOutput(publicData, value, transactionId, "LEFTOVER");
 	}
 
-	public static TransactionOutput current(Operator operator, Integer value, String transactionId) {
-		return new TransactionOutput(operator, value, transactionId, "CURRENT");
+	public static TransactionOutput current(PublicData publicData, Integer value, String transactionId) {
+		return new TransactionOutput(publicData, value, transactionId, "CURRENT");
 	}
 
 	public Boolean isMine(PublicKeyDecorator publicKey) {

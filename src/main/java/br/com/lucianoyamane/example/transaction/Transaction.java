@@ -6,15 +6,15 @@ import br.com.lucianoyamane.example.TransactionOutput;
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import br.com.lucianoyamane.example.transactions.UnspentTransactions;
-import br.com.lucianoyamane.example.wallet.Operator;
+import br.com.lucianoyamane.example.wallet.PublicData;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class Transaction {
-	private Operator senderOperator;
-	private Operator receiverOperator;
+	private PublicData senderPublicData;
+	private PublicData receiverPublicData;
 	private TransactionOutput senderTransactionOutput;
 	private TransactionOutput receiverTransactionOutput;
 	private String hash; // this is also the hash of the transaction.
@@ -22,44 +22,44 @@ public class Transaction {
 	private byte[] signature; // this is to prevent anybody else from spending funds in our wallet.
 	private List<TransactionInput> inputs;
 
-	protected Transaction(Operator senderOperator, Operator receiverOperator, Integer value) {
-		this.setSenderOperator(senderOperator);
-		this.setReceiverOperator(receiverOperator);
+	protected Transaction(PublicData senderPublicData, PublicData receiverPublicData, Integer value) {
+		this.setSenderOperator(senderPublicData);
+		this.setReceiverOperator(receiverPublicData);
 		this.setValue(value);
 		this.setHash(calculateHash());
 		this.setInputs(new ArrayList<>());
 	}
 
-	protected Transaction(Operator senderOperator, Operator receiverOperator, Integer value, List<TransactionInput> inputs) {
-		this.setSenderOperator(senderOperator);
-		this.setReceiverOperator(receiverOperator);
+	protected Transaction(PublicData senderPublicData, PublicData receiverPublicData, Integer value, List<TransactionInput> inputs) {
+		this.setSenderOperator(senderPublicData);
+		this.setReceiverOperator(receiverPublicData);
 		this.setValue(value);
 		this.setHash(calculateHash());
 		this.setInputs(inputs);
 	}
 
-	public static Transaction genesis(Operator senderOperator, Operator receiverOperator, Integer value) {
-		return new Transaction(senderOperator, receiverOperator, value);
+	public static Transaction genesis(PublicData senderPublicData, PublicData receiverPublicData, Integer value) {
+		return new Transaction(senderPublicData, receiverPublicData, value);
 	}
 
-	public static Transaction create(Operator senderOperator, Operator receiverOperator, Integer value, List<TransactionInput> inputs) {
-		return new Transaction(senderOperator, receiverOperator, value, inputs);
+	public static Transaction create(PublicData senderPublicData, PublicData receiverPublicData, Integer value, List<TransactionInput> inputs) {
+		return new Transaction(senderPublicData, receiverPublicData, value, inputs);
 	}
 
-	public Operator getSenderOperator() {
-		return senderOperator;
+	public PublicData getSenderOperator() {
+		return senderPublicData;
 	}
 
-	public void setSenderOperator(Operator senderOperator) {
-		this.senderOperator = senderOperator;
+	public void setSenderOperator(PublicData senderPublicData) {
+		this.senderPublicData = senderPublicData;
 	}
 
-	public Operator getReceiverOperator() {
-		return receiverOperator;
+	public PublicData getReceiverOperator() {
+		return receiverPublicData;
 	}
 
-	private void setReceiverOperator(Operator receiverOperator) {
-		this.receiverOperator = receiverOperator;
+	private void setReceiverOperator(PublicData receiverPublicData) {
+		this.receiverPublicData = receiverPublicData;
 	}
 
 	private void setSenderTransactionOutput(TransactionOutput senderTransactionOutput) {
