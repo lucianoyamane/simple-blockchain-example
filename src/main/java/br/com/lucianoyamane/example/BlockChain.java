@@ -1,8 +1,13 @@
 package br.com.lucianoyamane.example;
 
 
+import br.com.lucianoyamane.example.block.Block;
+import br.com.lucianoyamane.example.configurations.Difficulty;
+import br.com.lucianoyamane.example.exception.BlockChainException;
+import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import br.com.lucianoyamane.example.transaction.Transaction;
-import br.com.lucianoyamane.example.wallet.GenesisWallet;
+import br.com.lucianoyamane.example.transaction.TransactionInput;
+import br.com.lucianoyamane.example.transaction.TransactionOutput;
 import br.com.lucianoyamane.example.wallet.Wallet;
 
 import java.util.ArrayList;
@@ -13,9 +18,9 @@ import java.util.List;
 public class BlockChain {
 	
 	public static List<Block> blockchain = new ArrayList();
-	public static int difficulty = 5;
 
-	private static String bootstrapBlock(Wallet genesisWallet, Wallet receiverWallet, Integer value) {
+	public static String genesisBlock(Wallet genesisWallet, Wallet receiverWallet, Integer value) {
+		System.out.println("******************************************************");
 		System.out.println("Creating and Mining Genesis block... ");
 		Block genesis = Block.genesis();
 		genesis.addTransaction(genesisWallet.sendFunds(receiverWallet.toPublicData(), value));
@@ -24,7 +29,7 @@ public class BlockChain {
 		return genesis.getHash();
 	}
 
-	private static String transactionBlock(String previousHash, Wallet senderWallet, Wallet receiverWallet, Integer value) {
+	public static String transactionBlock(String previousHash, Wallet senderWallet, Wallet receiverWallet, Integer value) {
 		System.out.println("******************************************************");
 		Block block = Block.init(previousHash);
 		System.out.println("\nWallet's " + senderWallet.toPublicData().getName() + " balance is: " + senderWallet.getBalance());
@@ -37,37 +42,12 @@ public class BlockChain {
 		return block.getHash();
 	}
 
-	public static void main(String[] args) {	
-
-		Wallet walletA = Wallet.create("A");
-		Wallet walletB = Wallet.create("B");
-		GenesisWallet genesisWallet = GenesisWallet.create();
-
-		String genesisHash = bootstrapBlock(genesisWallet, walletA, 10000);
-
-		String block1Hash = transactionBlock(genesisHash, walletA, walletB, 4000);
-		isChainValid();
-
-		String block2Hash = transactionBlock(block1Hash, walletA, walletB, 100000);
-		isChainValid();
-
-		String block3Hash = transactionBlock(block2Hash,walletB, walletA, 2000);
-		isChainValid();
-
-		String block4Hash = transactionBlock(block3Hash,walletA, walletB, 1000);
-		isChainValid();
-
-		String block5Hash = transactionBlock(block4Hash,walletA, walletB, 7000);
-		isChainValid();
-		
-	}
-
 	public static void addBlock(Block newBlock) {
 		blockchain.add(newBlock);
 	}
 
 	public static void mine(Block newBlock) {
-		newBlock.mineBlock(difficulty);
+		newBlock.mineBlock(Difficulty.getInstance().getDifficulty());
 	}
 	
 	public static void isChainValid() {
@@ -81,31 +61,72 @@ public class BlockChain {
 			if (previousBlock.isGenesis()) {
 				tempTransactionsOutputs.addAll(previousBlock.getTransactionOutputs());
 			}
-			currentBlock.isConsistent(previousBlock.getHash(), difficulty);
+			isConsistent(currentBlock, previousBlock.getHash(), Difficulty.getInstance().getDifficulty());
 
 			List<Transaction> currentBlockTransactions = currentBlock.getTransactions();
 
 			for(Transaction transaction : currentBlockTransactions) {
-				transaction.isConsistent();
+				isConsistent(transaction);
 
 				List<TransactionInput> transactionInputs = transaction.getInputs();
 
 				for(TransactionInput input : transactionInputs) {
 					TransactionOutput transactionOutputFromOutside = tempTransactionsOutputs.stream().filter(output -> output.equals(input.getUnspentTransaction())).findFirst().orElse(null);
-					input.isConsistent(transactionOutputFromOutside);
+					isConsistent(input, transactionOutputFromOutside);
 				}
 
 				for(TransactionInput input : transactionInputs) {
 					tempTransactionsOutputs.remove(input.getUnspentTransaction());
 				}
 			}
-
 			for(TransactionOutput output: currentBlock.getTransactionOutputs()) {
 				tempTransactionsOutputs.add(output);
 			}
 		}
 		System.out.println("Blockchain is valid");
 	}
+
+	private static void isConsistent(Block block, String previousHash, int difficulty) {
+		if (!block.compareRegisteredAndCalculatedHash()) {
+			throw new BlockChainException("Current Hashes not equal");
+		}
+		if (!block.compareHash(previousHash)) {
+			throw new BlockChainException("Previous Hashes not equal");
+		}
+		if(!block.hashIsSolved(difficulty)) {
+			throw new BlockChainException("This block hasn't been mined");
+		}
+	}
+
+	private static void isConsistent(Transaction transaction) {
+		if (!transaction.verifiySignature()) {
+			throw new BlockChainException("Transaction Signature failed to verify");
+		}
+
+		if (!transaction.isInputEqualOutputValue()) {
+			throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + transaction.getHash() + ")");
+		}
+
+		TransactionOutput senderTransactionOutput = transaction.getSenderTransactionOutput();
+		if (!senderTransactionOutput.isMine(transaction.getReceiverPublicKey())) {
+			throw new BlockChainException("#TransactionOutput(" + senderTransactionOutput.getId() + ") is not who it should be");
+		}
+
+		TransactionOutput receiverTransactionOutput = transaction.getReceiverTransactionOutput();
+		if (!receiverTransactionOutput.isMine(transaction.getSenderPublicKey())) {
+			throw new BlockChainException("#TransactionOutput(" + receiverTransactionOutput.getId() + ") is not who it should be");
+		}
+	}
+
+	private static void isConsistent(TransactionInput transactionInput, TransactionOutput referenceTransactionOutput) {
+		if(referenceTransactionOutput == null) {
+			throw new BlockChainException("#Referenced input on Transaction(" + transactionInput.getUnspentTransaction().getId() + ") is Missing");
+		}
+		if(transactionInput.getUnspentTransaction().getValue() != referenceTransactionOutput.getValue()) {
+			throw new BlockChainException("#Referenced input Transaction(" + transactionInput.getUnspentTransaction().getId() + ") value is Invalid");
+		}
+	}
+
 	
 
 }

@@ -4,7 +4,9 @@ import br.com.lucianoyamane.example.*;
 import br.com.lucianoyamane.example.keypair.BouncyCastleKeyPair;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import br.com.lucianoyamane.example.transaction.Transaction;
-import br.com.lucianoyamane.example.transactions.UnspentTransactions;
+import br.com.lucianoyamane.example.transaction.TransactionInput;
+import br.com.lucianoyamane.example.transaction.TransactionOutput;
+import br.com.lucianoyamane.example.configurations.UnspentTransactions;
 
 import java.security.KeyPair;
 import java.security.PrivateKey;

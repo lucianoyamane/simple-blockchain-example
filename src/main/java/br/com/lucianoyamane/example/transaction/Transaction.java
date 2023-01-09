@@ -1,11 +1,9 @@
 package br.com.lucianoyamane.example.transaction;
 
 import br.com.lucianoyamane.example.StringUtil;
-import br.com.lucianoyamane.example.TransactionInput;
-import br.com.lucianoyamane.example.TransactionOutput;
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
-import br.com.lucianoyamane.example.transactions.UnspentTransactions;
+import br.com.lucianoyamane.example.configurations.UnspentTransactions;
 import br.com.lucianoyamane.example.wallet.PublicData;
 
 import java.util.ArrayList;
@@ -74,7 +72,7 @@ public class Transaction {
 		this.receiverTransactionOutput = receiverTransactionOutput;
 	}
 
-	private PublicKeyDecorator getSenderPublicKey() {
+	public PublicKeyDecorator getSenderPublicKey() {
 		return this.getSenderOperator().getPublicKeyDecorator();
 	}
 
@@ -82,7 +80,7 @@ public class Transaction {
 		return this.getSenderOperator().getPublicKeyString();
 	}
 
-	private PublicKeyDecorator getReceiverPublicKey() {
+	public PublicKeyDecorator getReceiverPublicKey() {
 		return this.getReceiverOperator().getPublicKeyDecorator();
 	}
 
@@ -183,19 +181,6 @@ public class Transaction {
 
 	public Integer getOutputsValue() {
 		return this.getSenderTransactionOutput().getValue() + this.getReceiverTransactionOutput().getValue();
-	}
-
-	public void isConsistent() {
-		if (!this.verifiySignature()) {
-			throw new BlockChainException("Transaction Signature failed to verify");
-		}
-
-		if (!this.isInputEqualOutputValue()) {
-			throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.getHash() + ")");
-		}
-
-		this.getSenderTransactionOutput().isConsistent(this.getReceiverPublicKey());
-		this.getReceiverTransactionOutput().isConsistent(this.getSenderPublicKey());
 	}
 
 	public Boolean verifiySignature() {

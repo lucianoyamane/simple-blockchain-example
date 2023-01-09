@@ -1,7 +1,8 @@
-package br.com.lucianoyamane.example;
+package br.com.lucianoyamane.example.block;
 
-import br.com.lucianoyamane.example.exception.BlockChainException;
+import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.transaction.Transaction;
+import br.com.lucianoyamane.example.transaction.TransactionOutput;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,32 +99,16 @@ public class Block {
 		return Boolean.TRUE;
 	}
 
-	private Boolean compareRegisteredAndCalculatedHash() {
+	public Boolean compareRegisteredAndCalculatedHash() {
 		return this.getHash().equals(this.calculateHash());
 	}
 
-	private Boolean comparePreviousHash(String previousHash) {
+	public Boolean compareHash(String previousHash) {
 		return previousHash.equals(this.getPreviousHash());
 	}
 
-	private Boolean hashIsSolved(int difficulty) {
+	public Boolean hashIsSolved(int difficulty) {
 		return this.getHash().substring( 0, difficulty).equals(StringUtil.getCharsZeroByDifficuty(difficulty));
-	}
-
-	public void isConsistent(String previousHash, int difficulty) {
-		if (!this.compareRegisteredAndCalculatedHash()) {
-			throw new BlockChainException("Current Hashes not equal");
-		}
-		if (!comparePreviousHash(previousHash)) {
-			throw new BlockChainException("Previous Hashes not equal");
-		}
-		if(!hashIsSolved(difficulty)) {
-			throw new BlockChainException("This block hasn't been mined");
-		}
-	}
-
-	private Boolean previousBlockIsGenesis() {
-		return "0".equals(previousHash);
 	}
 
 	public String getHash() {

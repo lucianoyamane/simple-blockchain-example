@@ -1,6 +1,6 @@
-package br.com.lucianoyamane.example.transactions;
+package br.com.lucianoyamane.example.configurations;
 
-import br.com.lucianoyamane.example.TransactionOutput;
+import br.com.lucianoyamane.example.transaction.TransactionOutput;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 
 import java.util.ArrayList;
@@ -20,10 +20,6 @@ public class UnspentTransactions {
 
     private UnspentTransactions() {
         this.transactionOutputs = new ArrayList<>();
-    }
-
-    public List<TransactionOutput> get() {
-        return transactionOutputs;
     }
 
     public void add(TransactionOutput transactionOutput) {

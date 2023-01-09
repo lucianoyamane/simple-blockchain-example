@@ -1,5 +1,6 @@
-package br.com.lucianoyamane.example;
+package br.com.lucianoyamane.example.transaction;
 
+import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import br.com.lucianoyamane.example.wallet.PublicData;
@@ -62,11 +63,7 @@ public class TransactionOutput {
 		return publicKey.equals(this.getOperator().getPublicKeyDecorator());
 	}
 
-	public void isConsistent(PublicKeyDecorator publicKeyDecorator) {
-		if (!this.isMine(publicKeyDecorator)) {
-			throw new BlockChainException("#TransactionOutput(" + getId() + ") is not who it should be");
-		}
-	}
+
 
 	@Override
 	public boolean equals(Object obj) {
