@@ -16,25 +16,34 @@ import java.util.List;
 
 
 public class BlockChain {
-	
-	public static List<Block> blockchain = new ArrayList();
 
-	public static String genesisBlock(Wallet genesisWallet, Wallet receiverWallet, Integer value) {
+	private BlockChain() {
+	}
+
+	public static BlockChain create() {
+		return new BlockChain();
+	}
+
+	public List<Block> blockchain = new ArrayList();
+
+	public String genesisBlock(Wallet genesisWallet, Wallet receiverWallet, Integer value) {
 		System.out.println("******************************************************");
 		System.out.println("Creating and Mining Genesis block... ");
 		Block genesis = Block.genesis();
 		genesis.addTransaction(genesisWallet.sendFunds(receiverWallet.toPublicData(), value));
+		genesis.processGenesis();
 		mine(genesis);
 		addBlock(genesis);
 		return genesis.getHash();
 	}
 
-	public static String transactionBlock(String previousHash, Wallet senderWallet, Wallet receiverWallet, Integer value) {
+	public String transactionBlock(String previousHash, Wallet senderWallet, Wallet receiverWallet, Integer value) {
 		System.out.println("******************************************************");
-		Block block = Block.init(previousHash);
+		Block block = Block.init();
 		System.out.println("\nWallet's " + senderWallet.toPublicData().getName() + " balance is: " + senderWallet.getBalance());
 		System.out.println("\nWallet " + senderWallet.toPublicData().getName() + " is Attempting to send funds (" + value + ") to Wallet " + receiverWallet.toPublicData().getName());
 		block.addTransaction(senderWallet.sendFunds(receiverWallet.toPublicData(), value));
+		block.process(previousHash);
 		mine(block);
 		addBlock(block);
 		System.out.println("\nWallet's " + senderWallet.toPublicData().getName() + " balance is: " + senderWallet.getBalance());
@@ -42,15 +51,15 @@ public class BlockChain {
 		return block.getHash();
 	}
 
-	public static void addBlock(Block newBlock) {
+	public void addBlock(Block newBlock) {
 		blockchain.add(newBlock);
 	}
 
-	public static void mine(Block newBlock) {
+	public void mine(Block newBlock) {
 		newBlock.mineBlock(Difficulty.getInstance().getDifficulty());
 	}
 	
-	public static void isChainValid() {
+	public void isChainValid() {
 		List<TransactionOutput> tempTransactionsOutputs = new ArrayList<>();
 
 		for(int i = 1; i < blockchain.size(); i++) {

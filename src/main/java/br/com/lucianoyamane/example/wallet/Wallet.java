@@ -37,7 +37,7 @@ public class Wallet {
 		this.publicKeyDecorator = PublicKeyDecorator.inicia(publicKey);
 	}
 
-	private String getName() {
+	public String getName() {
 		return name;
 	}
 
