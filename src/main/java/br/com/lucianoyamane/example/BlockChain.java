@@ -3,6 +3,7 @@ package br.com.lucianoyamane.example;
 
 import br.com.lucianoyamane.example.block.Block;
 import br.com.lucianoyamane.example.configurations.Difficulty;
+import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import br.com.lucianoyamane.example.transaction.Transaction;
@@ -40,14 +41,14 @@ public class BlockChain {
 	public String transactionBlock(String previousHash, Wallet senderWallet, Wallet receiverWallet, Integer value) {
 		System.out.println("******************************************************");
 		Block block = Block.init();
-		System.out.println("\nWallet's " + senderWallet.toPublicData().getName() + " balance is: " + senderWallet.getBalance());
-		System.out.println("\nWallet " + senderWallet.toPublicData().getName() + " is Attempting to send funds (" + value + ") to Wallet " + receiverWallet.toPublicData().getName());
+		SystemOutPrintlnDecorator.verde("\nWallet's " + senderWallet.toPublicData().getName() + " balance is: " + senderWallet.getBalance());
+		SystemOutPrintlnDecorator.verde("\nWallet " + senderWallet.toPublicData().getName() + " is Attempting to send funds (" + value + ") to Wallet " + receiverWallet.toPublicData().getName());
 		block.addTransaction(senderWallet.sendFunds(receiverWallet.toPublicData(), value));
 		block.process(previousHash);
 		mine(block);
 		addBlock(block);
-		System.out.println("\nWallet's " + senderWallet.toPublicData().getName() + " balance is: " + senderWallet.getBalance());
-		System.out.println("Wallet's " + receiverWallet.toPublicData().getName() + " balance is: " + receiverWallet.getBalance());
+		SystemOutPrintlnDecorator.verde("\nWallet's " + senderWallet.toPublicData().getName() + " balance is: " + senderWallet.getBalance());
+		SystemOutPrintlnDecorator.verde("Wallet's " + receiverWallet.toPublicData().getName() + " balance is: " + receiverWallet.getBalance());
 		return block.getHash();
 	}
 
@@ -92,7 +93,7 @@ public class BlockChain {
 				tempTransactionsOutputs.add(output);
 			}
 		}
-		System.out.println("Blockchain is valid");
+		SystemOutPrintlnDecorator.roxo("Blockchain is valid");
 	}
 
 	private static void isConsistent(Block block, String previousHash, int difficulty) {

@@ -32,7 +32,7 @@ public class RegisteredWallets {
 
     public void getFinalBalances() {
         for(Map.Entry<String, Wallet> entry : this.registeredMap.entrySet()) {
-            System.out.println("\nWallet's " + entry.getValue().getName() + " balance is: " + entry.getValue().getBalance());
+            SystemOutPrintlnDecorator.verde("\nWallet's " + entry.getValue().getName() + " balance is: " + entry.getValue().getBalance());
         }
     }
 }

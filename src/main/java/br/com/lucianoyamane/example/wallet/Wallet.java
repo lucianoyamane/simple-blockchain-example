@@ -1,6 +1,7 @@
 package br.com.lucianoyamane.example.wallet;
 
 import br.com.lucianoyamane.example.*;
+import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.keypair.BouncyCastleKeyPair;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import br.com.lucianoyamane.example.transaction.Transaction;
@@ -66,7 +67,7 @@ public class Wallet {
 	}
 	public Transaction sendFunds(PublicData receiverPublicData, Integer value ) {
 		if (this.hasFunds(value)) {
-			System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");
+			SystemOutPrintlnDecorator.vermelho("Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}
 		List<TransactionOutput> unspentTransactionOutputs = UnspentTransactions.getInstance().loadUnspentUTXO(this.getPublicKeyDecorator());

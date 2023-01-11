@@ -4,7 +4,7 @@ import br.com.lucianoyamane.example.bdd.BlockChainBDD;
 import br.com.lucianoyamane.example.configurations.RegisteredWallets;
 import br.com.lucianoyamane.example.wallet.Wallet;
 
-public class Teste {
+public class ExecuteBlockChain {
 
     public static void main(String[] args) {
 

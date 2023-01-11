@@ -3,13 +3,18 @@ package br.com.lucianoyamane.example.bdd;
 import br.com.lucianoyamane.example.BlockChain;
 import br.com.lucianoyamane.example.block.Block;
 import br.com.lucianoyamane.example.configurations.RegisteredWallets;
+import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.wallet.GenesisWallet;
 import br.com.lucianoyamane.example.wallet.Wallet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BlockChainBDD implements BDD {
+
+    Logger logger = Logger.getLogger(BlockChainBDD.class.getName());
 
     private List<BlockBDD> blockBDDS;
 
@@ -38,8 +43,6 @@ public class BlockChainBDD implements BDD {
     }
 
 
-
-
     public BlockBDD newBlock() {
         BlockBDD blockBDD = BlockBDD.init(this);
         this.blockBDDS.add(blockBDD);
@@ -55,9 +58,10 @@ public class BlockChainBDD implements BDD {
         return this;
     }
 
+
     public void execute() {
-        System.out.println("******************************************************");
-        System.out.println("Creating and Mining Genesis block... ");
+        SystemOutPrintlnDecorator.ciano("******************************************************");
+        SystemOutPrintlnDecorator.azul("Creating and Mining Genesis block... ");
         Block genesis = this.genesisBlockBDD.execute();
         genesis.processGenesis();
         this.blockChain.mine(genesis);
@@ -66,7 +70,7 @@ public class BlockChainBDD implements BDD {
         this.blockChain.isChainValid();
         RegisteredWallets.getInstance().getFinalBalances();
         for(BlockBDD blockBDD : this.blockBDDS) {
-            System.out.println("******************************************************");
+            SystemOutPrintlnDecorator.ciano("******************************************************");
             Block block = blockBDD.execute();
             block.process(previousHash);
             this.blockChain.mine(block);

@@ -1,6 +1,7 @@
 package br.com.lucianoyamane.example.block;
 
 import br.com.lucianoyamane.example.StringUtil;
+import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.transaction.Transaction;
 import br.com.lucianoyamane.example.transaction.TransactionOutput;
 
@@ -79,7 +80,7 @@ public class Block {
 			this.increaseNonce();
 			this.setHash(calculateHash());
 		}
-		System.out.println("Block Mined!!! : " + hash);
+		SystemOutPrintlnDecorator.ciano("Block Mined!!! : " + hash);
 	}
 
 	private Boolean testHashCondition(String target) {
@@ -96,12 +97,12 @@ public class Block {
 		}
 
 		if(!transaction.processTransaction()) {
-			System.out.println("Transaction failed to process. Discarded.");
+			SystemOutPrintlnDecorator.vermelho("Transaction failed to process. Discarded.");
 			return Boolean.FALSE;
 		}
 
 		transactions.add(transaction);
-		System.out.println("Transaction Successfully added to Block");
+		SystemOutPrintlnDecorator.ciano("Transaction Successfully added to Block");
 		return Boolean.TRUE;
 	}
 
