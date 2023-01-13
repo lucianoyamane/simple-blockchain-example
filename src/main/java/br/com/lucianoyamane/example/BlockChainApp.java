@@ -4,6 +4,7 @@ package br.com.lucianoyamane.example;
 import br.com.lucianoyamane.example.block.Block;
 import br.com.lucianoyamane.example.configurations.Difficulty;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
+import br.com.lucianoyamane.example.entity.TransactionBlockChain;
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.transaction.Transaction;
 import br.com.lucianoyamane.example.transaction.TransactionInput;
@@ -26,7 +27,7 @@ public class BlockChainApp {
 		return new BlockChainApp();
 	}
 
-	public String genesisBlock(Transaction transaction) {
+	public String genesisBlock(TransactionBlockChain transaction) {
 		Block genesis = Block.genesis()
 								.addTransaction(transaction)
 								.processGenesis()
@@ -35,7 +36,7 @@ public class BlockChainApp {
 		return genesis.getHash();
 	}
 
-	public String transactionBlock(String previousHash, Transaction transaction) {
+	public String transactionBlock(String previousHash, TransactionBlockChain transaction) {
 		Block block = Block.init();
 		block.addTransaction(transaction);
 		block.process(previousHash);
@@ -62,12 +63,12 @@ public class BlockChainApp {
 			}
 			isConsistent(currentBlock, previousBlock.getHash(), Difficulty.getInstance().getDifficulty());
 
-			List<Transaction> currentBlockTransactions = currentBlock.getTransactions();
+			List<TransactionBlockChain> currentBlockTransactions = currentBlock.getTransactions();
 
-			for(Transaction transaction : currentBlockTransactions) {
-				isConsistent(transaction);
+			for(TransactionBlockChain transaction : currentBlockTransactions) {
+				transaction.isConsistent();
 
-				List<TransactionInput> transactionInputs = transaction.getInputs();
+				List<TransactionInput> transactionInputs = transaction.getTransaction().getInputs();
 
 				for(TransactionInput input : transactionInputs) {
 					TransactionOutput transactionOutputFromOutside = tempTransactionsOutputs.stream().filter(output -> output.equals(input.getUnspentTransaction())).findFirst().orElse(null);
@@ -97,25 +98,7 @@ public class BlockChainApp {
 		}
 	}
 
-	private static void isConsistent(Transaction transaction) {
-		if (!transaction.verifiySignature()) {
-			throw new BlockChainException("Transaction Signature failed to verify");
-		}
 
-		if (!transaction.isInputEqualOutputValue()) {
-			throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + transaction.getHash() + ")");
-		}
-
-		TransactionOutput senderTransactionOutput = transaction.getSenderTransactionOutput();
-		if (!senderTransactionOutput.isMine(transaction.getReceiverPublicKey())) {
-			throw new BlockChainException("#TransactionOutput(" + senderTransactionOutput.getId() + ") is not who it should be");
-		}
-
-		TransactionOutput receiverTransactionOutput = transaction.getReceiverTransactionOutput();
-		if (!receiverTransactionOutput.isMine(transaction.getSenderPublicKey())) {
-			throw new BlockChainException("#TransactionOutput(" + receiverTransactionOutput.getId() + ") is not who it should be");
-		}
-	}
 
 	private static void isConsistent(TransactionInput transactionInput, TransactionOutput referenceTransactionOutput) {
 		if(referenceTransactionOutput == null) {

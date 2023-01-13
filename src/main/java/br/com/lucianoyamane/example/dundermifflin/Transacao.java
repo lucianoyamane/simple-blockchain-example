@@ -1,6 +1,7 @@
 package br.com.lucianoyamane.example.dundermifflin;
 
 import br.com.lucianoyamane.example.configurations.CarteirasRegistradas;
+import br.com.lucianoyamane.example.entity.TransactionBlockChain;
 import br.com.lucianoyamane.example.transaction.Transaction;
 
 public class Transacao {
@@ -42,7 +43,7 @@ public class Transacao {
         return this.dunderMifflinCompanhiaDePapel;
     }
 
-    public Transaction toTransaction() {
+    public TransactionBlockChain toTransaction() {
         return CarteirasRegistradas.abre().carteira(this.remetente).sendFunds(CarteirasRegistradas.abre().carteira(destinatario).toPublicData(), valor);
     }
 }

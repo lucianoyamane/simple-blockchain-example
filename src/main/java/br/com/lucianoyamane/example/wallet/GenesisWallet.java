@@ -1,5 +1,6 @@
 package br.com.lucianoyamane.example.wallet;
 
+import br.com.lucianoyamane.example.entity.TransactionBlockChain;
 import br.com.lucianoyamane.example.transaction.Transaction;
 
 public class GenesisWallet extends Wallet {
@@ -13,10 +14,11 @@ public class GenesisWallet extends Wallet {
     }
 
     @Override
-    public Transaction sendFunds(PublicData receiverPublicData, Integer value) {
+    public TransactionBlockChain sendFunds(PublicData receiverPublicData, Integer value) {
         Transaction newTransaction = Transaction.genesis(this.toPublicData(), receiverPublicData, value);
-        newTransaction.setSignature(createSignatureTransaction(newTransaction.getHash()));
-        return newTransaction;
+        TransactionBlockChain transactionBlockChain = TransactionBlockChain.create(newTransaction);
+        transactionBlockChain.setSignature(createSignatureTransaction(transactionBlockChain.getFingerPrint()));
+        return transactionBlockChain;
     }
 
     @Override

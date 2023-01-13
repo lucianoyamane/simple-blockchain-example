@@ -2,6 +2,7 @@ package br.com.lucianoyamane.example.block;
 
 import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
+import br.com.lucianoyamane.example.entity.TransactionBlockChain;
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.transaction.Transaction;
 import br.com.lucianoyamane.example.transaction.TransactionOutput;
@@ -14,7 +15,7 @@ public class Block {
 	private String hash;
 	private String previousHash;
 	private String merkleRoot;
-	private List<Transaction> transactions;
+	private List<TransactionBlockChain> transactions;
 	private long timeStamp;
 	private int nonce;
 
@@ -63,17 +64,17 @@ public class Block {
 	}
 
 	private List<String> getTransactionsId() {
-		return this.getTransactions().stream().map(transaction -> transaction.getHash()).toList();
+		return this.getTransactions().stream().map(transaction -> transaction.getFingerPrint()).toList();
 	}
 
 	public List<TransactionOutput> getTransactionOutputs() {
 		List<TransactionOutput> transactionOutputs = new ArrayList<>();
-		for(Transaction transaction : this.transactions) {
-			if (transaction.getSenderTransactionOutput() != null) {
-				transactionOutputs.add(transaction.getSenderTransactionOutput());
+		for(TransactionBlockChain transaction : this.transactions) {
+			if (transaction.getTransaction().getSenderTransactionOutput() != null) {
+				transactionOutputs.add(transaction.getTransaction().getSenderTransactionOutput());
 			}
-			if (transaction.getReceiverTransactionOutput() != null) {
-				transactionOutputs.add(transaction.getReceiverTransactionOutput());
+			if (transaction.getTransaction().getReceiverTransactionOutput() != null) {
+				transactionOutputs.add(transaction.getTransaction().getReceiverTransactionOutput());
 			}
 		}
 		return transactionOutputs;
@@ -97,7 +98,7 @@ public class Block {
 		this.nonce ++;
 	}
 
-	public Block addTransaction(Transaction transaction) {
+	public Block addTransaction(TransactionBlockChain transaction) {
 		if(transaction == null) {
 			return this;
 		}
@@ -148,11 +149,11 @@ public class Block {
 		this.merkleRoot = merkleRoot;
 	}
 
-	public List<Transaction> getTransactions() {
+	public List<TransactionBlockChain> getTransactions() {
 		return transactions;
 	}
 
-	private void setTransactions(List<Transaction> transactions) {
+	private void setTransactions(List<TransactionBlockChain> transactions) {
 		this.transactions = transactions;
 	}
 
