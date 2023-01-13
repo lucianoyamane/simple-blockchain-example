@@ -1,30 +1,26 @@
 package br.com.lucianoyamane.example.bdd;
 
-import br.com.lucianoyamane.example.BlockChain;
+import br.com.lucianoyamane.example.BlockChainApp;
 import br.com.lucianoyamane.example.block.Block;
-import br.com.lucianoyamane.example.configurations.RegisteredWallets;
+import br.com.lucianoyamane.example.configurations.CarteirasRegistradas;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.wallet.GenesisWallet;
 import br.com.lucianoyamane.example.wallet.Wallet;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class BlockChainBDD implements BDD {
-
-    Logger logger = Logger.getLogger(BlockChainBDD.class.getName());
 
     private List<BlockBDD> blockBDDS;
 
     private BlockBDD genesisBlockBDD;
 
-    private BlockChain blockChain;
+    private BlockChainApp blockChainApp;
 
     private Wallet genesisWallet;
 
-    public Wallet getGenesisWallet() {
+    private Wallet getGenesisWallet() {
         return genesisWallet;
     }
 
@@ -33,17 +29,27 @@ public class BlockChainBDD implements BDD {
     }
 
     private BlockChainBDD() {
-        this.blockChain = BlockChain.create();
+        this.blockChainApp = BlockChainApp.create();
         this.blockBDDS = new ArrayList<>();
-        this.genesisWallet = GenesisWallet.create();
+        this.genesisWallet = GenesisWallet.novo();
     }
 
     public static BlockChainBDD init() {
         return new BlockChainBDD();
     }
 
+    public BlockChainBDD bootstrap(String receiver, Integer value) {
+        return this.genesis()
+                        .transacao()
+                            .remetente("Genesis")
+                            .destinatario(receiver)
+                            .valor(value)
+                        .fim()
+                    .fim();
+    }
 
-    public BlockBDD newBlock() {
+
+    public BlockBDD bloco() {
         BlockBDD blockBDD = BlockBDD.init(this);
         this.blockBDDS.add(blockBDD);
         return blockBDD;
@@ -54,30 +60,30 @@ public class BlockChainBDD implements BDD {
         return this.genesisBlockBDD;
     }
 
-    public BlockChainBDD end() {
+    public BlockChainBDD fim() {
         return this;
     }
 
 
-    public void execute() {
+    public void executa() {
         SystemOutPrintlnDecorator.ciano("******************************************************");
         SystemOutPrintlnDecorator.azul("Creating and Mining Genesis block... ");
         Block genesis = this.genesisBlockBDD.execute();
         genesis.processGenesis();
-        this.blockChain.mine(genesis);
-        this.blockChain.addBlock(genesis);
+        this.blockChainApp.mine(genesis);
+        this.blockChainApp.addBlock(genesis);
         String previousHash = genesis.getHash();
-        this.blockChain.isChainValid();
-        RegisteredWallets.getInstance().getFinalBalances();
+        this.blockChainApp.isChainValid();
+        CarteirasRegistradas.abre().getFinalBalances();
         for(BlockBDD blockBDD : this.blockBDDS) {
             SystemOutPrintlnDecorator.ciano("******************************************************");
             Block block = blockBDD.execute();
             block.process(previousHash);
-            this.blockChain.mine(block);
-            this.blockChain.addBlock(block);
+            this.blockChainApp.mine(block);
+            this.blockChainApp.addBlock(block);
             previousHash = block.getHash();
-            this.blockChain.isChainValid();
-            RegisteredWallets.getInstance().getFinalBalances();
+            this.blockChainApp.isChainValid();
+            CarteirasRegistradas.abre().getFinalBalances();
         }
     }
 }

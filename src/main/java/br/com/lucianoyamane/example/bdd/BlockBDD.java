@@ -21,13 +21,13 @@ public class BlockBDD implements BDD {
         return new BlockBDD(mainBDD);
     }
 
-    public TransactionBDD addTransaction() {
+    public TransactionBDD transacao() {
         TransactionBDD transactionBDD = TransactionBDD.init(this);
         this.transactions.add(transactionBDD);
         return transactionBDD;
     }
 
-    public BlockChainBDD end() {
+    public BlockChainBDD fim() {
         return this.mainBDD;
     }
 

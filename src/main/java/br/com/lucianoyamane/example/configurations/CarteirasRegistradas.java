@@ -1,32 +1,41 @@
 package br.com.lucianoyamane.example.configurations;
 
+import br.com.lucianoyamane.example.wallet.GenesisWallet;
 import br.com.lucianoyamane.example.wallet.Wallet;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RegisteredWallets {
+public class CarteirasRegistradas {
 
-    private static RegisteredWallets instance;
+    public static final String LUCIANO = "Luciano";
+    public static final String AUGUSTO = "Augusto";
 
-    public static RegisteredWallets getInstance() {
+    private static CarteirasRegistradas instance;
+
+    public static CarteirasRegistradas abre() {
         if (instance == null) {
-            instance = new RegisteredWallets();
+            instance = new CarteirasRegistradas();
         }
         return instance;
     }
     private Map<String, Wallet> registeredMap;
 
-    public RegisteredWallets() {
+    public CarteirasRegistradas() {
         this.registeredMap = new HashMap<>();
+        this.registra(GenesisWallet.novo());
+        this.registra(Wallet.novo(LUCIANO));
+        this.registra(Wallet.novo(AUGUSTO));
     }
 
-    public RegisteredWallets register(Wallet wallet) {
+
+
+    public CarteirasRegistradas registra(Wallet wallet) {
         this.registeredMap.put(wallet.getName(), wallet);
         return this;
     }
 
-    public Wallet getWallet(String name) {
+    public Wallet carteira(String name) {
         return this.registeredMap.get(name);
     }
 

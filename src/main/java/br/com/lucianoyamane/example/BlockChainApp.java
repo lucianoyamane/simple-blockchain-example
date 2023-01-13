@@ -5,7 +5,6 @@ import br.com.lucianoyamane.example.block.Block;
 import br.com.lucianoyamane.example.configurations.Difficulty;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.exception.BlockChainException;
-import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import br.com.lucianoyamane.example.transaction.Transaction;
 import br.com.lucianoyamane.example.transaction.TransactionInput;
 import br.com.lucianoyamane.example.transaction.TransactionOutput;
@@ -16,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class BlockChain {
+public class BlockChainApp {
 
-	private BlockChain() {
+	private BlockChainApp() {
 	}
 
-	public static BlockChain create() {
-		return new BlockChain();
+	public static BlockChainApp create() {
+		return new BlockChainApp();
 	}
 
 	public List<Block> blockchain = new ArrayList();

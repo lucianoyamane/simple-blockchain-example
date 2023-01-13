@@ -1,63 +1,41 @@
 package br.com.lucianoyamane.example;
 
-import br.com.lucianoyamane.example.bdd.BlockChainBDD;
-import br.com.lucianoyamane.example.configurations.RegisteredWallets;
-import br.com.lucianoyamane.example.wallet.Wallet;
+import br.com.lucianoyamane.example.bdd.DunderMifflinCompanhiaDePapel;
+import br.com.lucianoyamane.example.configurations.CarteirasRegistradas;
 
 public class ExecuteBlockChain {
 
     public static void main(String[] args) {
 
-        RegisteredWallets registeredWallets = RegisteredWallets.getInstance();
-        registeredWallets.register(Wallet.create("Luciano"));
-        registeredWallets.register(Wallet.create("Augusto"));
 
-        BlockChainBDD blockChainBDD = BlockChainBDD.init();
-        blockChainBDD
-                .genesis()
-                    .addTransaction()
-                        .sender(blockChainBDD.getGenesisWallet())
-                        .receiver(registeredWallets.getWallet("Luciano"))
-                        .sendFunds(100)
-                    .end()
-                .end()
-                .newBlock()
-                    .addTransaction()
-                        .sender(registeredWallets.getWallet("Luciano"))
-                        .receiver(registeredWallets.getWallet("Augusto"))
-                        .sendFunds(40)
-                    .end()
-                .end()
-                .newBlock()
-                    .addTransaction()
-                        .sender(registeredWallets.getWallet("Luciano"))
-                        .receiver(registeredWallets.getWallet("Augusto"))
-                        .sendFunds(1000)
-                    .end()
-                .end()
-                .newBlock()
-                    .addTransaction()
-                        .sender(registeredWallets.getWallet("Augusto"))
-                        .receiver(registeredWallets.getWallet("Luciano"))
-                        .sendFunds(20)
-                    .end()
-                .end()
-                .newBlock()
-                    .addTransaction()
-                        .sender(registeredWallets.getWallet("Luciano"))
-                        .receiver(registeredWallets.getWallet("Augusto"))
-                        .sendFunds(10)
-                    .end()
-                .end()
-                .newBlock()
-                    .addTransaction()
-                        .sender(registeredWallets.getWallet("Luciano"))
-                        .receiver(registeredWallets.getWallet("Augusto"))
-                        .sendFunds(70)
-                    .end()
-                .end()
-            .end();
-        blockChainBDD.execute();
+        DunderMifflinCompanhiaDePapel
+                .iniciaOsTrabalhos()
+                    .michaelScott()
+                        .estaTransferindo(100)
+                        .para(CarteirasRegistradas.LUCIANO)
+                    .confirmaAOperacao()
+                    .cliente(CarteirasRegistradas.LUCIANO)
+                        .estaTransferindo(40)
+                        .para(CarteirasRegistradas.AUGUSTO)
+                    .confirmaAOperacao()
+                    .cliente(CarteirasRegistradas.LUCIANO)
+                        .estaTransferindo(1000)
+                        .para(CarteirasRegistradas.AUGUSTO)
+                    .confirmaAOperacao()
+                    .cliente(CarteirasRegistradas.AUGUSTO)
+                        .estaTransferindo(20)
+                        .para(CarteirasRegistradas.LUCIANO)
+                    .confirmaAOperacao()
+                    .cliente(CarteirasRegistradas.LUCIANO)
+                        .estaTransferindo(10)
+                        .para(CarteirasRegistradas.AUGUSTO)
+                    .confirmaAOperacao()
+                    .cliente(CarteirasRegistradas.LUCIANO)
+                        .estaTransferindo(70)
+                        .para(CarteirasRegistradas.AUGUSTO)
+                    .confirmaAOperacao()
+                .processa();
+
 
     }
 }

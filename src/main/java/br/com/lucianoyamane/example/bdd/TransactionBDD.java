@@ -1,5 +1,6 @@
 package br.com.lucianoyamane.example.bdd;
 
+import br.com.lucianoyamane.example.configurations.CarteirasRegistradas;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.transaction.Transaction;
 import br.com.lucianoyamane.example.wallet.Wallet;
@@ -22,30 +23,29 @@ public class TransactionBDD implements BDD {
         return new TransactionBDD(mainBDD);
     }
 
-    public TransactionBDD sender(Wallet sender) {
-        this.sender = sender;
+    public TransactionBDD remetente(String sender) {
+        this.sender = CarteirasRegistradas.abre().carteira(sender);
         return this;
     }
 
-    public TransactionBDD receiver(Wallet receiver) {
-        this.receiver = receiver;
+    public TransactionBDD destinatario(String receiver) {
+        this.receiver = CarteirasRegistradas.abre().carteira(receiver);
         return this;
     }
 
-    public TransactionBDD sendFunds(Integer value) {
+    public TransactionBDD valor(Integer value) {
         this.value = value;
         return this;
     }
 
     @Override
-    public BlockBDD end() {
+    public BlockBDD fim() {
         return this.blockBDD;
     }
 
     public Transaction execute() {
         SystemOutPrintlnDecorator.verde("\nWallet's " + this.sender.toPublicData().getName() + " balance is: " + this.sender.getBalance());
         SystemOutPrintlnDecorator.azul("\nWallet " + this.sender.toPublicData().getName() + " is Attempting to send funds (" + value + ") to Wallet " + this.receiver.toPublicData().getName());
-        Transaction result = this.sender.sendFunds(this.receiver.toPublicData(), this.value);
-        return result;
+        return this.sender.sendFunds(this.receiver.toPublicData(), this.value);
     }
 }
