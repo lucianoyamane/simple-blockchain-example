@@ -49,8 +49,8 @@ public class TransactionBlockChain {
 
     private String getData() {
         return new StringBuilder(UUID.randomUUID().toString())
-                .append(this.getTransaction().getSenderPublicKeyString())
-                .append(this.getTransaction().getReceiverPublicKeyString())
+                .append(this.getTransaction().getSenderPublicKeyDecorator().toString())
+                .append(this.getTransaction().getReceiverPublickeyDecorator().toString())
                 .append(this.getTransaction().getValue())
                 .toString();
     }
@@ -73,8 +73,8 @@ public class TransactionBlockChain {
         return signatureVerified;
     }
 
-    public Boolean verifiySignature() {
-        return StringUtil.verifyECDSASig(this.transaction.getSenderPublicKey().getPublicKey(), this.getFingerPrint(), this.getSignature());
+    private Boolean verifiySignature() {
+        return StringUtil.verifyECDSASig(this.transaction.getSenderPublicKeyDecorator().getPublicKey(), this.getFingerPrint(), this.getSignature());
     }
 
     private void removeCurrentOutput() {
@@ -84,13 +84,13 @@ public class TransactionBlockChain {
     }
 
     private void addCurrentTransactionOutput() {
-        TransactionOutput current = TransactionOutput.current( this.getTransaction().getReceiverOperator(), this.getTransaction().getValue(), this.getFingerPrint());
+        TransactionOutput current = TransactionOutput.current( this.getTransaction().getReceiverPublickeyDecorator(), this.getTransaction().getValue());
         this.transaction.setSenderTransactionOutput(current);
         this.addUnspentTransaction(current);
     }
 
     private void addLeftOverTransactionOutput() {
-        TransactionOutput leftover = TransactionOutput.leftover( this.getTransaction().getSenderOperator(), this.getLeftOverValue(), this.getFingerPrint());
+        TransactionOutput leftover = TransactionOutput.leftover( this.getTransaction().getSenderPublicKeyDecorator(), this.getLeftOverValue());
         this.transaction.setReceiverTransactionOutput(leftover);
         this.addUnspentTransaction(leftover);
     }
@@ -126,13 +126,13 @@ public class TransactionBlockChain {
         }
 
         TransactionOutput senderTransactionOutput = this.getTransaction().getSenderTransactionOutput();
-        if (!senderTransactionOutput.isMine(this.getTransaction().getReceiverPublicKey())) {
-            throw new BlockChainException("#TransactionOutput(" + senderTransactionOutput.getId() + ") is not who it should be");
+        if (!senderTransactionOutput.isMine(this.getTransaction().getReceiverPublickeyDecorator())) {
+            throw new BlockChainException("#TransactionOutput(" + senderTransactionOutput + ") is not who it should be");
         }
 
         TransactionOutput receiverTransactionOutput = this.getTransaction().getReceiverTransactionOutput();
-        if (!receiverTransactionOutput.isMine(this.getTransaction().getSenderPublicKey())) {
-            throw new BlockChainException("#TransactionOutput(" + receiverTransactionOutput.getId() + ") is not who it should be");
+        if (!receiverTransactionOutput.isMine(this.getTransaction().getSenderPublicKeyDecorator())) {
+            throw new BlockChainException("#TransactionOutput(" + receiverTransactionOutput + ") is not who it should be");
         }
     }
 

@@ -74,7 +74,7 @@ public class Wallet {
 		}
 		List<TransactionOutput> unspentTransactionOutputs = UnspentTransactions.getInstance().loadUnspentUTXO(this.getPublicKeyDecorator());
 		List<TransactionInput> inputs = unspentTransactionOutputs.stream().map(TransactionInput::create).toList();
-		Transaction newTransaction = Transaction.create(this.toPublicData(), receiverPublicData, value, inputs);
+		Transaction newTransaction = Transaction.create(this.toPublicData().getPublicKeyDecorator(), receiverPublicData.getPublicKeyDecorator(), value, inputs);
 		TransactionBlockChain transactionBlockChain = TransactionBlockChain.create(newTransaction);
 		transactionBlockChain.setSignature(createSignatureTransaction(transactionBlockChain.getFingerPrint()));
 		return transactionBlockChain;

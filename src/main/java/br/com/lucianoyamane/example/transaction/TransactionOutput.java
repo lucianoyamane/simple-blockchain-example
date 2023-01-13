@@ -1,13 +1,14 @@
 package br.com.lucianoyamane.example.transaction;
 
 import br.com.lucianoyamane.example.StringUtil;
-import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
-import br.com.lucianoyamane.example.wallet.PublicData;
+import com.google.gson.Gson;
+
+import java.util.UUID;
 
 public class TransactionOutput {
     private String id;
-	private PublicData publicData;
+	private PublicKeyDecorator publicKeyDecorator;
 	private Integer value;
 	private String type;
 	
@@ -16,19 +17,19 @@ public class TransactionOutput {
 //			System.out.println("#Transaction Inputs to small: " + getInputValue());
 //			return false;
 //		}
-	private TransactionOutput(PublicData publicData, Integer value, String transactionId, String type) {
-		this.setOperator(publicData);
+	private TransactionOutput(PublicKeyDecorator publicKeyDecorator, Integer value, String type) {
+		this.setPublicKeyDecorator(publicKeyDecorator);
 		this.setValue(value);
-		this.setId(StringUtil.encode(publicData.getPublicKeyDecorator().toString() + value + transactionId));
 		this.setType(type);
+		this.setId(UUID.randomUUID().toString());
 	}
 
-	public PublicData getOperator() {
-		return publicData;
+	public PublicKeyDecorator getPublicKeyDecorator() {
+		return publicKeyDecorator;
 	}
 
-	public void setOperator(PublicData publicData) {
-		this.publicData = publicData;
+	public void setPublicKeyDecorator(PublicKeyDecorator publicKeyDecorator) {
+		this.publicKeyDecorator = publicKeyDecorator;
 	}
 
 	public void setType(String type) {
@@ -51,19 +52,17 @@ public class TransactionOutput {
 		return value;
 	}
 
-	public static TransactionOutput leftover(PublicData publicData, Integer value, String transactionId) {
-		return new TransactionOutput(publicData, value, transactionId, "LEFTOVER");
+	public static TransactionOutput leftover(PublicKeyDecorator publicKeyDecorator, Integer value) {
+		return new TransactionOutput(publicKeyDecorator, value, "LEFTOVER");
 	}
 
-	public static TransactionOutput current(PublicData publicData, Integer value, String transactionId) {
-		return new TransactionOutput(publicData, value, transactionId, "CURRENT");
+	public static TransactionOutput current(PublicKeyDecorator publicKeyDecorator, Integer value) {
+		return new TransactionOutput(publicKeyDecorator, value, "CURRENT");
 	}
 
 	public Boolean isMine(PublicKeyDecorator publicKey) {
-		return publicKey.equals(this.getOperator().getPublicKeyDecorator());
+		return publicKey.equals(this.getPublicKeyDecorator());
 	}
-
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -76,5 +75,9 @@ public class TransactionOutput {
 		TransactionOutput other = (TransactionOutput) obj;
 		return this.getId().equals(other.getId());
 	}
-    
+
+	@Override
+	public String toString() {
+		return new Gson().toJson(this);
+	}
 }

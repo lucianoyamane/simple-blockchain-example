@@ -102,10 +102,10 @@ public class BlockChainApp {
 
 	private static void isConsistent(TransactionInput transactionInput, TransactionOutput referenceTransactionOutput) {
 		if(referenceTransactionOutput == null) {
-			throw new BlockChainException("#Referenced input on Transaction(" + transactionInput.getUnspentTransaction().getId() + ") is Missing");
+			throw new BlockChainException("#Referenced input on Transaction(" + transactionInput.getUnspentTransaction().toString() + ") is Missing");
 		}
 		if(transactionInput.getUnspentTransaction().getValue() != referenceTransactionOutput.getValue()) {
-			throw new BlockChainException("#Referenced input Transaction(" + transactionInput.getUnspentTransaction().getId() + ") value is Invalid");
+			throw new BlockChainException("#Referenced input Transaction(" + transactionInput.getUnspentTransaction().toString() + ") value is Invalid");
 		}
 	}
 

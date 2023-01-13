@@ -1,59 +1,48 @@
 package br.com.lucianoyamane.example.transaction;
 
-import br.com.lucianoyamane.example.StringUtil;
-import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
-import br.com.lucianoyamane.example.configurations.UnspentTransactions;
 import br.com.lucianoyamane.example.wallet.PublicData;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class Transaction {
-	private PublicData senderPublicData;
-	private PublicData receiverPublicData;
+	private PublicKeyDecorator senderPublicKeyDecorator;
+	private PublicKeyDecorator receiverPublickeyDecorator;
 	private TransactionOutput senderTransactionOutput;
 	private TransactionOutput receiverTransactionOutput;
-	private Integer value;// this is to prevent anybody else from spending funds in our wallet.
+	private Integer value;
 	private List<TransactionInput> inputs;
 
-	protected Transaction(PublicData senderPublicData, PublicData receiverPublicData, Integer value) {
-		this.setSenderOperator(senderPublicData);
-		this.setReceiverOperator(receiverPublicData);
-		this.setValue(value);
-		this.setInputs(new ArrayList<>());
-	}
-
-	protected Transaction(PublicData senderPublicData, PublicData receiverPublicData, Integer value, List<TransactionInput> inputs) {
-		this.setSenderOperator(senderPublicData);
-		this.setReceiverOperator(receiverPublicData);
+	protected Transaction(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value, List<TransactionInput> inputs) {
+		this.setSenderPublicKeyDecorator(senderPublicKeyDecorator);
+		this.setReceiverPublickeyDecorator(receiverPublickeyDecorator);
 		this.setValue(value);
 		this.setInputs(inputs);
 	}
 
-	public static Transaction genesis(PublicData senderPublicData, PublicData receiverPublicData, Integer value) {
-		return new Transaction(senderPublicData, receiverPublicData, value);
+	public static Transaction genesis(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value) {
+		return create(senderPublicKeyDecorator, receiverPublickeyDecorator, value, new ArrayList<>());
 	}
 
-	public static Transaction create(PublicData senderPublicData, PublicData receiverPublicData, Integer value, List<TransactionInput> inputs) {
-		return new Transaction(senderPublicData, receiverPublicData, value, inputs);
+	public static Transaction create(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value, List<TransactionInput> inputs) {
+		return new Transaction(senderPublicKeyDecorator, receiverPublickeyDecorator, value, inputs);
 	}
 
-	public PublicData getSenderOperator() {
-		return senderPublicData;
+	public PublicKeyDecorator getSenderPublicKeyDecorator() {
+		return senderPublicKeyDecorator;
 	}
 
-	private void setSenderOperator(PublicData senderPublicData) {
-		this.senderPublicData = senderPublicData;
+	public void setSenderPublicKeyDecorator(PublicKeyDecorator senderPublicKeyDecorator) {
+		this.senderPublicKeyDecorator = senderPublicKeyDecorator;
 	}
 
-	public PublicData getReceiverOperator() {
-		return receiverPublicData;
+	public PublicKeyDecorator getReceiverPublickeyDecorator() {
+		return receiverPublickeyDecorator;
 	}
 
-	private void setReceiverOperator(PublicData receiverPublicData) {
-		this.receiverPublicData = receiverPublicData;
+	public void setReceiverPublickeyDecorator(PublicKeyDecorator receiverPublickeyDecorator) {
+		this.receiverPublickeyDecorator = receiverPublickeyDecorator;
 	}
 
 	public void setSenderTransactionOutput(TransactionOutput senderTransactionOutput) {
@@ -68,24 +57,8 @@ public class Transaction {
 		this.receiverTransactionOutput = receiverTransactionOutput;
 	}
 
-	public PublicKeyDecorator getSenderPublicKey() {
-		return this.getSenderOperator().getPublicKeyDecorator();
-	}
-
-	public String getSenderPublicKeyString() {
-		return this.getSenderOperator().getPublicKeyString();
-	}
-
-	public PublicKeyDecorator getReceiverPublicKey() {
-		return this.getReceiverOperator().getPublicKeyDecorator();
-	}
-
 	public TransactionOutput getSenderTransactionOutput() {
-		return this.senderTransactionOutput;
-	}
-
-	public String getReceiverPublicKeyString() {
-		return this.getReceiverOperator().getPublicKeyString();
+		return senderTransactionOutput;
 	}
 
 	public Integer getValue() {

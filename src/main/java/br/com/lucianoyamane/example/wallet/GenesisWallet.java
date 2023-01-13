@@ -15,7 +15,7 @@ public class GenesisWallet extends Wallet {
 
     @Override
     public TransactionBlockChain sendFunds(PublicData receiverPublicData, Integer value) {
-        Transaction newTransaction = Transaction.genesis(this.toPublicData(), receiverPublicData, value);
+        Transaction newTransaction = Transaction.genesis(this.toPublicData().getPublicKeyDecorator(), receiverPublicData.getPublicKeyDecorator(), value);
         TransactionBlockChain transactionBlockChain = TransactionBlockChain.create(newTransaction);
         transactionBlockChain.setSignature(createSignatureTransaction(transactionBlockChain.getFingerPrint()));
         return transactionBlockChain;
