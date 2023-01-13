@@ -37,27 +37,11 @@ public class DunderMifflinCompanhiaDePapel {
     }
 
     public void processa() {
-        SystemOutPrintlnDecorator.ciano("******************************************************");
-        SystemOutPrintlnDecorator.azul("Creating and Mining Genesis block... ");
-        Block blockGenesis = Block.init();
-        blockGenesis.addTransaction(this.transacaoBootstrap.toTransaction());
-        blockGenesis.processGenesis();
-        blockGenesis.mineBlock(Difficulty.getInstance().getDifficulty());
-        this.blockChainApp.addBlock(blockGenesis);
-        String previousHash = blockGenesis.getHash();
-        this.blockChainApp.isChainValid();
+        String previousHash = this.blockChainApp.genesisBlock(this.transacaoBootstrap.toTransaction());
         for(Transacao transacao : this.transacoes) {
-            SystemOutPrintlnDecorator.ciano("******************************************************");
-            Block block = Block.init();
-            block.addTransaction(transacao.toTransaction());
-            block.process(previousHash);
-            this.blockChainApp.mine(block);
-            this.blockChainApp.addBlock(block);
-            previousHash = block.getHash();
-            this.blockChainApp.isChainValid();
+            this.blockChainApp.transactionBlock(previousHash, transacao.toTransaction());
             CarteirasRegistradas.abre().getFinalBalances();
         }
-
 
     }
 

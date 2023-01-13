@@ -37,6 +37,29 @@ public class BlockChainApp {
 		return genesis.getHash();
 	}
 
+	public String genesisBlock(Transaction transaction) {
+		System.out.println("******************************************************");
+		System.out.println("Creating and Mining Genesis block... ");
+		Block genesis = Block.genesis();
+		genesis.addTransaction(transaction);
+		genesis.processGenesis();
+		mine(genesis);
+		addBlock(genesis);
+		return genesis.getHash();
+	}
+
+	public String transactionBlock(String previousHash, Transaction transaction) {
+		System.out.println("******************************************************");
+		Block block = Block.init();
+		block.addTransaction(transaction);
+		block.process(previousHash);
+		mine(block);
+		addBlock(block);
+		return block.getHash();
+	}
+
+
+
 	public String transactionBlock(String previousHash, Wallet senderWallet, Wallet receiverWallet, Integer value) {
 		System.out.println("******************************************************");
 		Block block = Block.init();

@@ -74,7 +74,7 @@ public class Wallet {
 		List<TransactionInput> inputs = unspentTransactionOutputs.stream().map(TransactionInput::create).toList();
 		Transaction newTransaction = Transaction.create(this.toPublicData(), receiverPublicData, value, inputs);
 		newTransaction.setSignature(createSignatureTransaction(newTransaction.getHash()));
-
+		SystemOutPrintlnDecorator.verde("\nWallet " + this.getName() + " is Attempting to send funds (" + value + ") to Wallet " + receiverPublicData.getName());
 		return newTransaction;
 	}
 
