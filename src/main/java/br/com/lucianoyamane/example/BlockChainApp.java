@@ -8,7 +8,6 @@ import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.transaction.Transaction;
 import br.com.lucianoyamane.example.transaction.TransactionInput;
 import br.com.lucianoyamane.example.transaction.TransactionOutput;
-import br.com.lucianoyamane.example.wallet.Wallet;
 
 import java.util.ArrayList;
 //import java.util.Base64;
@@ -17,60 +16,31 @@ import java.util.List;
 
 public class BlockChainApp {
 
+	private List<Block> blockchain;
+
 	private BlockChainApp() {
+		this.blockchain = new ArrayList();
 	}
 
 	public static BlockChainApp create() {
 		return new BlockChainApp();
 	}
 
-	public List<Block> blockchain = new ArrayList();
-
-	public String genesisBlock(Wallet genesisWallet, Wallet receiverWallet, Integer value) {
-		System.out.println("******************************************************");
-		System.out.println("Creating and Mining Genesis block... ");
-		Block genesis = Block.genesis();
-		genesis.addTransaction(genesisWallet.sendFunds(receiverWallet.toPublicData(), value));
-		genesis.processGenesis();
-		mine(genesis);
-		addBlock(genesis);
-		return genesis.getHash();
-	}
-
 	public String genesisBlock(Transaction transaction) {
-		System.out.println("******************************************************");
-		System.out.println("Creating and Mining Genesis block... ");
-		Block genesis = Block.genesis();
-		genesis.addTransaction(transaction);
-		genesis.processGenesis();
-		mine(genesis);
+		Block genesis = Block.genesis()
+								.addTransaction(transaction)
+								.processGenesis()
+								.mine(Difficulty.getInstance().getDifficulty());
 		addBlock(genesis);
 		return genesis.getHash();
 	}
 
 	public String transactionBlock(String previousHash, Transaction transaction) {
-		System.out.println("******************************************************");
 		Block block = Block.init();
 		block.addTransaction(transaction);
 		block.process(previousHash);
-		mine(block);
+		block.mine(Difficulty.getInstance().getDifficulty());
 		addBlock(block);
-		return block.getHash();
-	}
-
-
-
-	public String transactionBlock(String previousHash, Wallet senderWallet, Wallet receiverWallet, Integer value) {
-		System.out.println("******************************************************");
-		Block block = Block.init();
-		SystemOutPrintlnDecorator.verde("\nWallet's " + senderWallet.toPublicData().getName() + " balance is: " + senderWallet.getBalance());
-		SystemOutPrintlnDecorator.verde("\nWallet " + senderWallet.toPublicData().getName() + " is Attempting to send funds (" + value + ") to Wallet " + receiverWallet.toPublicData().getName());
-		block.addTransaction(senderWallet.sendFunds(receiverWallet.toPublicData(), value));
-		block.process(previousHash);
-		mine(block);
-		addBlock(block);
-		SystemOutPrintlnDecorator.verde("\nWallet's " + senderWallet.toPublicData().getName() + " balance is: " + senderWallet.getBalance());
-		SystemOutPrintlnDecorator.verde("Wallet's " + receiverWallet.toPublicData().getName() + " balance is: " + receiverWallet.getBalance());
 		return block.getHash();
 	}
 
@@ -78,9 +48,6 @@ public class BlockChainApp {
 		blockchain.add(newBlock);
 	}
 
-	public void mine(Block newBlock) {
-		newBlock.mineBlock(Difficulty.getInstance().getDifficulty());
-	}
 	
 	public void isChainValid() {
 		List<TransactionOutput> tempTransactionsOutputs = new ArrayList<>();

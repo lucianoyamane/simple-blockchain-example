@@ -63,10 +63,11 @@ public class Wallet {
 	}
 
 	public Boolean hasFunds(Integer value) {
-		return this.getBalance() < value;
+		return this.getBalance() >= value;
 	}
 	public Transaction sendFunds(PublicData receiverPublicData, Integer value ) {
-		if (this.hasFunds(value)) {
+		SystemOutPrintlnDecorator.verde("\nWallet " + this.getName() + " is Attempting to send funds (" + value + ") to Wallet " + receiverPublicData.getName());
+		if (!this.hasFunds(value)) {
 			SystemOutPrintlnDecorator.vermelho("Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}
@@ -74,7 +75,6 @@ public class Wallet {
 		List<TransactionInput> inputs = unspentTransactionOutputs.stream().map(TransactionInput::create).toList();
 		Transaction newTransaction = Transaction.create(this.toPublicData(), receiverPublicData, value, inputs);
 		newTransaction.setSignature(createSignatureTransaction(newTransaction.getHash()));
-		SystemOutPrintlnDecorator.verde("\nWallet " + this.getName() + " is Attempting to send funds (" + value + ") to Wallet " + receiverPublicData.getName());
 		return newTransaction;
 	}
 

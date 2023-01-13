@@ -2,6 +2,7 @@ package br.com.lucianoyamane.example.block;
 
 import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
+import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.transaction.Transaction;
 import br.com.lucianoyamane.example.transaction.TransactionOutput;
 
@@ -18,10 +19,13 @@ public class Block {
 	private int nonce;
 
     public static Block genesis() {
+		SystemOutPrintlnDecorator.ciano("******************************************************");
+		SystemOutPrintlnDecorator.ciano("Creating and Mining Genesis block... ");
         return init();
     }
 
     public static Block init() {
+		SystemOutPrintlnDecorator.ciano("******************************************************");
         return new Block();
     }
 
@@ -30,8 +34,9 @@ public class Block {
 		this.setTransactions(new ArrayList());
 	}
 
-	public void processGenesis() {
+	public Block processGenesis() {
 		this.process("0");
+		return this;
 	}
 
 	public void process(String previousHash) {
@@ -74,13 +79,14 @@ public class Block {
 		return transactionOutputs;
 	}
 
-	public void mineBlock(int difficulty) {
+	public Block mine(int difficulty) {
 		String zeros = StringUtil.getCharsZeroByDifficuty(difficulty);
 		while(!this.testHashCondition(zeros)) {
 			this.increaseNonce();
 			this.setHash(calculateHash());
 		}
 		SystemOutPrintlnDecorator.ciano("Block Mined!!! : " + hash);
+		return this;
 	}
 
 	private Boolean testHashCondition(String target) {
@@ -91,19 +97,19 @@ public class Block {
 		this.nonce ++;
 	}
 
-	public boolean addTransaction(Transaction transaction) {
+	public Block addTransaction(Transaction transaction) {
 		if(transaction == null) {
-			return Boolean.FALSE;
+			return this;
 		}
 
 		if(!transaction.processTransaction()) {
 			SystemOutPrintlnDecorator.vermelho("Transaction failed to process. Discarded.");
-			return Boolean.FALSE;
+			return this;
 		}
 
 		transactions.add(transaction);
 		SystemOutPrintlnDecorator.ciano("Transaction Successfully added to Block");
-		return Boolean.TRUE;
+		return this;
 	}
 
 	public Boolean compareRegisteredAndCalculatedHash() {
