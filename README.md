@@ -1,3 +1,21 @@
 # simple-blockchain-example
 
 mvn compile exec:java -Dexec.mainClass="br.com.lucianoyamane.example.Execute" -Dexec.cleanupDaemonThreads=false
+
+
+fluent interface
+bdd
+tdd
+factory method
+chave assimetrica
+bootstraping
+polimorfismo
+
+
+nao tem 
+seguranca
+
+escopo
+1 transacao 1 bloco
+
+proof of work baseado em um nivel de dificuldade

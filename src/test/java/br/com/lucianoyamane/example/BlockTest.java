@@ -18,7 +18,7 @@ class BlockTest {
         Block block = Block.init("teste");
         block.addTransaction(transaction);
 
-        block.mineBlock(2);
+        block.mine(2);
         String resultHash = block.getHash();
         assertTrue(resultHash.startsWith("00"));
 

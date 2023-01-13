@@ -1,6 +1,7 @@
 package br.com.lucianoyamane.example.wallet;
 
 import br.com.lucianoyamane.example.*;
+import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.keypair.BouncyCastleKeyPair;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import br.com.lucianoyamane.example.transaction.Transaction;
@@ -19,7 +20,7 @@ public class Wallet {
 	private PublicKeyDecorator publicKeyDecorator;
 	private String name;
 
-	public static Wallet create(String name) {
+	public static Wallet novo(String name) {
 		return new Wallet(name);
 	}
 
@@ -37,7 +38,7 @@ public class Wallet {
 		this.publicKeyDecorator = PublicKeyDecorator.inicia(publicKey);
 	}
 
-	private String getName() {
+	public String getName() {
 		return name;
 	}
 
@@ -62,18 +63,18 @@ public class Wallet {
 	}
 
 	public Boolean hasFunds(Integer value) {
-		return this.getBalance() < value;
+		return this.getBalance() >= value;
 	}
 	public Transaction sendFunds(PublicData receiverPublicData, Integer value ) {
-		if (this.hasFunds(value)) {
-			System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");
+		SystemOutPrintlnDecorator.verde("\nWallet " + this.getName() + " is Attempting to send funds (" + value + ") to Wallet " + receiverPublicData.getName());
+		if (!this.hasFunds(value)) {
+			SystemOutPrintlnDecorator.vermelho("Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}
 		List<TransactionOutput> unspentTransactionOutputs = UnspentTransactions.getInstance().loadUnspentUTXO(this.getPublicKeyDecorator());
 		List<TransactionInput> inputs = unspentTransactionOutputs.stream().map(TransactionInput::create).toList();
 		Transaction newTransaction = Transaction.create(this.toPublicData(), receiverPublicData, value, inputs);
 		newTransaction.setSignature(createSignatureTransaction(newTransaction.getHash()));
-
 		return newTransaction;
 	}
 

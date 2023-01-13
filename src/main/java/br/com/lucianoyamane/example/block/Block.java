@@ -1,6 +1,8 @@
 package br.com.lucianoyamane.example.block;
 
 import br.com.lucianoyamane.example.StringUtil;
+import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
+import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.transaction.Transaction;
 import br.com.lucianoyamane.example.transaction.TransactionOutput;
 
@@ -17,25 +19,36 @@ public class Block {
 	private int nonce;
 
     public static Block genesis() {
-        return init("0");
+		SystemOutPrintlnDecorator.ciano("******************************************************");
+		SystemOutPrintlnDecorator.ciano("Creating and Mining Genesis block... ");
+        return init();
     }
 
-    public static Block init(String previousHash) {
-        return new Block(previousHash);
+    public static Block init() {
+		SystemOutPrintlnDecorator.ciano("******************************************************");
+        return new Block();
     }
 
-	private Block(String previousHash) {
-		this.setPreviousHash(previousHash);
+	private Block() {
 		this.setTimeStamp(System.currentTimeMillis());
 		this.setTransactions(new ArrayList());
+	}
+
+	public Block processGenesis() {
+		this.process("0");
+		return this;
+	}
+
+	public void process(String previousHash) {
+		this.setPreviousHash(previousHash);
 		this.setHash(calculateHash());
-		this.setMerkleRoot("");
+		this.setMerkleRoot(StringUtil.getMerkleRoot(this.getTransactionsId()));
 	}
 
 	public Boolean isGenesis() {
 		return this.getPreviousHash().equals("0");
 	}
-	public String calculateHash() {
+	private String calculateHash() {
 		return StringUtil.encode(this.createCompositionToHash());
 	}
 
@@ -49,7 +62,7 @@ public class Block {
 		return composition.toString();
 	}
 
-	public List<String> getTransactionsId() {
+	private List<String> getTransactionsId() {
 		return this.getTransactions().stream().map(transaction -> transaction.getHash()).toList();
 	}
 
@@ -66,13 +79,14 @@ public class Block {
 		return transactionOutputs;
 	}
 
-	public void mineBlock(int difficulty) {
+	public Block mine(int difficulty) {
 		String zeros = StringUtil.getCharsZeroByDifficuty(difficulty);
 		while(!this.testHashCondition(zeros)) {
 			this.increaseNonce();
 			this.setHash(calculateHash());
 		}
-		System.out.println("Block Mined!!! : " + hash);
+		SystemOutPrintlnDecorator.ciano("Block Mined!!! : " + hash);
+		return this;
 	}
 
 	private Boolean testHashCondition(String target) {
@@ -83,20 +97,19 @@ public class Block {
 		this.nonce ++;
 	}
 
-	public boolean addTransaction(Transaction transaction) {
+	public Block addTransaction(Transaction transaction) {
 		if(transaction == null) {
-			return Boolean.FALSE;
+			return this;
 		}
 
 		if(!transaction.processTransaction()) {
-			System.out.println("Transaction failed to process. Discarded.");
-			return Boolean.FALSE;
+			SystemOutPrintlnDecorator.vermelho("Transaction failed to process. Discarded.");
+			return this;
 		}
 
 		transactions.add(transaction);
-		this.setMerkleRoot(StringUtil.getMerkleRoot(this.getTransactionsId()));
-		System.out.println("Transaction Successfully added to Block");
-		return Boolean.TRUE;
+		SystemOutPrintlnDecorator.ciano("Transaction Successfully added to Block");
+		return this;
 	}
 
 	public Boolean compareRegisteredAndCalculatedHash() {

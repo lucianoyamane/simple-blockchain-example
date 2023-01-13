@@ -8,7 +8,7 @@ public class GenesisWallet extends Wallet {
         super(name);
     }
 
-    public static GenesisWallet create() {
+    public static GenesisWallet novo() {
         return new GenesisWallet("Genesis");
     }
 
@@ -17,6 +17,10 @@ public class GenesisWallet extends Wallet {
         Transaction newTransaction = Transaction.genesis(this.toPublicData(), receiverPublicData, value);
         newTransaction.setSignature(createSignatureTransaction(newTransaction.getHash()));
         return newTransaction;
+    }
 
+    @Override
+    public Integer getBalance() {
+        return Integer.valueOf(999999999);
     }
 }
