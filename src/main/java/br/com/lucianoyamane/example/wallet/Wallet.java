@@ -59,8 +59,8 @@ public class Wallet {
 		return UnspentTransactions.getInstance().getWalletBalance(this.getPublicKeyDecorator());
 	}
 
-	public byte[] createSignatureTransaction(String hash) {
-		return StringUtil.applyECDSASig(this.getPrivateKey(), hash);
+	protected void createSignatureTransaction(TransactionBlockChain transactionBlockChain) {
+		transactionBlockChain.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transactionBlockChain.getFingerPrint()));
 	}
 
 	public Boolean hasFunds(Integer value) {
@@ -76,7 +76,7 @@ public class Wallet {
 		List<TransactionInput> inputs = unspentTransactionOutputs.stream().map(TransactionInput::create).toList();
 		Transaction newTransaction = Transaction.create(this.toPublicData().getPublicKeyDecorator(), receiverPublicData.getPublicKeyDecorator(), value, inputs);
 		TransactionBlockChain transactionBlockChain = TransactionBlockChain.create(newTransaction);
-		transactionBlockChain.setSignature(createSignatureTransaction(transactionBlockChain.getFingerPrint()));
+		createSignatureTransaction(transactionBlockChain);
 		return transactionBlockChain;
 	}
 
