@@ -72,10 +72,7 @@ public class Wallet {
 			SystemOutPrintlnDecorator.vermelho("Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}
-		List<TransactionOutput> unspentTransactionOutputs = UnspentTransactions.getInstance().loadUnspentUTXO(this.getPublicKeyDecorator());
-		List<TransactionInput> inputs = unspentTransactionOutputs.stream().map(TransactionInput::create).toList();
-		Transaction newTransaction = Transaction.create(this.toPublicData().getPublicKeyDecorator(), receiverPublicData.getPublicKeyDecorator(), value, inputs);
-		TransactionBlockChain transactionBlockChain = TransactionBlockChain.create(newTransaction);
+		TransactionBlockChain transactionBlockChain = TransactionBlockChain.create(this.toPublicData().getPublicKeyDecorator(), receiverPublicData.getPublicKeyDecorator(), value);
 		createSignatureTransaction(transactionBlockChain);
 		return transactionBlockChain;
 	}

@@ -13,16 +13,14 @@ public class Transaction {
 	private TransactionOutput receiverTransactionOutput;
 	private Integer value;
 	private List<TransactionInput> inputs;
+	private String fingerPrint;
+	private byte[] signature;
 
 	protected Transaction(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value, List<TransactionInput> inputs) {
 		this.setSenderPublicKeyDecorator(senderPublicKeyDecorator);
 		this.setReceiverPublickeyDecorator(receiverPublickeyDecorator);
 		this.setValue(value);
 		this.setInputs(inputs);
-	}
-
-	public static Transaction genesis(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value) {
-		return create(senderPublicKeyDecorator, receiverPublickeyDecorator, value, new ArrayList<>());
 	}
 
 	public static Transaction create(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value, List<TransactionInput> inputs) {
@@ -77,13 +75,19 @@ public class Transaction {
 		return this.inputs;
 	}
 
+	public String getFingerPrint() {
+		return fingerPrint;
+	}
 
+	public void setFingerPrint(String fingerPrint) {
+		this.fingerPrint = fingerPrint;
+	}
 
+	public byte[] getSignature() {
+		return signature;
+	}
 
-
-
-
-
-
-    
+	public void setSignature(byte[] signature) {
+		this.signature = signature;
+	}
 }

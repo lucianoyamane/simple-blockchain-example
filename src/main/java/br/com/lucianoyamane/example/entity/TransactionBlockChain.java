@@ -3,28 +3,31 @@ package br.com.lucianoyamane.example.entity;
 import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.UnspentTransactions;
 import br.com.lucianoyamane.example.exception.BlockChainException;
+import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import br.com.lucianoyamane.example.transaction.Transaction;
 import br.com.lucianoyamane.example.transaction.TransactionInput;
 import br.com.lucianoyamane.example.transaction.TransactionOutput;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class TransactionBlockChain {
-
-    private String fingerPrint;
-
-    private byte[] signature;
 
     private Transaction transaction;
 
     private TransactionBlockChain(Transaction transaction) {
         this.transaction = transaction;
-        this.setFingerPrint(this.createFingerPrint());
+        transaction.setFingerPrint(this.createFingerPrint());
     }
 
-    public static TransactionBlockChain create(Transaction transaction) {
-        return new TransactionBlockChain(transaction);
+    public static TransactionBlockChain create(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value) {
+        return new TransactionBlockChain(Transaction.create(senderPublicKeyDecorator, receiverPublickeyDecorator, value, createInputs(senderPublicKeyDecorator)));
+    }
+
+    private static List<TransactionInput> createInputs(PublicKeyDecorator senderPublicKeyDecorator) {
+        List<TransactionOutput> unspentTransactionOutputs = UnspentTransactions.getInstance().loadUnspentUTXO(senderPublicKeyDecorator);
+        return unspentTransactionOutputs.stream().map(TransactionInput::create).collect(Collectors.toList());
     }
 
     public Transaction getTransaction() {
@@ -35,16 +38,12 @@ public class TransactionBlockChain {
         this.transaction = transaction;
     }
 
-    public String getFingerPrint() {
-        return fingerPrint;
-    }
-
-    private void setFingerPrint(String fingerPrint) {
-        this.fingerPrint = fingerPrint;
-    }
-
     private String createFingerPrint() {
         return StringUtil.encode(this.getData());
+    }
+
+    public String getFingerPrint() {
+        return this.transaction.getFingerPrint();
     }
 
     private String getData() {
@@ -56,11 +55,7 @@ public class TransactionBlockChain {
     }
 
     public void setSignature(byte[] signature) {
-        this.signature = signature;
-    }
-
-    private byte[] getSignature() {
-        return this.signature;
+        this.transaction.setSignature(signature);
     }
 
     public boolean processTransaction() {
@@ -74,7 +69,7 @@ public class TransactionBlockChain {
     }
 
     private Boolean verifiySignature() {
-        return StringUtil.verifyECDSASig(this.transaction.getSenderPublicKeyDecorator().getPublicKey(), this.getFingerPrint(), this.getSignature());
+        return StringUtil.verifyECDSASig(this.transaction.getSenderPublicKeyDecorator().getPublicKey(), this.transaction.getFingerPrint(), this.transaction.getSignature());
     }
 
     private void removeCurrentOutput() {
@@ -122,7 +117,7 @@ public class TransactionBlockChain {
         }
 
         if (!this.isInputEqualOutputValue()) {
-            throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.getFingerPrint() + ")");
+            throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.transaction.getFingerPrint() + ")");
         }
 
         TransactionOutput senderTransactionOutput = this.getTransaction().getSenderTransactionOutput();
