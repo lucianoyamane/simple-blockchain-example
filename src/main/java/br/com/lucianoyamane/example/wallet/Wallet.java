@@ -1,19 +1,15 @@
 package br.com.lucianoyamane.example.wallet;
 
-import br.com.lucianoyamane.example.*;
+import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
+import br.com.lucianoyamane.example.configurations.UnspentTransactions;
 import br.com.lucianoyamane.example.entity.TransactionBlockChain;
 import br.com.lucianoyamane.example.keypair.BouncyCastleKeyPair;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
-import br.com.lucianoyamane.example.transaction.Transaction;
-import br.com.lucianoyamane.example.transaction.TransactionInput;
-import br.com.lucianoyamane.example.transaction.TransactionOutput;
-import br.com.lucianoyamane.example.configurations.UnspentTransactions;
 
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.List;
 
 public class Wallet {
 

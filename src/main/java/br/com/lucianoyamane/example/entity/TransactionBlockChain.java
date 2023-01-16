@@ -5,12 +5,10 @@ import br.com.lucianoyamane.example.configurations.UnspentTransactions;
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import br.com.lucianoyamane.example.transaction.Transaction;
-import br.com.lucianoyamane.example.transaction.TransactionInput;
-import br.com.lucianoyamane.example.transaction.TransactionOutput;
+import br.com.lucianoyamane.example.transaction.TransactionOperation;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class TransactionBlockChain {
 
@@ -25,17 +23,12 @@ public class TransactionBlockChain {
         return new TransactionBlockChain(Transaction.create(senderPublicKeyDecorator, receiverPublickeyDecorator, value, createInputs(senderPublicKeyDecorator)));
     }
 
-    private static List<TransactionInput> createInputs(PublicKeyDecorator senderPublicKeyDecorator) {
-        List<TransactionOutput> unspentTransactionOutputs = UnspentTransactions.getInstance().loadUnspentUTXO(senderPublicKeyDecorator);
-        return unspentTransactionOutputs.stream().map(TransactionInput::create).collect(Collectors.toList());
+    private static List<TransactionOperation> createInputs(PublicKeyDecorator senderPublicKeyDecorator) {
+        return UnspentTransactions.getInstance().loadUnspentUTXO(senderPublicKeyDecorator);
     }
 
     public Transaction getTransaction() {
         return transaction;
-    }
-
-    public void setTransaction(Transaction transaction) {
-        this.transaction = transaction;
     }
 
     private String createFingerPrint() {
@@ -73,25 +66,25 @@ public class TransactionBlockChain {
     }
 
     private void removeCurrentOutput() {
-        for(TransactionInput transactionInput : this.transaction.getInputs()) {
-            UnspentTransactions.getInstance().remove(transactionInput.getUnspentTransaction());
+        for(TransactionOperation transactionOperation : this.transaction.getUnspentTransactions()) {
+            UnspentTransactions.getInstance().remove(transactionOperation);
         }
     }
 
     private void addCurrentTransactionOutput() {
-        TransactionOutput current = TransactionOutput.current( this.getTransaction().getReceiverPublickeyDecorator(), this.getTransaction().getValue());
+        TransactionOperation current = TransactionOperation.create( this.getTransaction().getReceiverPublickeyDecorator(), this.getTransaction().getValue());
         this.transaction.setSenderTransactionOutput(current);
         this.addUnspentTransaction(current);
     }
 
     private void addLeftOverTransactionOutput() {
-        TransactionOutput leftover = TransactionOutput.leftover( this.getTransaction().getSenderPublicKeyDecorator(), this.getLeftOverValue());
+        TransactionOperation leftover = TransactionOperation.create( this.getTransaction().getSenderPublicKeyDecorator(), this.getLeftOverValue());
         this.transaction.setReceiverTransactionOutput(leftover);
         this.addUnspentTransaction(leftover);
     }
 
-    private void addUnspentTransaction(TransactionOutput transactionOutput) {
-        UnspentTransactions.getInstance().add(transactionOutput);
+    private void addUnspentTransaction(TransactionOperation transactionOperation) {
+        UnspentTransactions.getInstance().add(transactionOperation);
     }
 
     public Integer getLeftOverValue() {
@@ -99,8 +92,8 @@ public class TransactionBlockChain {
     }
 
     public Integer getInputValue() {
-        List<TransactionInput> inputs = this.getTransaction().getInputs();
-        return inputs.stream().mapToInt(input -> input.getUnspentTransaction().getValue()).sum();
+        List<TransactionOperation> outputs = this.getTransaction().getUnspentTransactions();
+        return outputs.stream().mapToInt(output -> output.getValue()).sum();
     }
 
     public Boolean isInputEqualOutputValue() {
@@ -120,14 +113,14 @@ public class TransactionBlockChain {
             throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.transaction.getFingerPrint() + ")");
         }
 
-        TransactionOutput senderTransactionOutput = this.getTransaction().getSenderTransactionOutput();
-        if (!senderTransactionOutput.isMine(this.getTransaction().getReceiverPublickeyDecorator())) {
-            throw new BlockChainException("#TransactionOutput(" + senderTransactionOutput + ") is not who it should be");
+        TransactionOperation senderTransactionOperation = this.getTransaction().getSenderTransactionOutput();
+        if (!senderTransactionOperation.isMine(this.getTransaction().getReceiverPublickeyDecorator())) {
+            throw new BlockChainException("#TransactionOutput(" + senderTransactionOperation + ") is not who it should be");
         }
 
-        TransactionOutput receiverTransactionOutput = this.getTransaction().getReceiverTransactionOutput();
-        if (!receiverTransactionOutput.isMine(this.getTransaction().getSenderPublicKeyDecorator())) {
-            throw new BlockChainException("#TransactionOutput(" + receiverTransactionOutput + ") is not who it should be");
+        TransactionOperation receiverTransactionOperation = this.getTransaction().getReceiverTransactionOutput();
+        if (!receiverTransactionOperation.isMine(this.getTransaction().getSenderPublicKeyDecorator())) {
+            throw new BlockChainException("#TransactionOutput(" + receiverTransactionOperation + ") is not who it should be");
         }
     }
 

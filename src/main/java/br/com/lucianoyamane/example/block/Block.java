@@ -3,9 +3,7 @@ package br.com.lucianoyamane.example.block;
 import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.entity.TransactionBlockChain;
-import br.com.lucianoyamane.example.exception.BlockChainException;
-import br.com.lucianoyamane.example.transaction.Transaction;
-import br.com.lucianoyamane.example.transaction.TransactionOutput;
+import br.com.lucianoyamane.example.transaction.TransactionOperation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,17 +65,17 @@ public class Block {
 		return this.getTransactions().stream().map(transaction -> transaction.getFingerPrint()).toList();
 	}
 
-	public List<TransactionOutput> getTransactionOutputs() {
-		List<TransactionOutput> transactionOutputs = new ArrayList<>();
+	public List<TransactionOperation> getTransactionOutputs() {
+		List<TransactionOperation> transactionOperations = new ArrayList<>();
 		for(TransactionBlockChain transaction : this.transactions) {
 			if (transaction.getTransaction().getSenderTransactionOutput() != null) {
-				transactionOutputs.add(transaction.getTransaction().getSenderTransactionOutput());
+				transactionOperations.add(transaction.getTransaction().getSenderTransactionOutput());
 			}
 			if (transaction.getTransaction().getReceiverTransactionOutput() != null) {
-				transactionOutputs.add(transaction.getTransaction().getReceiverTransactionOutput());
+				transactionOperations.add(transaction.getTransaction().getReceiverTransactionOutput());
 			}
 		}
-		return transactionOutputs;
+		return transactionOperations;
 	}
 
 	public Block mine(int difficulty) {

@@ -1,6 +1,6 @@
 package br.com.lucianoyamane.example.configurations;
 
-import br.com.lucianoyamane.example.transaction.TransactionOutput;
+import br.com.lucianoyamane.example.transaction.TransactionOperation;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 
 import java.util.ArrayList;
@@ -16,28 +16,28 @@ public class UnspentTransactions {
         }
         return instance;
     }
-    private List<TransactionOutput> transactionOutputs;
+    private List<TransactionOperation> transactionOperations;
 
     private UnspentTransactions() {
-        this.transactionOutputs = new ArrayList<>();
+        this.transactionOperations = new ArrayList<>();
     }
 
-    public void add(TransactionOutput transactionOutput) {
-        this.transactionOutputs.add(transactionOutput);
+    public void add(TransactionOperation transactionOperation) {
+        this.transactionOperations.add(transactionOperation);
     }
 
-    public void remove(TransactionOutput transactionOutput) {
-        this.transactionOutputs.remove(transactionOutput);
+    public void remove(TransactionOperation transactionOperation) {
+        this.transactionOperations.remove(transactionOperation);
     }
 
     public Integer getWalletBalance(PublicKeyDecorator publicKeyDecorator) {
-        return this.transactionOutputs.stream()
+        return this.transactionOperations.stream()
                 .filter(output -> output.isMine(publicKeyDecorator))
-                .mapToInt(TransactionOutput::getValue).sum();
+                .mapToInt(TransactionOperation::getValue).sum();
     }
 
-    public List<TransactionOutput> loadUnspentUTXO(PublicKeyDecorator publicKeyDecorator) {
-        return this.transactionOutputs.stream()
+    public List<TransactionOperation> loadUnspentUTXO(PublicKeyDecorator publicKeyDecorator) {
+        return this.transactionOperations.stream()
                 .filter(output -> output.isMine(publicKeyDecorator)).toList();
     }
 

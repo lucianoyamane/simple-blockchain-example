@@ -1,26 +1,23 @@
 package br.com.lucianoyamane.example.transaction;
 
-import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import com.google.gson.Gson;
 
 import java.util.UUID;
 
-public class TransactionOutput {
+public class TransactionOperation {
     private String id;
 	private PublicKeyDecorator publicKeyDecorator;
 	private Integer value;
-	private String type;
 	
 	//TODO: implementar validacao valor minimo transação
 	//		if(transactionOutput.getValue() < minimumTransaction) {
 //			System.out.println("#Transaction Inputs to small: " + getInputValue());
 //			return false;
 //		}
-	private TransactionOutput(PublicKeyDecorator publicKeyDecorator, Integer value, String type) {
+	private TransactionOperation(PublicKeyDecorator publicKeyDecorator, Integer value) {
 		this.setPublicKeyDecorator(publicKeyDecorator);
 		this.setValue(value);
-		this.setType(type);
 		this.setId(UUID.randomUUID().toString());
 	}
 
@@ -30,10 +27,6 @@ public class TransactionOutput {
 
 	public void setPublicKeyDecorator(PublicKeyDecorator publicKeyDecorator) {
 		this.publicKeyDecorator = publicKeyDecorator;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	public String getId() {
@@ -52,12 +45,8 @@ public class TransactionOutput {
 		return value;
 	}
 
-	public static TransactionOutput leftover(PublicKeyDecorator publicKeyDecorator, Integer value) {
-		return new TransactionOutput(publicKeyDecorator, value, "LEFTOVER");
-	}
-
-	public static TransactionOutput current(PublicKeyDecorator publicKeyDecorator, Integer value) {
-		return new TransactionOutput(publicKeyDecorator, value, "CURRENT");
+	public static TransactionOperation create(PublicKeyDecorator publicKeyDecorator, Integer value) {
+		return new TransactionOperation(publicKeyDecorator, value);
 	}
 
 	public Boolean isMine(PublicKeyDecorator publicKey) {
@@ -69,10 +58,10 @@ public class TransactionOutput {
 		if (obj == this) {
 			return true;
 		}
-		if (!(obj instanceof TransactionOutput)) {
+		if (!(obj instanceof TransactionOperation)) {
 			return false;
 		}
-		TransactionOutput other = (TransactionOutput) obj;
+		TransactionOperation other = (TransactionOperation) obj;
 		return this.getId().equals(other.getId());
 	}
 

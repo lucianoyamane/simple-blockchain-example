@@ -1,29 +1,27 @@
 package br.com.lucianoyamane.example.transaction;
 
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
-import br.com.lucianoyamane.example.wallet.PublicData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Transaction {
 	private PublicKeyDecorator senderPublicKeyDecorator;
 	private PublicKeyDecorator receiverPublickeyDecorator;
-	private TransactionOutput senderTransactionOutput;
-	private TransactionOutput receiverTransactionOutput;
+	private TransactionOperation senderTransactionOperation;
+	private TransactionOperation receiverTransactionOperation;
 	private Integer value;
-	private List<TransactionInput> inputs;
+	private List<TransactionOperation> unspentTransactions;
 	private String fingerPrint;
 	private byte[] signature;
 
-	protected Transaction(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value, List<TransactionInput> inputs) {
+	protected Transaction(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value, List<TransactionOperation> unspentTransactions) {
 		this.setSenderPublicKeyDecorator(senderPublicKeyDecorator);
 		this.setReceiverPublickeyDecorator(receiverPublickeyDecorator);
 		this.setValue(value);
-		this.setInputs(inputs);
+		this.setUnspentTransactions(unspentTransactions);
 	}
 
-	public static Transaction create(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value, List<TransactionInput> inputs) {
+	public static Transaction create(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value, List<TransactionOperation> inputs) {
 		return new Transaction(senderPublicKeyDecorator, receiverPublickeyDecorator, value, inputs);
 	}
 
@@ -43,20 +41,20 @@ public class Transaction {
 		this.receiverPublickeyDecorator = receiverPublickeyDecorator;
 	}
 
-	public void setSenderTransactionOutput(TransactionOutput senderTransactionOutput) {
-		this.senderTransactionOutput = senderTransactionOutput;
+	public void setSenderTransactionOutput(TransactionOperation senderTransactionOperation) {
+		this.senderTransactionOperation = senderTransactionOperation;
 	}
 
-	public TransactionOutput getReceiverTransactionOutput() {
-		return this.receiverTransactionOutput;
+	public TransactionOperation getReceiverTransactionOutput() {
+		return this.receiverTransactionOperation;
 	}
 
-	public void setReceiverTransactionOutput(TransactionOutput receiverTransactionOutput) {
-		this.receiverTransactionOutput = receiverTransactionOutput;
+	public void setReceiverTransactionOutput(TransactionOperation receiverTransactionOperation) {
+		this.receiverTransactionOperation = receiverTransactionOperation;
 	}
 
-	public TransactionOutput getSenderTransactionOutput() {
-		return senderTransactionOutput;
+	public TransactionOperation getSenderTransactionOutput() {
+		return senderTransactionOperation;
 	}
 
 	public Integer getValue() {
@@ -67,12 +65,12 @@ public class Transaction {
 		this.value = value;
 	}
 
-	private void setInputs(List<TransactionInput> inputs) {
-		this.inputs = inputs;
+	private void setUnspentTransactions(List<TransactionOperation> unspentTransactions) {
+		this.unspentTransactions = unspentTransactions;
 	}
 
-	public List<TransactionInput> getInputs() {
-		return this.inputs;
+	public List<TransactionOperation> getUnspentTransactions() {
+		return this.unspentTransactions;
 	}
 
 	public String getFingerPrint() {
