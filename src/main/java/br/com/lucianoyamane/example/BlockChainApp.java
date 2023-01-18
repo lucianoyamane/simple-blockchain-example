@@ -1,7 +1,8 @@
 package br.com.lucianoyamane.example;
 
 
-import br.com.lucianoyamane.example.block.BlockEntity;
+import br.com.lucianoyamane.example.block.Block;
+import br.com.lucianoyamane.example.block.BlockBlockChain;
 import br.com.lucianoyamane.example.configurations.Difficulty;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.entity.TransactionBlockChain;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class BlockChainApp {
 
-	private List<BlockEntity> blockchain;
+	private List<BlockBlockChain> blockchain;
 
 	private BlockChainApp() {
 		this.blockchain = new ArrayList();
@@ -28,7 +29,7 @@ public class BlockChainApp {
 	public String genesisBlock(TransactionBlockChain transaction) {
 		SystemOutPrintlnDecorator.ciano("******************************************************");
 		SystemOutPrintlnDecorator.ciano("Creating and Mining Genesis block... ");
-		BlockEntity genesis = BlockEntity.init()
+		BlockBlockChain genesis = BlockBlockChain.init(Block.init())
 								.addTransaction(transaction)
 								.processGenesis()
 								.mine(Difficulty.getInstance().getDifficulty());
@@ -38,16 +39,16 @@ public class BlockChainApp {
 
 	public String transactionBlock(String previousHash, TransactionBlockChain transaction) {
 		SystemOutPrintlnDecorator.ciano("******************************************************");
-		BlockEntity blockEntity = BlockEntity.init()
+		BlockBlockChain blockBlockChain = BlockBlockChain.init(Block.init())
 									.addTransaction(transaction)
 									.process(previousHash)
 									.mine(Difficulty.getInstance().getDifficulty());
-		addBlock(blockEntity);
-		return blockEntity.getHash();
+		addBlock(blockBlockChain);
+		return blockBlockChain.getHash();
 	}
 
-	private void addBlock(BlockEntity newBlockEntity) {
-		blockchain.add(newBlockEntity);
+	private void addBlock(BlockBlockChain newBlockBlockChain) {
+		blockchain.add(newBlockBlockChain);
 	}
 
 	
@@ -56,20 +57,20 @@ public class BlockChainApp {
 
 		for(int i = 1; i < blockchain.size(); i++) {
 			
-			BlockEntity currentBlockEntity = blockchain.get(i);
-			BlockEntity previousBlockEntity = blockchain.get(i - 1);
+			BlockBlockChain currentBlockBlockChain = blockchain.get(i);
+			BlockBlockChain previousBlockBlockChain = blockchain.get(i - 1);
 
-			if (previousBlockEntity.isGenesis()) {
-				tempTransactionsOutputs.addAll(previousBlockEntity.getTransactionOutputs());
+			if (previousBlockBlockChain.isGenesis()) {
+				tempTransactionsOutputs.addAll(previousBlockBlockChain.getTransactionOutputs());
 			}
-			isConsistent(currentBlockEntity, previousBlockEntity.getHash(), Difficulty.getInstance().getDifficulty());
+			currentBlockBlockChain.isConsistent(previousBlockBlockChain.getHash(), Difficulty.getInstance().getDifficulty());
 
-			List<TransactionBlockChain> currentBlockTransactions = currentBlockEntity.getTransactions();
+			List<TransactionBlockChain> currentBlockTransactions = currentBlockBlockChain.getTransactionBlockChains();
 
-			for(TransactionBlockChain transaction : currentBlockTransactions) {
-				transaction.isConsistent();
+			for(TransactionBlockChain transactionBlockChain : currentBlockTransactions) {
+				transactionBlockChain.isConsistent();
 
-				List<TransactionOperation> transactionInputs = transaction.getTransaction().getUnspentTransactions();
+				List<TransactionOperation> transactionInputs = transactionBlockChain.getTransaction().getUnspentTransactions();
 
 				for(TransactionOperation output : transactionInputs) {
 					TransactionOperation transactionOperationFromOutside = tempTransactionsOutputs.stream().filter(outputTemp -> outputTemp.equals(output)).findFirst().orElse(null);
@@ -80,24 +81,14 @@ public class BlockChainApp {
 					tempTransactionsOutputs.remove(output);
 				}
 			}
-			for(TransactionOperation output: currentBlockEntity.getTransactionOutputs()) {
+			for(TransactionOperation output: currentBlockBlockChain.getTransactionOutputs()) {
 				tempTransactionsOutputs.add(output);
 			}
 		}
 		SystemOutPrintlnDecorator.roxo("Blockchain is valid");
 	}
 
-	private static void isConsistent(BlockEntity blockEntity, String previousHash, int difficulty) {
-		if (!blockEntity.compareRegisteredAndCalculatedHash()) {
-			throw new BlockChainException("Current Hashes not equal");
-		}
-		if (!blockEntity.compareHash(previousHash)) {
-			throw new BlockChainException("Previous Hashes not equal");
-		}
-		if(!blockEntity.hashIsSolved(difficulty)) {
-			throw new BlockChainException("This block hasn't been mined");
-		}
-	}
+
 
 
 

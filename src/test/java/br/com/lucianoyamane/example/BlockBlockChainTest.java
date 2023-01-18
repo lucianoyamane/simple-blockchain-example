@@ -2,7 +2,7 @@ package br.com.lucianoyamane.example;
 
 import org.junit.jupiter.api.Test;
 
-class BlockEntityTest {
+class BlockBlockChainTest {
 
 
     @Test
