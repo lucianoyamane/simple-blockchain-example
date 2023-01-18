@@ -5,7 +5,7 @@ import br.com.lucianoyamane.example.block.Block;
 import br.com.lucianoyamane.example.block.BlockBlockChain;
 import br.com.lucianoyamane.example.configurations.Difficulty;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
-import br.com.lucianoyamane.example.entity.TransactionBlockChain;
+import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.transaction.TransactionOperation;
 

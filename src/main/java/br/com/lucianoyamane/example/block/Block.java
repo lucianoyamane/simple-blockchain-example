@@ -1,6 +1,6 @@
 package br.com.lucianoyamane.example.block;
 
-import br.com.lucianoyamane.example.entity.TransactionBlockChain;
+import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
 
 import java.util.ArrayList;
 import java.util.List;

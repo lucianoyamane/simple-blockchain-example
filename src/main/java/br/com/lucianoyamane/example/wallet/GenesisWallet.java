@@ -1,6 +1,6 @@
 package br.com.lucianoyamane.example.wallet;
 
-import br.com.lucianoyamane.example.entity.TransactionBlockChain;
+import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
 
 public class GenesisWallet extends Wallet {
 

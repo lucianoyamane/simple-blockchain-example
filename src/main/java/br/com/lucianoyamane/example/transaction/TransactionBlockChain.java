@@ -1,11 +1,9 @@
-package br.com.lucianoyamane.example.entity;
+package br.com.lucianoyamane.example.transaction;
 
 import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.UnspentTransactions;
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
-import br.com.lucianoyamane.example.transaction.Transaction;
-import br.com.lucianoyamane.example.transaction.TransactionOperation;
 
 import java.util.List;
 import java.util.UUID;
