@@ -13,7 +13,7 @@ public class TransactionBlockChain {
     private Transaction transaction;
 
     private TransactionBlockChain(Transaction transaction) {
-        this.transaction = transaction;
+        this.setTransaction(transaction);
         transaction.setFingerPrint(this.createFingerPrint());
     }
 
@@ -21,7 +21,7 @@ public class TransactionBlockChain {
         return new TransactionBlockChain(Transaction.create(senderPublicKeyDecorator, receiverPublickeyDecorator, value, createInputs(senderPublicKeyDecorator)));
     }
 
-    private static List<TransactionOperation> createInputs(PublicKeyDecorator senderPublicKeyDecorator) {
+    private static List<TransactionOperationBlockChain> createInputs(PublicKeyDecorator senderPublicKeyDecorator) {
         return UnspentTransactions.getInstance().loadUnspentUTXO(senderPublicKeyDecorator);
     }
 
@@ -29,12 +29,16 @@ public class TransactionBlockChain {
         return transaction;
     }
 
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
+    }
+
     private String createFingerPrint() {
         return StringUtil.encode(this.getData());
     }
 
     public String getFingerPrint() {
-        return this.transaction.getFingerPrint();
+        return this.getTransaction().getFingerPrint();
     }
 
     private String getData() {
@@ -46,7 +50,7 @@ public class TransactionBlockChain {
     }
 
     public void setSignature(byte[] signature) {
-        this.transaction.setSignature(signature);
+        this.getTransaction().setSignature(signature);
     }
 
     public boolean processTransaction() {
@@ -60,45 +64,45 @@ public class TransactionBlockChain {
     }
 
     private Boolean verifiySignature() {
-        return StringUtil.verifyECDSASig(this.transaction.getSenderPublicKeyDecorator().getPublicKey(), this.transaction.getFingerPrint(), this.transaction.getSignature());
+        return StringUtil.verifyECDSASig(this.getTransaction().getSenderPublicKeyDecorator().getPublicKey(), this.getTransaction().getFingerPrint(), this.getTransaction().getSignature());
     }
 
     private void removeCurrentOutput() {
-        for(TransactionOperation transactionOperation : this.transaction.getUnspentTransactions()) {
-            UnspentTransactions.getInstance().remove(transactionOperation);
+        for(TransactionOperationBlockChain transactionOperationBlockChain : this.getTransaction().getUnspentTransactions()) {
+            UnspentTransactions.getInstance().remove(transactionOperationBlockChain);
         }
     }
 
     private void addCurrentTransactionOutput() {
-        TransactionOperation current = TransactionOperation.create( this.getTransaction().getReceiverPublickeyDecorator(), this.getTransaction().getValue());
-        this.transaction.setSenderTransactionOutput(current);
+        TransactionOperationBlockChain current = TransactionOperationBlockChain.create( this.getTransaction().getReceiverPublickeyDecorator(), this.getTransaction().getValue());
+        this.getTransaction().setSenderTransactionOutput(current);
         this.addUnspentTransaction(current);
     }
 
     private void addLeftOverTransactionOutput() {
-        TransactionOperation leftover = TransactionOperation.create( this.getTransaction().getSenderPublicKeyDecorator(), this.getLeftOverValue());
-        this.transaction.setReceiverTransactionOutput(leftover);
+        TransactionOperationBlockChain leftover = TransactionOperationBlockChain.create( this.getTransaction().getSenderPublicKeyDecorator(), this.getLeftOverValue());
+        this.getTransaction().setReceiverTransactionOutput(leftover);
         this.addUnspentTransaction(leftover);
     }
 
-    private void addUnspentTransaction(TransactionOperation transactionOperation) {
-        UnspentTransactions.getInstance().add(transactionOperation);
+    private void addUnspentTransaction(TransactionOperationBlockChain transactionOperationBlockChain) {
+        UnspentTransactions.getInstance().add(transactionOperationBlockChain);
     }
 
-    public Integer getLeftOverValue() {
+    private Integer getLeftOverValue() {
         return this.getInputValue() - this.getTransaction().getValue();
     }
 
-    public Integer getInputValue() {
-        List<TransactionOperation> outputs = this.getTransaction().getUnspentTransactions();
+    private Integer getInputValue() {
+        List<TransactionOperationBlockChain> outputs = this.getTransaction().getUnspentTransactions();
         return outputs.stream().mapToInt(output -> output.getValue()).sum();
     }
 
-    public Boolean isInputEqualOutputValue() {
+    private Boolean isInputEqualOutputValue() {
         return this.getInputValue().equals(this.getOutputsValue());
     }
 
-    public Integer getOutputsValue() {
+    private Integer getOutputsValue() {
         return this.getTransaction().getSenderTransactionOutput().getValue() + this.getTransaction().getReceiverTransactionOutput().getValue();
     }
 
@@ -108,18 +112,17 @@ public class TransactionBlockChain {
         }
 
         if (!this.isInputEqualOutputValue()) {
-            throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.transaction.getFingerPrint() + ")");
+            throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.getTransaction().getFingerPrint() + ")");
         }
 
-        TransactionOperation senderTransactionOperation = this.getTransaction().getSenderTransactionOutput();
-        if (!senderTransactionOperation.isMine(this.getTransaction().getReceiverPublickeyDecorator())) {
-            throw new BlockChainException("#TransactionOutput(" + senderTransactionOperation + ") is not who it should be");
+        TransactionOperationBlockChain senderTransactionOperationBlockChain = this.getTransaction().getSenderTransactionOutput();
+        if (!senderTransactionOperationBlockChain.isMine(this.getTransaction().getReceiverPublickeyDecorator())) {
+            throw new BlockChainException("#TransactionOutput(" + senderTransactionOperationBlockChain + ") is not who it should be");
         }
 
-        TransactionOperation receiverTransactionOperation = this.getTransaction().getReceiverTransactionOutput();
-        if (!receiverTransactionOperation.isMine(this.getTransaction().getSenderPublicKeyDecorator())) {
-            throw new BlockChainException("#TransactionOutput(" + receiverTransactionOperation + ") is not who it should be");
+        TransactionOperationBlockChain receiverTransactionOperationBlockChain = this.getTransaction().getReceiverTransactionOutput();
+        if (!receiverTransactionOperationBlockChain.isMine(this.getTransaction().getSenderPublicKeyDecorator())) {
+            throw new BlockChainException("#TransactionOutput(" + receiverTransactionOperationBlockChain + ") is not who it should be");
         }
     }
-
 }

@@ -1,6 +1,6 @@
 package br.com.lucianoyamane.example.configurations;
 
-import br.com.lucianoyamane.example.transaction.TransactionOperation;
+import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 
 import java.util.ArrayList;
@@ -16,28 +16,28 @@ public class UnspentTransactions {
         }
         return instance;
     }
-    private List<TransactionOperation> transactionOperations;
+    private List<TransactionOperationBlockChain> transactionOperationBlockChains;
 
     private UnspentTransactions() {
-        this.transactionOperations = new ArrayList<>();
+        this.transactionOperationBlockChains = new ArrayList<>();
     }
 
-    public void add(TransactionOperation transactionOperation) {
-        this.transactionOperations.add(transactionOperation);
+    public void add(TransactionOperationBlockChain transactionOperationBlockChain) {
+        this.transactionOperationBlockChains.add(transactionOperationBlockChain);
     }
 
-    public void remove(TransactionOperation transactionOperation) {
-        this.transactionOperations.remove(transactionOperation);
+    public void remove(TransactionOperationBlockChain transactionOperationBlockChain) {
+        this.transactionOperationBlockChains.remove(transactionOperationBlockChain);
     }
 
     public Integer getWalletBalance(PublicKeyDecorator publicKeyDecorator) {
-        return this.transactionOperations.stream()
+        return this.transactionOperationBlockChains.stream()
                 .filter(output -> output.isMine(publicKeyDecorator))
-                .mapToInt(TransactionOperation::getValue).sum();
+                .mapToInt(TransactionOperationBlockChain::getValue).sum();
     }
 
-    public List<TransactionOperation> loadUnspentUTXO(PublicKeyDecorator publicKeyDecorator) {
-        return this.transactionOperations.stream()
+    public List<TransactionOperationBlockChain> loadUnspentUTXO(PublicKeyDecorator publicKeyDecorator) {
+        return this.transactionOperationBlockChains.stream()
                 .filter(output -> output.isMine(publicKeyDecorator)).toList();
     }
 

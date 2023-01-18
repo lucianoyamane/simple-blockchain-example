@@ -7,7 +7,7 @@ import br.com.lucianoyamane.example.configurations.Difficulty;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
 import br.com.lucianoyamane.example.exception.BlockChainException;
-import br.com.lucianoyamane.example.transaction.TransactionOperation;
+import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
 
 import java.util.ArrayList;
 //import java.util.Base64;
@@ -53,7 +53,7 @@ public class BlockChainApp {
 
 	
 	public void isChainValid() {
-		List<TransactionOperation> tempTransactionsOutputs = new ArrayList<>();
+		List<TransactionOperationBlockChain> tempTransactionsOutputs = new ArrayList<>();
 
 		for(int i = 1; i < blockchain.size(); i++) {
 			
@@ -70,18 +70,18 @@ public class BlockChainApp {
 			for(TransactionBlockChain transactionBlockChain : currentBlockTransactions) {
 				transactionBlockChain.isConsistent();
 
-				List<TransactionOperation> transactionInputs = transactionBlockChain.getTransaction().getUnspentTransactions();
+				List<TransactionOperationBlockChain> transactionInputs = transactionBlockChain.getTransaction().getUnspentTransactions();
 
-				for(TransactionOperation output : transactionInputs) {
-					TransactionOperation transactionOperationFromOutside = tempTransactionsOutputs.stream().filter(outputTemp -> outputTemp.equals(output)).findFirst().orElse(null);
-					isConsistent(output, transactionOperationFromOutside);
+				for(TransactionOperationBlockChain output : transactionInputs) {
+					TransactionOperationBlockChain transactionOperationBlockChainFromOutside = tempTransactionsOutputs.stream().filter(outputTemp -> outputTemp.equals(output)).findFirst().orElse(null);
+					output.isConsistent(transactionOperationBlockChainFromOutside);
 				}
 
-				for(TransactionOperation output : transactionInputs) {
+				for(TransactionOperationBlockChain output : transactionInputs) {
 					tempTransactionsOutputs.remove(output);
 				}
 			}
-			for(TransactionOperation output: currentBlockBlockChain.getTransactionOutputs()) {
+			for(TransactionOperationBlockChain output: currentBlockBlockChain.getTransactionOutputs()) {
 				tempTransactionsOutputs.add(output);
 			}
 		}
@@ -92,14 +92,7 @@ public class BlockChainApp {
 
 
 
-	private static void isConsistent(TransactionOperation transactionOperation, TransactionOperation referenceTransactionOperation) {
-		if(referenceTransactionOperation == null) {
-			throw new BlockChainException("#Referenced input on Transaction(" + transactionOperation.toString() + ") is Missing");
-		}
-		if(transactionOperation.getValue() != referenceTransactionOperation.getValue()) {
-			throw new BlockChainException("#Referenced input Transaction(" + transactionOperation + ") value is Invalid");
-		}
-	}
+
 
 	
 

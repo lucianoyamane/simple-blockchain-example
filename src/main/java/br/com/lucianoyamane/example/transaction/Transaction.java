@@ -7,21 +7,21 @@ import java.util.List;
 public class Transaction {
 	private PublicKeyDecorator senderPublicKeyDecorator;
 	private PublicKeyDecorator receiverPublickeyDecorator;
-	private TransactionOperation senderTransactionOperation;
-	private TransactionOperation receiverTransactionOperation;
+	private TransactionOperationBlockChain senderTransactionOperationBlockChain;
+	private TransactionOperationBlockChain receiverTransactionOperationBlockChain;
 	private Integer value;
-	private List<TransactionOperation> unspentTransactions;
+	private List<TransactionOperationBlockChain> unspentTransactions;
 	private String fingerPrint;
 	private byte[] signature;
 
-	protected Transaction(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value, List<TransactionOperation> unspentTransactions) {
+	protected Transaction(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value, List<TransactionOperationBlockChain> unspentTransactions) {
 		this.setSenderPublicKeyDecorator(senderPublicKeyDecorator);
 		this.setReceiverPublickeyDecorator(receiverPublickeyDecorator);
 		this.setValue(value);
 		this.setUnspentTransactions(unspentTransactions);
 	}
 
-	public static Transaction create(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value, List<TransactionOperation> inputs) {
+	public static Transaction create(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value, List<TransactionOperationBlockChain> inputs) {
 		return new Transaction(senderPublicKeyDecorator, receiverPublickeyDecorator, value, inputs);
 	}
 
@@ -41,20 +41,20 @@ public class Transaction {
 		this.receiverPublickeyDecorator = receiverPublickeyDecorator;
 	}
 
-	public void setSenderTransactionOutput(TransactionOperation senderTransactionOperation) {
-		this.senderTransactionOperation = senderTransactionOperation;
+	public void setSenderTransactionOutput(TransactionOperationBlockChain senderTransactionOperationBlockChain) {
+		this.senderTransactionOperationBlockChain = senderTransactionOperationBlockChain;
 	}
 
-	public TransactionOperation getReceiverTransactionOutput() {
-		return this.receiverTransactionOperation;
+	public TransactionOperationBlockChain getReceiverTransactionOutput() {
+		return this.receiverTransactionOperationBlockChain;
 	}
 
-	public void setReceiverTransactionOutput(TransactionOperation receiverTransactionOperation) {
-		this.receiverTransactionOperation = receiverTransactionOperation;
+	public void setReceiverTransactionOutput(TransactionOperationBlockChain receiverTransactionOperationBlockChain) {
+		this.receiverTransactionOperationBlockChain = receiverTransactionOperationBlockChain;
 	}
 
-	public TransactionOperation getSenderTransactionOutput() {
-		return senderTransactionOperation;
+	public TransactionOperationBlockChain getSenderTransactionOutput() {
+		return senderTransactionOperationBlockChain;
 	}
 
 	public Integer getValue() {
@@ -65,11 +65,11 @@ public class Transaction {
 		this.value = value;
 	}
 
-	private void setUnspentTransactions(List<TransactionOperation> unspentTransactions) {
+	private void setUnspentTransactions(List<TransactionOperationBlockChain> unspentTransactions) {
 		this.unspentTransactions = unspentTransactions;
 	}
 
-	public List<TransactionOperation> getUnspentTransactions() {
+	public List<TransactionOperationBlockChain> getUnspentTransactions() {
 		return this.unspentTransactions;
 	}
 
