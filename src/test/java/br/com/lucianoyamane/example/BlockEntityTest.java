@@ -1,12 +1,8 @@
 package br.com.lucianoyamane.example;
 
-import br.com.lucianoyamane.example.block.Block;
-import br.com.lucianoyamane.example.transaction.Transaction;
 import org.junit.jupiter.api.Test;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
-class BlockTest {
+class BlockEntityTest {
 
 
     @Test

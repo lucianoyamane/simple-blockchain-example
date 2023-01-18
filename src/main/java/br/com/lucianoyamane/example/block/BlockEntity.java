@@ -8,7 +8,7 @@ import br.com.lucianoyamane.example.transaction.TransactionOperation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Block {
+public class BlockEntity {
 	
 	private String hash;
 	private String previousHash;
@@ -17,31 +17,25 @@ public class Block {
 	private long timeStamp;
 	private int nonce;
 
-    public static Block genesis() {
-		SystemOutPrintlnDecorator.ciano("******************************************************");
-		SystemOutPrintlnDecorator.ciano("Creating and Mining Genesis block... ");
-        return init();
+    public static BlockEntity init() {
+        return new BlockEntity();
     }
 
-    public static Block init() {
-		SystemOutPrintlnDecorator.ciano("******************************************************");
-        return new Block();
-    }
-
-	private Block() {
+	private BlockEntity() {
 		this.setTimeStamp(System.currentTimeMillis());
 		this.setTransactions(new ArrayList());
 	}
 
-	public Block processGenesis() {
+	public BlockEntity processGenesis() {
 		this.process("0");
 		return this;
 	}
 
-	public void process(String previousHash) {
+	public BlockEntity process(String previousHash) {
 		this.setPreviousHash(previousHash);
 		this.setHash(calculateHash());
 		this.setMerkleRoot(StringUtil.getMerkleRoot(this.getTransactionsId()));
+		return this;
 	}
 
 	public Boolean isGenesis() {
@@ -78,7 +72,7 @@ public class Block {
 		return transactionOperations;
 	}
 
-	public Block mine(int difficulty) {
+	public BlockEntity mine(int difficulty) {
 		String zeros = StringUtil.getCharsZeroByDifficuty(difficulty);
 		while(!this.testHashCondition(zeros)) {
 			this.increaseNonce();
@@ -96,7 +90,7 @@ public class Block {
 		this.nonce ++;
 	}
 
-	public Block addTransaction(TransactionBlockChain transaction) {
+	public BlockEntity addTransaction(TransactionBlockChain transaction) {
 		if(transaction == null) {
 			return this;
 		}

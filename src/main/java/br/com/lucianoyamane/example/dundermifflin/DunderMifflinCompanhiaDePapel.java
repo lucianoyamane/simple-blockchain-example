@@ -1,10 +1,7 @@
 package br.com.lucianoyamane.example.dundermifflin;
 
 import br.com.lucianoyamane.example.BlockChainApp;
-import br.com.lucianoyamane.example.block.Block;
 import br.com.lucianoyamane.example.configurations.CarteirasRegistradas;
-import br.com.lucianoyamane.example.configurations.Difficulty;
-import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 
 import java.util.ArrayList;
 import java.util.List;
