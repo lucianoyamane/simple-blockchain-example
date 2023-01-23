@@ -10,12 +10,10 @@ public class Block {
     private String hash;
     private String previousHash;
     private String merkleRoot;
-    private List<TransactionBlockChain> transactionBlockChains;
     private long timeStamp;
     private int nonce;
 
     private Block() {
-        this.setTransactionBlockChains(new ArrayList());
         this.setTimeStamp(System.currentTimeMillis());
     }
 
@@ -47,13 +45,6 @@ public class Block {
         this.merkleRoot = merkleRoot;
     }
 
-    public List<TransactionBlockChain> getTransactionBlockChains() {
-        return transactionBlockChains;
-    }
-
-    public void setTransactionBlockChains(List<TransactionBlockChain> transactionBlockChains) {
-        this.transactionBlockChains = transactionBlockChains;
-    }
 
     public long getTimeStamp() {
         return timeStamp;

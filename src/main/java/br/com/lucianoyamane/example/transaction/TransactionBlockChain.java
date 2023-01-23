@@ -12,17 +12,47 @@ public class TransactionBlockChain {
 
     private Transaction transaction;
 
+    private TransactionOperationBlockChain senderTransactionOperationBlockChain;
+    private TransactionOperationBlockChain receiverTransactionOperationBlockChain;
+    private List<TransactionOperationBlockChain> unspentTransactionsOperationBlockChain;
+
     private TransactionBlockChain(Transaction transaction) {
         this.setTransaction(transaction);
         transaction.setFingerPrint(this.createFingerPrint());
+        this.createInputs(transaction.getSenderPublicKeyDecorator());
     }
 
     public static TransactionBlockChain create(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value) {
-        return new TransactionBlockChain(Transaction.create(senderPublicKeyDecorator, receiverPublickeyDecorator, value, createInputs(senderPublicKeyDecorator)));
+        return new TransactionBlockChain(Transaction.create(senderPublicKeyDecorator, receiverPublickeyDecorator, value));
     }
 
-    private static List<TransactionOperationBlockChain> createInputs(PublicKeyDecorator senderPublicKeyDecorator) {
-        return UnspentTransactions.getInstance().loadUnspentUTXO(senderPublicKeyDecorator);
+    private void createInputs(PublicKeyDecorator senderPublicKeyDecorator) {
+        List<TransactionOperationBlockChain> transactionOperationBlockChains = UnspentTransactions.getInstance().loadUnspentUTXO(senderPublicKeyDecorator);
+        this.setUnspentTransactionsOperationBlockChain(transactionOperationBlockChains);
+    }
+
+    public TransactionOperationBlockChain getSenderTransactionOperationBlockChain() {
+        return senderTransactionOperationBlockChain;
+    }
+
+    public void setSenderTransactionOperationBlockChain(TransactionOperationBlockChain senderTransactionOperationBlockChain) {
+        this.senderTransactionOperationBlockChain = senderTransactionOperationBlockChain;
+    }
+
+    public TransactionOperationBlockChain getReceiverTransactionOperationBlockChain() {
+        return receiverTransactionOperationBlockChain;
+    }
+
+    public void setReceiverTransactionOperationBlockChain(TransactionOperationBlockChain receiverTransactionOperationBlockChain) {
+        this.receiverTransactionOperationBlockChain = receiverTransactionOperationBlockChain;
+    }
+
+    public List<TransactionOperationBlockChain> getUnspentTransactionsOperationBlockChain() {
+        return unspentTransactionsOperationBlockChain;
+    }
+
+    public void setUnspentTransactionsOperationBlockChain(List<TransactionOperationBlockChain> unspentTransactionsOperationBlockChain) {
+        this.unspentTransactionsOperationBlockChain = unspentTransactionsOperationBlockChain;
     }
 
     public Transaction getTransaction() {
@@ -68,20 +98,20 @@ public class TransactionBlockChain {
     }
 
     private void removeCurrentOutput() {
-        for(TransactionOperationBlockChain transactionOperationBlockChain : this.getTransaction().getUnspentTransactions()) {
+        for(TransactionOperationBlockChain transactionOperationBlockChain : this.getUnspentTransactionsOperationBlockChain()) {
             UnspentTransactions.getInstance().remove(transactionOperationBlockChain);
         }
     }
 
     private void addCurrentTransactionOutput() {
         TransactionOperationBlockChain current = TransactionOperationBlockChain.create( this.getTransaction().getReceiverPublickeyDecorator(), this.getTransaction().getValue());
-        this.getTransaction().setSenderTransactionOutput(current);
+        this.setSenderTransactionOperationBlockChain(current);
         this.addUnspentTransaction(current);
     }
 
     private void addLeftOverTransactionOutput() {
         TransactionOperationBlockChain leftover = TransactionOperationBlockChain.create( this.getTransaction().getSenderPublicKeyDecorator(), this.getLeftOverValue());
-        this.getTransaction().setReceiverTransactionOutput(leftover);
+        this.setReceiverTransactionOperationBlockChain(leftover);
         this.addUnspentTransaction(leftover);
     }
 
@@ -94,7 +124,7 @@ public class TransactionBlockChain {
     }
 
     private Integer getInputValue() {
-        List<TransactionOperationBlockChain> outputs = this.getTransaction().getUnspentTransactions();
+        List<TransactionOperationBlockChain> outputs = this.getUnspentTransactionsOperationBlockChain();
         return outputs.stream().mapToInt(output -> output.getValue()).sum();
     }
 
@@ -103,7 +133,7 @@ public class TransactionBlockChain {
     }
 
     private Integer getOutputsValue() {
-        return this.getTransaction().getSenderTransactionOutput().getValue() + this.getTransaction().getReceiverTransactionOutput().getValue();
+        return this.getSenderTransactionOperationBlockChain().getValue() + this.getReceiverTransactionOperationBlockChain().getValue();
     }
 
     public void isConsistent() {
@@ -115,12 +145,12 @@ public class TransactionBlockChain {
             throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.getTransaction().getFingerPrint() + ")");
         }
 
-        TransactionOperationBlockChain senderTransactionOperationBlockChain = this.getTransaction().getSenderTransactionOutput();
+        TransactionOperationBlockChain senderTransactionOperationBlockChain = this.getSenderTransactionOperationBlockChain();
         if (!senderTransactionOperationBlockChain.isMine(this.getTransaction().getReceiverPublickeyDecorator())) {
             throw new BlockChainException("#TransactionOutput(" + senderTransactionOperationBlockChain + ") is not who it should be");
         }
 
-        TransactionOperationBlockChain receiverTransactionOperationBlockChain = this.getTransaction().getReceiverTransactionOutput();
+        TransactionOperationBlockChain receiverTransactionOperationBlockChain = this.getReceiverTransactionOperationBlockChain();
         if (!receiverTransactionOperationBlockChain.isMine(this.getTransaction().getSenderPublicKeyDecorator())) {
             throw new BlockChainException("#TransactionOutput(" + receiverTransactionOperationBlockChain + ") is not who it should be");
         }

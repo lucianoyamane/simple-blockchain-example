@@ -4,6 +4,7 @@ import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
 import br.com.lucianoyamane.example.exception.BlockChainException;
+import br.com.lucianoyamane.example.transaction.TransactionOperation;
 import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
 
 import java.util.ArrayList;
@@ -13,12 +14,15 @@ public class BlockBlockChain {
 	
 	private Block block;
 
+	private List<TransactionBlockChain> transactionBlockChains;
+
     public static BlockBlockChain init(Block block) {
         return new BlockBlockChain(block);
     }
 
 	private BlockBlockChain(Block block) {
 		this.block = block;
+		this.setTransactionBlockChains(new ArrayList());
 	}
 
 	public BlockBlockChain processGenesis() {
@@ -51,17 +55,17 @@ public class BlockBlockChain {
 	}
 
 	private List<String> getTransactionsId() {
-		return this.block.getTransactionBlockChains().stream().map(transaction -> transaction.getFingerPrint()).toList();
+		return this.getTransactionBlockChains().stream().map(transaction -> transaction.getFingerPrint()).toList();
 	}
 
 	public List<TransactionOperationBlockChain> getTransactionOutputs() {
 		List<TransactionOperationBlockChain> transactionOperationBlockChains = new ArrayList<>();
-		for(TransactionBlockChain transactionBlockChain : this.block.getTransactionBlockChains()) {
-			if (transactionBlockChain.getTransaction().getSenderTransactionOutput() != null) {
-				transactionOperationBlockChains.add(transactionBlockChain.getTransaction().getSenderTransactionOutput());
+		for(TransactionBlockChain transactionBlockChain : this.getTransactionBlockChains()) {
+			if (transactionBlockChain.getSenderTransactionOperationBlockChain() != null) {
+				transactionOperationBlockChains.add(transactionBlockChain.getSenderTransactionOperationBlockChain());
 			}
-			if (transactionBlockChain.getTransaction().getReceiverTransactionOutput() != null) {
-				transactionOperationBlockChains.add(transactionBlockChain.getTransaction().getReceiverTransactionOutput());
+			if (transactionBlockChain.getReceiverTransactionOperationBlockChain() != null) {
+				transactionOperationBlockChains.add(transactionBlockChain.getReceiverTransactionOperationBlockChain());
 			}
 		}
 		return transactionOperationBlockChains;
@@ -91,7 +95,7 @@ public class BlockBlockChain {
 			return this;
 		}
 
-		this.block.getTransactionBlockChains().add(transaction);
+		this.getTransactionBlockChains().add(transaction);
 		SystemOutPrintlnDecorator.ciano("Transaction Successfully added to Block");
 		return this;
 	}
@@ -112,8 +116,12 @@ public class BlockBlockChain {
 		return this.block.getHash();
 	}
 
+	public void setTransactionBlockChains(List<TransactionBlockChain> transactionBlockChains) {
+		this.transactionBlockChains = transactionBlockChains;
+	}
+
 	public List<TransactionBlockChain> getTransactionBlockChains() {
-		return this.block.getTransactionBlockChains();
+		return this.transactionBlockChains;
 	}
 
 	public void isConsistent(String previousHash, int difficulty) {

@@ -7,22 +7,18 @@ import java.util.List;
 public class Transaction {
 	private PublicKeyDecorator senderPublicKeyDecorator;
 	private PublicKeyDecorator receiverPublickeyDecorator;
-	private TransactionOperationBlockChain senderTransactionOperationBlockChain;
-	private TransactionOperationBlockChain receiverTransactionOperationBlockChain;
 	private Integer value;
-	private List<TransactionOperationBlockChain> unspentTransactions;
 	private String fingerPrint;
 	private byte[] signature;
 
-	protected Transaction(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value, List<TransactionOperationBlockChain> unspentTransactions) {
+	protected Transaction(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value) {
 		this.setSenderPublicKeyDecorator(senderPublicKeyDecorator);
 		this.setReceiverPublickeyDecorator(receiverPublickeyDecorator);
 		this.setValue(value);
-		this.setUnspentTransactions(unspentTransactions);
 	}
 
-	public static Transaction create(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value, List<TransactionOperationBlockChain> inputs) {
-		return new Transaction(senderPublicKeyDecorator, receiverPublickeyDecorator, value, inputs);
+	public static Transaction create(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value) {
+		return new Transaction(senderPublicKeyDecorator, receiverPublickeyDecorator, value);
 	}
 
 	public PublicKeyDecorator getSenderPublicKeyDecorator() {
@@ -41,36 +37,12 @@ public class Transaction {
 		this.receiverPublickeyDecorator = receiverPublickeyDecorator;
 	}
 
-	public void setSenderTransactionOutput(TransactionOperationBlockChain senderTransactionOperationBlockChain) {
-		this.senderTransactionOperationBlockChain = senderTransactionOperationBlockChain;
-	}
-
-	public TransactionOperationBlockChain getReceiverTransactionOutput() {
-		return this.receiverTransactionOperationBlockChain;
-	}
-
-	public void setReceiverTransactionOutput(TransactionOperationBlockChain receiverTransactionOperationBlockChain) {
-		this.receiverTransactionOperationBlockChain = receiverTransactionOperationBlockChain;
-	}
-
-	public TransactionOperationBlockChain getSenderTransactionOutput() {
-		return senderTransactionOperationBlockChain;
-	}
-
 	public Integer getValue() {
 		return value;
 	}
 
 	private void setValue(Integer value) {
 		this.value = value;
-	}
-
-	private void setUnspentTransactions(List<TransactionOperationBlockChain> unspentTransactions) {
-		this.unspentTransactions = unspentTransactions;
-	}
-
-	public List<TransactionOperationBlockChain> getUnspentTransactions() {
-		return this.unspentTransactions;
 	}
 
 	public String getFingerPrint() {

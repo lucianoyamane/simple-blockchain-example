@@ -7,6 +7,7 @@ import br.com.lucianoyamane.example.configurations.Difficulty;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
 import br.com.lucianoyamane.example.exception.BlockChainException;
+import br.com.lucianoyamane.example.transaction.TransactionOperation;
 import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
 
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public class BlockChainApp {
 			for(TransactionBlockChain transactionBlockChain : currentBlockTransactions) {
 				transactionBlockChain.isConsistent();
 
-				List<TransactionOperationBlockChain> transactionInputs = transactionBlockChain.getTransaction().getUnspentTransactions();
+				List<TransactionOperationBlockChain> transactionInputs = transactionBlockChain.getUnspentTransactionsOperationBlockChain();
 
 				for(TransactionOperationBlockChain output : transactionInputs) {
 					TransactionOperationBlockChain transactionOperationBlockChainFromOutside = tempTransactionsOutputs.stream().filter(outputTemp -> outputTemp.equals(output)).findFirst().orElse(null);
