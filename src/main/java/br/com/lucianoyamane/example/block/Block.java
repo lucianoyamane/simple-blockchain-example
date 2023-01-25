@@ -1,10 +1,5 @@
 package br.com.lucianoyamane.example.block;
 
-import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class Block {
 
     private String hash;

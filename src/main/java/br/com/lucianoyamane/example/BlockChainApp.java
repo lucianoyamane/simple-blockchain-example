@@ -57,18 +57,28 @@ public class BlockChainApp {
 		return this.genesis;
 	}
 
-	
-	public void isChainValid() {
-		List<TransactionOperationBlockChain> tempTransactionsOutputs = new ArrayList<>();
 
+	private void bootstrapIsChainValid(PreviousBlockData previousBlockData) {
 		BlockBlockChain blockBlockChainGenesis = this.getGenesis();
 
-		tempTransactionsOutputs.addAll(blockBlockChainGenesis.getTransactionOutputs());
-		String previousHash = blockBlockChainGenesis.getHash();
+		for(TransactionBlockChain transactionBlockChain : blockBlockChainGenesis.getTransactionBlockChains()) {
+			if (transactionBlockChain.getSenderTransactionOperationBlockChain() != null) {
+				previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getSenderTransactionOperationBlockChain());
+			}
+			if (transactionBlockChain.getReceiverTransactionOperationBlockChain() != null) {
+				previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getReceiverTransactionOperationBlockChain());
+			}
+		}
+		previousBlockData.setPreviousHash(blockBlockChainGenesis.getHash());
+	}
+	public void isValid() {
+		PreviousBlockData previousBlockData = new PreviousBlockData();
+
+		this.bootstrapIsChainValid(previousBlockData);
 
 		for(BlockBlockChain currentBlockBlockChain : this.blockchain) {
 
-			currentBlockBlockChain.isConsistent(previousHash, Difficulty.getInstance().getDifficulty());
+			currentBlockBlockChain.isConsistent(previousBlockData.getPreviousHash(), Difficulty.getInstance().getDifficulty());
 
 			List<TransactionBlockChain> currentBlockTransactions = currentBlockBlockChain.getTransactionBlockChains();
 
@@ -78,20 +88,58 @@ public class BlockChainApp {
 				List<TransactionOperationBlockChain> transactionInputs = transactionBlockChain.getUnspentTransactionsOperationBlockChain();
 
 				for(TransactionOperationBlockChain output : transactionInputs) {
-					TransactionOperationBlockChain transactionOperationBlockChainFromOutside = tempTransactionsOutputs.stream().filter(outputTemp -> outputTemp.equals(output)).findFirst().orElse(null);
-					output.isConsistent(transactionOperationBlockChainFromOutside);
+					TransactionOperationBlockChain transactionOperationBlockChainFromPrevious = previousBlockData.getTransactionOperationBlockChains().stream().filter(outputTemp -> outputTemp.equals(output)).findFirst().orElse(null);
+					output.isConsistent(transactionOperationBlockChainFromPrevious);
 				}
 
 				for(TransactionOperationBlockChain output : transactionInputs) {
-					tempTransactionsOutputs.remove(output);
+					previousBlockData.removeTransactionOperationBlockChains(output);
 				}
+
+				previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getSenderTransactionOperationBlockChain());
+				previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getReceiverTransactionOperationBlockChain());
+
 			}
-			for(TransactionOperationBlockChain output: currentBlockBlockChain.getTransactionOutputs()) {
-				tempTransactionsOutputs.add(output);
-			}
-			previousHash = currentBlockBlockChain.getHash();
+			previousBlockData.setPreviousHash(currentBlockBlockChain.getHash());
 		}
 		SystemOutPrintlnDecorator.roxo("Blockchain is valid");
+	}
+
+	private class PreviousBlockData {
+
+		private String previousHash;
+
+		private List<TransactionOperationBlockChain> transactionOperationBlockChains;
+
+		public PreviousBlockData() {
+			this.setTransactionOperationBlockChains(new ArrayList<>());
+		}
+
+		public String getPreviousHash() {
+			return previousHash;
+		}
+
+		public void setPreviousHash(String previousHash) {
+			this.previousHash = previousHash;
+		}
+
+		public List<TransactionOperationBlockChain> getTransactionOperationBlockChains() {
+			return transactionOperationBlockChains;
+		}
+
+		private void setTransactionOperationBlockChains(List<TransactionOperationBlockChain> transactionOperationBlockChains) {
+			this.transactionOperationBlockChains = transactionOperationBlockChains;
+		}
+
+		public void addTransactionOperationBlockChains(TransactionOperationBlockChain transactionOperationBlockChain) {
+			if (transactionOperationBlockChain != null) {
+				this.getTransactionOperationBlockChains().add(transactionOperationBlockChain);
+			}
+		}
+
+		public void removeTransactionOperationBlockChains(TransactionOperationBlockChain transactionOperationBlockChain) {
+			this.getTransactionOperationBlockChains().remove(transactionOperationBlockChain);
+		}
 	}
 
 }

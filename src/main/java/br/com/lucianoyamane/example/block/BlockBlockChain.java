@@ -2,9 +2,8 @@ package br.com.lucianoyamane.example.block;
 
 import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
-import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
 import br.com.lucianoyamane.example.exception.BlockChainException;
-import br.com.lucianoyamane.example.transaction.TransactionOperation;
+import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
 import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
 
 import java.util.ArrayList;
@@ -56,19 +55,6 @@ public class BlockBlockChain {
 
 	private List<String> getTransactionsId() {
 		return this.getTransactionBlockChains().stream().map(transaction -> transaction.getFingerPrint()).toList();
-	}
-
-	public List<TransactionOperationBlockChain> getTransactionOutputs() {
-		List<TransactionOperationBlockChain> transactionOperationBlockChains = new ArrayList<>();
-		for(TransactionBlockChain transactionBlockChain : this.getTransactionBlockChains()) {
-			if (transactionBlockChain.getSenderTransactionOperationBlockChain() != null) {
-				transactionOperationBlockChains.add(transactionBlockChain.getSenderTransactionOperationBlockChain());
-			}
-			if (transactionBlockChain.getReceiverTransactionOperationBlockChain() != null) {
-				transactionOperationBlockChains.add(transactionBlockChain.getReceiverTransactionOperationBlockChain());
-			}
-		}
-		return transactionOperationBlockChains;
 	}
 
 	public BlockBlockChain mine(int difficulty) {
