@@ -6,8 +6,6 @@ import br.com.lucianoyamane.example.block.BlockBlockChain;
 import br.com.lucianoyamane.example.configurations.Difficulty;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
-import br.com.lucianoyamane.example.exception.BlockChainException;
-import br.com.lucianoyamane.example.transaction.TransactionOperation;
 import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
 
 import java.util.ArrayList;
@@ -19,6 +17,8 @@ public class BlockChainApp {
 
 	private List<BlockBlockChain> blockchain;
 
+	private BlockBlockChain genesis;
+
 	private BlockChainApp() {
 		this.blockchain = new ArrayList();
 	}
@@ -28,18 +28,15 @@ public class BlockChainApp {
 	}
 
 	public String genesisBlock(TransactionBlockChain transaction) {
-		SystemOutPrintlnDecorator.ciano("******************************************************");
-		SystemOutPrintlnDecorator.ciano("Creating and Mining Genesis block... ");
 		BlockBlockChain genesis = BlockBlockChain.init(Block.init())
 								.addTransaction(transaction)
 								.processGenesis()
 								.mine(Difficulty.getInstance().getDifficulty());
-		addBlock(genesis);
+		addGenesis(genesis);
 		return genesis.getHash();
 	}
 
 	public String transactionBlock(String previousHash, TransactionBlockChain transaction) {
-		SystemOutPrintlnDecorator.ciano("******************************************************");
 		BlockBlockChain blockBlockChain = BlockBlockChain.init(Block.init())
 									.addTransaction(transaction)
 									.process(previousHash)
@@ -52,19 +49,26 @@ public class BlockChainApp {
 		blockchain.add(newBlockBlockChain);
 	}
 
+	private void addGenesis(BlockBlockChain newBlockBlockChain) {
+		this.genesis = newBlockBlockChain;
+	}
+
+	private BlockBlockChain getGenesis() {
+		return this.genesis;
+	}
+
 	
 	public void isChainValid() {
 		List<TransactionOperationBlockChain> tempTransactionsOutputs = new ArrayList<>();
 
-		for(int i = 1; i < blockchain.size(); i++) {
-			
-			BlockBlockChain currentBlockBlockChain = blockchain.get(i);
-			BlockBlockChain previousBlockBlockChain = blockchain.get(i - 1);
+		BlockBlockChain blockBlockChainGenesis = this.getGenesis();
 
-			if (previousBlockBlockChain.isGenesis()) {
-				tempTransactionsOutputs.addAll(previousBlockBlockChain.getTransactionOutputs());
-			}
-			currentBlockBlockChain.isConsistent(previousBlockBlockChain.getHash(), Difficulty.getInstance().getDifficulty());
+		tempTransactionsOutputs.addAll(blockBlockChainGenesis.getTransactionOutputs());
+		String previousHash = blockBlockChainGenesis.getHash();
+
+		for(BlockBlockChain currentBlockBlockChain : this.blockchain) {
+
+			currentBlockBlockChain.isConsistent(previousHash, Difficulty.getInstance().getDifficulty());
 
 			List<TransactionBlockChain> currentBlockTransactions = currentBlockBlockChain.getTransactionBlockChains();
 
@@ -85,16 +89,9 @@ public class BlockChainApp {
 			for(TransactionOperationBlockChain output: currentBlockBlockChain.getTransactionOutputs()) {
 				tempTransactionsOutputs.add(output);
 			}
+			previousHash = currentBlockBlockChain.getHash();
 		}
 		SystemOutPrintlnDecorator.roxo("Blockchain is valid");
 	}
-
-
-
-
-
-
-
-	
 
 }
