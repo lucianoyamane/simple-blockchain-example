@@ -10,6 +10,7 @@ import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class BlockBlockChain implements BlockChainObject {
 	
@@ -74,17 +75,12 @@ public class BlockBlockChain implements BlockChainObject {
 	}
 
 	public BlockBlockChain addTransaction(TransactionBlockChain transaction) {
-		if(transaction == null) {
-			return this;
-		}
-
-		if(!transaction.processTransaction()) {
+		if (Objects.nonNull(transaction) && transaction.processTransaction()) {
+			this.getTransactionBlockChains().add(transaction);
+			SystemOutPrintlnDecorator.ciano("Transaction Successfully added to Block");
+		} else {
 			SystemOutPrintlnDecorator.vermelho("Transaction failed to process. Discarded.");
-			return this;
 		}
-
-		this.getTransactionBlockChains().add(transaction);
-		SystemOutPrintlnDecorator.ciano("Transaction Successfully added to Block");
 		return this;
 	}
 
