@@ -72,47 +72,35 @@ public class BlockChainApp {
 		previousBlockData.setPreviousHash(blockBlockChainGenesis.getHash());
 	}
 	public void isValid() {
-		PreviousBlockData previousBlockData = new PreviousBlockData();
+		PreviousBlockData previousBlockData = new PreviousBlockData(Difficulty.getInstance().getDifficulty());
 
 		this.bootstrapIsChainValid(previousBlockData);
 
 		for(BlockBlockChain currentBlockBlockChain : this.blockchain) {
-
-			currentBlockBlockChain.isConsistent(previousBlockData.getPreviousHash(), Difficulty.getInstance().getDifficulty());
-
-			List<TransactionBlockChain> currentBlockTransactions = currentBlockBlockChain.getTransactionBlockChains();
-
-			for(TransactionBlockChain transactionBlockChain : currentBlockTransactions) {
-				transactionBlockChain.isConsistent();
-
-				List<TransactionOperationBlockChain> transactionInputs = transactionBlockChain.getUnspentTransactionsOperationBlockChain();
-
-				for(TransactionOperationBlockChain output : transactionInputs) {
-					TransactionOperationBlockChain transactionOperationBlockChainFromPrevious = previousBlockData.getTransactionOperationBlockChains().stream().filter(outputTemp -> outputTemp.equals(output)).findFirst().orElse(null);
-					output.isConsistent(transactionOperationBlockChainFromPrevious);
-				}
-
-				for(TransactionOperationBlockChain output : transactionInputs) {
-					previousBlockData.removeTransactionOperationBlockChains(output);
-				}
-
-				previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getSenderTransactionOperationBlockChain());
-				previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getReceiverTransactionOperationBlockChain());
-
-			}
-			previousBlockData.setPreviousHash(currentBlockBlockChain.getHash());
+			currentBlockBlockChain.isConsistent(previousBlockData);
 		}
 		SystemOutPrintlnDecorator.roxo("Blockchain is valid");
 	}
 
-	private class PreviousBlockData {
+	public class PreviousBlockData {
+
+		private Integer difficulty;
 
 		private String previousHash;
 
 		private List<TransactionOperationBlockChain> transactionOperationBlockChains;
 
-		public PreviousBlockData() {
+		public PreviousBlockData(Integer difficulty) {
 			this.setTransactionOperationBlockChains(new ArrayList<>());
+			this.setDifficulty(difficulty);
+		}
+
+		public Integer getDifficulty() {
+			return difficulty;
+		}
+
+		private void setDifficulty(Integer difficulty) {
+			this.difficulty = difficulty;
 		}
 
 		public String getPreviousHash() {

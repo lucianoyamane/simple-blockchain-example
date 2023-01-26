@@ -1,5 +1,7 @@
 package br.com.lucianoyamane.example.transaction;
 
+import br.com.lucianoyamane.example.BlockChainApp;
+import br.com.lucianoyamane.example.BlockChainObject;
 import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.UnspentTransactions;
 import br.com.lucianoyamane.example.exception.BlockChainException;
@@ -8,7 +10,7 @@ import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import java.util.List;
 import java.util.UUID;
 
-public class TransactionBlockChain {
+public class TransactionBlockChain implements BlockChainObject {
 
     private Transaction transaction;
 
@@ -136,7 +138,8 @@ public class TransactionBlockChain {
         return this.getSenderTransactionOperationBlockChain().getValue() + this.getReceiverTransactionOperationBlockChain().getValue();
     }
 
-    public void isConsistent() {
+    @Override
+    public void isConsistent(BlockChainApp.PreviousBlockData previousBlockData) {
         if (!this.verifiySignature()) {
             throw new BlockChainException("Transaction Signature failed to verify");
         }
@@ -154,5 +157,14 @@ public class TransactionBlockChain {
         if (!receiverTransactionOperationBlockChain.isMine(this.getTransaction().getSenderPublicKeyDecorator())) {
             throw new BlockChainException("#TransactionOutput(" + receiverTransactionOperationBlockChain + ") is not who it should be");
         }
+
+        List<TransactionOperationBlockChain> transactionsOperationBlockChain = this.getUnspentTransactionsOperationBlockChain();
+
+        for(TransactionOperationBlockChain output : transactionsOperationBlockChain) {
+            output.isConsistent(previousBlockData);
+        }
+
+        previousBlockData.addTransactionOperationBlockChains(this.getSenderTransactionOperationBlockChain());
+        previousBlockData.addTransactionOperationBlockChains(this.getReceiverTransactionOperationBlockChain());
     }
 }

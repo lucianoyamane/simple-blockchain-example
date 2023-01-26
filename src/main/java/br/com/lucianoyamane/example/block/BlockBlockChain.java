@@ -1,5 +1,7 @@
 package br.com.lucianoyamane.example.block;
 
+import br.com.lucianoyamane.example.BlockChainApp;
+import br.com.lucianoyamane.example.BlockChainObject;
 import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.exception.BlockChainException;
@@ -9,7 +11,7 @@ import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockBlockChain {
+public class BlockBlockChain implements BlockChainObject {
 	
 	private Block block;
 
@@ -110,16 +112,24 @@ public class BlockBlockChain {
 		return this.transactionBlockChains;
 	}
 
-	public void isConsistent(String previousHash, int difficulty) {
+	@Override
+	public void isConsistent(BlockChainApp.PreviousBlockData previousBlockData) {
 		if (!this.compareRegisteredAndCalculatedHash()) {
 			throw new BlockChainException("Current Hashes not equal");
 		}
-		if (!this.compareHash(previousHash)) {
+		if (!this.compareHash(previousBlockData.getPreviousHash())) {
 			throw new BlockChainException("Previous Hashes not equal");
 		}
-		if(!this.hashIsSolved(difficulty)) {
+		if(!this.hashIsSolved(previousBlockData.getDifficulty())) {
 			throw new BlockChainException("This block hasn't been mined");
 		}
+
+		List<TransactionBlockChain> currentBlockTransactions = this.getTransactionBlockChains();
+
+		for(TransactionBlockChain transactionBlockChain : currentBlockTransactions) {
+			transactionBlockChain.isConsistent(previousBlockData);
+		}
+		previousBlockData.setPreviousHash(this.getHash());
 	}
 
 }
