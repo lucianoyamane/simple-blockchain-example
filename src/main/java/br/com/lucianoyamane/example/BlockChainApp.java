@@ -31,11 +31,11 @@ public class BlockChainApp {
 		BlockBlockChain genesis = BlockBlockChain.init(transaction)
 								.processGenesis()
 								.mine(Difficulty.getInstance().getDifficulty());
-		addGenesis(genesis);
+		this.setGenesis(genesis);
 		return genesis.getHash();
 	}
 
-	public String transactionBlock(String previousHash, TransactionBlockChain transaction) {
+	public String transactionBlock(TransactionBlockChain transaction, String previousHash) {
 		BlockBlockChain blockBlockChain = BlockBlockChain.init(transaction)
 									.process(previousHash)
 									.mine(Difficulty.getInstance().getDifficulty());
@@ -47,7 +47,7 @@ public class BlockChainApp {
 		blockchain.add(newBlockBlockChain);
 	}
 
-	private void addGenesis(BlockBlockChain newBlockBlockChain) {
+	private void setGenesis(BlockBlockChain newBlockBlockChain) {
 		this.genesis = newBlockBlockChain;
 	}
 

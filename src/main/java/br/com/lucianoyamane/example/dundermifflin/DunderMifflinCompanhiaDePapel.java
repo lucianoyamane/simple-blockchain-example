@@ -40,7 +40,7 @@ public class DunderMifflinCompanhiaDePapel {
         String previousHash = this.blockChainApp.genesisBlock(this.transacaoBootstrap.toTransaction());
         for(Transacao transacao : this.transacoes) {
             SystemOutPrintlnDecorator.ciano("******************************************************");
-            previousHash = this.blockChainApp.transactionBlock(previousHash, transacao.toTransaction());
+            previousHash = this.blockChainApp.transactionBlock(transacao.toTransaction(), previousHash);
             CarteirasRegistradas.abre().getFinalBalances();
         }
         this.blockChainApp.isValid();
