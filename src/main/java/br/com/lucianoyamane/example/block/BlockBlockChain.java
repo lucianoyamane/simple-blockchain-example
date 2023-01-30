@@ -18,12 +18,13 @@ public class BlockBlockChain implements BlockChainObject {
 
 	private TransactionBlockChain transactionBlockChain;
 
-    public static BlockBlockChain init(Block block) {
-        return new BlockBlockChain(block);
+    public static BlockBlockChain init(TransactionBlockChain transactionBlockChain) {
+        return new BlockBlockChain(Block.init(), transactionBlockChain);
     }
 
-	private BlockBlockChain(Block block) {
-		this.block = block;
+	private BlockBlockChain(Block block, TransactionBlockChain transactionBlockChain) {
+		this.setBlock(block);
+		this.setTransactionBlockChain(transactionBlockChain);
 	}
 
 	public BlockBlockChain processGenesis() {
@@ -32,9 +33,9 @@ public class BlockBlockChain implements BlockChainObject {
 	}
 
 	public BlockBlockChain process(String previousHash) {
-		this.block.setPreviousHash(previousHash);
-		this.block.setHash(calculateHash());
-		this.block.setMerkleRoot(StringUtil.getMerkleRoot(this.getTransactionId()));
+		this.getBlock().setPreviousHash(previousHash);
+		this.getBlock().setHash(calculateHash());
+		this.getBlock().setMerkleRoot(StringUtil.getMerkleRoot(this.getTransactionId()));
 		return this;
 	}
 	private String calculateHash() {
@@ -44,10 +45,10 @@ public class BlockBlockChain implements BlockChainObject {
 	private String createCompositionToHash() {
 		StringBuilder composition = new StringBuilder();
 		composition
-				.append(this.block.getPreviousHash())
-				.append(this.block.getTimeStamp())
-				.append(this.block.getNonce())
-				.append(this.block.getMerkleRoot());
+				.append(this.getBlock().getPreviousHash())
+				.append(this.getBlock().getTimeStamp())
+				.append(this.getBlock().getNonce())
+				.append(this.getBlock().getMerkleRoot());
 		return composition.toString();
 	}
 
@@ -61,20 +62,20 @@ public class BlockBlockChain implements BlockChainObject {
 	public BlockBlockChain mine(int difficulty) {
 		String zeros = StringUtil.getCharsZeroByDifficuty(difficulty);
 		while(!this.testHashCondition(zeros)) {
-			this.block.increaseNonce();
-			this.block.setHash(calculateHash());
+			this.getBlock().increaseNonce();
+			this.getBlock().setHash(calculateHash());
 		}
-		SystemOutPrintlnDecorator.ciano("Block Mined!!! : " + this.block.getHash());
+		SystemOutPrintlnDecorator.ciano("Block Mined!!! : " + this.getBlock().getHash());
 		return this;
 	}
 
 	private Boolean testHashCondition(String target) {
-		return this.block.getHash().startsWith(target);
+		return this.getBlock().getHash().startsWith(target);
 	}
 
-	public BlockBlockChain addTransaction(TransactionBlockChain transaction) {
-		if (Objects.nonNull(transaction) && transaction.processTransaction()) {
-			this.setTransactionBlockChain(transaction);
+	private BlockBlockChain setTransactionBlockChain(TransactionBlockChain transactionBlockChain) {
+		if (Objects.nonNull(transactionBlockChain) && transactionBlockChain.processTransaction()) {
+			this.transactionBlockChain = transactionBlockChain;
 			SystemOutPrintlnDecorator.ciano("Transaction Successfully added to Block");
 		} else {
 			SystemOutPrintlnDecorator.vermelho("Transaction failed to process. Discarded.");
@@ -83,27 +84,31 @@ public class BlockBlockChain implements BlockChainObject {
 	}
 
 	public Boolean compareRegisteredAndCalculatedHash() {
-		return this.block.getHash().equals(this.calculateHash());
+		return this.getBlock().getHash().equals(this.calculateHash());
 	}
 
 	public Boolean compareHash(String previousHash) {
-		return previousHash.equals(this.block.getPreviousHash());
+		return previousHash.equals(this.getBlock().getPreviousHash());
 	}
 
 	public Boolean hashIsSolved(int difficulty) {
-		return this.block.getHash().substring( 0, difficulty).equals(StringUtil.getCharsZeroByDifficuty(difficulty));
+		return this.getBlock().getHash().substring( 0, difficulty).equals(StringUtil.getCharsZeroByDifficuty(difficulty));
 	}
 
 	public String getHash() {
-		return this.block.getHash();
+		return this.getBlock().getHash();
 	}
 
 	public TransactionBlockChain getTransactionBlockChain() {
 		return transactionBlockChain;
 	}
 
-	public void setTransactionBlockChain(TransactionBlockChain transactionBlockChain) {
-		this.transactionBlockChain = transactionBlockChain;
+	public Block getBlock() {
+		return block;
+	}
+
+	public void setBlock(Block block) {
+		this.block = block;
 	}
 
 	@Override
