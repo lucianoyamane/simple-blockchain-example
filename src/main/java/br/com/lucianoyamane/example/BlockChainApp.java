@@ -61,13 +61,12 @@ public class BlockChainApp {
 	private void bootstrapIsChainValid(PreviousBlockData previousBlockData) {
 		BlockBlockChain blockBlockChainGenesis = this.getGenesis();
 
-		for(TransactionBlockChain transactionBlockChain : blockBlockChainGenesis.getTransactionBlockChains()) {
-			if (transactionBlockChain.getSenderTransactionOperationBlockChain() != null) {
-				previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getSenderTransactionOperationBlockChain());
-			}
-			if (transactionBlockChain.getReceiverTransactionOperationBlockChain() != null) {
-				previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getReceiverTransactionOperationBlockChain());
-			}
+		TransactionBlockChain transactionBlockChain = blockBlockChainGenesis.getTransactionBlockChain();
+		if (transactionBlockChain.getSenderTransactionOperationBlockChain() != null) {
+			previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getSenderTransactionOperationBlockChain());
+		}
+		if (transactionBlockChain.getReceiverTransactionOperationBlockChain() != null) {
+			previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getReceiverTransactionOperationBlockChain());
 		}
 		previousBlockData.setPreviousHash(blockBlockChainGenesis.getHash());
 	}

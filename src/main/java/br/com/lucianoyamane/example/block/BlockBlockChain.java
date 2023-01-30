@@ -16,7 +16,7 @@ public class BlockBlockChain implements BlockChainObject {
 	
 	private Block block;
 
-	private List<TransactionBlockChain> transactionBlockChains;
+	private TransactionBlockChain transactionBlockChain;
 
     public static BlockBlockChain init(Block block) {
         return new BlockBlockChain(block);
@@ -24,7 +24,6 @@ public class BlockBlockChain implements BlockChainObject {
 
 	private BlockBlockChain(Block block) {
 		this.block = block;
-		this.setTransactionBlockChains(new ArrayList());
 	}
 
 	public BlockBlockChain processGenesis() {
@@ -35,12 +34,8 @@ public class BlockBlockChain implements BlockChainObject {
 	public BlockBlockChain process(String previousHash) {
 		this.block.setPreviousHash(previousHash);
 		this.block.setHash(calculateHash());
-		this.block.setMerkleRoot(StringUtil.getMerkleRoot(this.getTransactionsId()));
+		this.block.setMerkleRoot(StringUtil.getMerkleRoot(this.getTransactionId()));
 		return this;
-	}
-
-	public Boolean isGenesis() {
-		return this.block.getPreviousHash().equals("0");
 	}
 	private String calculateHash() {
 		return StringUtil.encode(this.createCompositionToHash());
@@ -56,8 +51,11 @@ public class BlockBlockChain implements BlockChainObject {
 		return composition.toString();
 	}
 
-	private List<String> getTransactionsId() {
-		return this.getTransactionBlockChains().stream().map(transaction -> transaction.getFingerPrint()).toList();
+	private String getTransactionId() {
+		if (this.getTransactionBlockChain() != null) {
+			return this.getTransactionBlockChain().getFingerPrint();
+		}
+		return null;
 	}
 
 	public BlockBlockChain mine(int difficulty) {
@@ -76,7 +74,7 @@ public class BlockBlockChain implements BlockChainObject {
 
 	public BlockBlockChain addTransaction(TransactionBlockChain transaction) {
 		if (Objects.nonNull(transaction) && transaction.processTransaction()) {
-			this.getTransactionBlockChains().add(transaction);
+			this.setTransactionBlockChain(transaction);
 			SystemOutPrintlnDecorator.ciano("Transaction Successfully added to Block");
 		} else {
 			SystemOutPrintlnDecorator.vermelho("Transaction failed to process. Discarded.");
@@ -100,12 +98,12 @@ public class BlockBlockChain implements BlockChainObject {
 		return this.block.getHash();
 	}
 
-	public void setTransactionBlockChains(List<TransactionBlockChain> transactionBlockChains) {
-		this.transactionBlockChains = transactionBlockChains;
+	public TransactionBlockChain getTransactionBlockChain() {
+		return transactionBlockChain;
 	}
 
-	public List<TransactionBlockChain> getTransactionBlockChains() {
-		return this.transactionBlockChains;
+	public void setTransactionBlockChain(TransactionBlockChain transactionBlockChain) {
+		this.transactionBlockChain = transactionBlockChain;
 	}
 
 	@Override
@@ -120,10 +118,9 @@ public class BlockBlockChain implements BlockChainObject {
 			throw new BlockChainException("This block hasn't been mined");
 		}
 
-		List<TransactionBlockChain> currentBlockTransactions = this.getTransactionBlockChains();
-
-		for(TransactionBlockChain transactionBlockChain : currentBlockTransactions) {
-			transactionBlockChain.isConsistent(previousBlockData);
+		TransactionBlockChain currentBlockTransaction = this.getTransactionBlockChain();
+		if (currentBlockTransaction != null) {
+			currentBlockTransaction.isConsistent(previousBlockData);
 		}
 		previousBlockData.setPreviousHash(this.getHash());
 	}
