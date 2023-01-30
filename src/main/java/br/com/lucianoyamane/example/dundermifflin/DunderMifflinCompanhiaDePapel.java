@@ -37,10 +37,10 @@ public class DunderMifflinCompanhiaDePapel {
     public void processa() {
         SystemOutPrintlnDecorator.ciano("******************************************************");
         SystemOutPrintlnDecorator.ciano("Creating and Mining Genesis block... ");
-        String previousHash = this.blockChainApp.genesisBlock(this.transacaoBootstrap.toTransaction());
+        String previousHash = this.blockChainApp.registraTransacaoGenesis(this.transacaoBootstrap.toTransaction());
         for(Transacao transacao : this.transacoes) {
             SystemOutPrintlnDecorator.ciano("******************************************************");
-            previousHash = this.blockChainApp.transactionBlock(transacao.toTransaction(), previousHash);
+            previousHash = this.blockChainApp.registraTransacao(transacao.toTransaction(), previousHash);
             CarteirasRegistradas.abre().getFinalBalances();
         }
         this.blockChainApp.isValid();

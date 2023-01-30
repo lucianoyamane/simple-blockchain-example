@@ -6,10 +6,7 @@ import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
-import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class BlockBlockChain implements BlockChainObject {
@@ -18,8 +15,12 @@ public class BlockBlockChain implements BlockChainObject {
 
 	private TransactionBlockChain transactionBlockChain;
 
-    public static BlockBlockChain init(TransactionBlockChain transactionBlockChain) {
-        return new BlockBlockChain(Block.init(), transactionBlockChain);
+	public static BlockBlockChain genesis(TransactionBlockChain transactionBlockChain) {
+		return new BlockBlockChain(Block.init(), transactionBlockChain).processAsGenesis();
+	}
+
+    public static BlockBlockChain init(TransactionBlockChain transactionBlockChain, String previousHash) {
+        return new BlockBlockChain(Block.init(), transactionBlockChain).process(previousHash);
     }
 
 	private BlockBlockChain(Block block, TransactionBlockChain transactionBlockChain) {
@@ -27,7 +28,7 @@ public class BlockBlockChain implements BlockChainObject {
 		this.setTransactionBlockChain(transactionBlockChain);
 	}
 
-	public BlockBlockChain processGenesis() {
+	public BlockBlockChain processAsGenesis() {
 		this.process("0");
 		return this;
 	}
