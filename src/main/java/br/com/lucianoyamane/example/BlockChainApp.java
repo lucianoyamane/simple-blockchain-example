@@ -2,12 +2,11 @@ package br.com.lucianoyamane.example;
 
 
 import br.com.lucianoyamane.example.block.Block;
+import br.com.lucianoyamane.example.block.BlockBlockChain;
 import br.com.lucianoyamane.example.configurations.Difficulty;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
-import br.com.lucianoyamane.example.exception.BlockChainException;
-import br.com.lucianoyamane.example.transaction.Transaction;
-import br.com.lucianoyamane.example.transaction.TransactionInput;
-import br.com.lucianoyamane.example.transaction.TransactionOutput;
+import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
+import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
 
 import java.util.ArrayList;
 //import java.util.Base64;
@@ -16,7 +15,9 @@ import java.util.List;
 
 public class BlockChainApp {
 
-	private List<Block> blockchain;
+	private List<BlockBlockChain> blockchain;
+
+	private BlockBlockChain genesis;
 
 	private BlockChainApp() {
 		this.blockchain = new ArrayList();
@@ -26,106 +27,107 @@ public class BlockChainApp {
 		return new BlockChainApp();
 	}
 
-	public String genesisBlock(Transaction transaction) {
-		Block genesis = Block.genesis()
+	public String genesisBlock(TransactionBlockChain transaction) {
+		BlockBlockChain genesis = BlockBlockChain.init(Block.init())
 								.addTransaction(transaction)
 								.processGenesis()
 								.mine(Difficulty.getInstance().getDifficulty());
-		addBlock(genesis);
+		addGenesis(genesis);
 		return genesis.getHash();
 	}
 
-	public String transactionBlock(String previousHash, Transaction transaction) {
-		Block block = Block.init();
-		block.addTransaction(transaction);
-		block.process(previousHash);
-		block.mine(Difficulty.getInstance().getDifficulty());
-		addBlock(block);
-		return block.getHash();
+	public String transactionBlock(String previousHash, TransactionBlockChain transaction) {
+		BlockBlockChain blockBlockChain = BlockBlockChain.init(Block.init())
+									.addTransaction(transaction)
+									.process(previousHash)
+									.mine(Difficulty.getInstance().getDifficulty());
+		addBlock(blockBlockChain);
+		return blockBlockChain.getHash();
 	}
 
-	public void addBlock(Block newBlock) {
-		blockchain.add(newBlock);
+	private void addBlock(BlockBlockChain newBlockBlockChain) {
+		blockchain.add(newBlockBlockChain);
 	}
 
-	
-	public void isChainValid() {
-		List<TransactionOutput> tempTransactionsOutputs = new ArrayList<>();
+	private void addGenesis(BlockBlockChain newBlockBlockChain) {
+		this.genesis = newBlockBlockChain;
+	}
 
-		for(int i = 1; i < blockchain.size(); i++) {
-			
-			Block currentBlock = blockchain.get(i);
-			Block previousBlock = blockchain.get(i - 1);
+	private BlockBlockChain getGenesis() {
+		return this.genesis;
+	}
 
-			if (previousBlock.isGenesis()) {
-				tempTransactionsOutputs.addAll(previousBlock.getTransactionOutputs());
+
+	private void bootstrapIsChainValid(PreviousBlockData previousBlockData) {
+		BlockBlockChain blockBlockChainGenesis = this.getGenesis();
+
+		for(TransactionBlockChain transactionBlockChain : blockBlockChainGenesis.getTransactionBlockChains()) {
+			if (transactionBlockChain.getSenderTransactionOperationBlockChain() != null) {
+				previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getSenderTransactionOperationBlockChain());
 			}
-			isConsistent(currentBlock, previousBlock.getHash(), Difficulty.getInstance().getDifficulty());
-
-			List<Transaction> currentBlockTransactions = currentBlock.getTransactions();
-
-			for(Transaction transaction : currentBlockTransactions) {
-				isConsistent(transaction);
-
-				List<TransactionInput> transactionInputs = transaction.getInputs();
-
-				for(TransactionInput input : transactionInputs) {
-					TransactionOutput transactionOutputFromOutside = tempTransactionsOutputs.stream().filter(output -> output.equals(input.getUnspentTransaction())).findFirst().orElse(null);
-					isConsistent(input, transactionOutputFromOutside);
-				}
-
-				for(TransactionInput input : transactionInputs) {
-					tempTransactionsOutputs.remove(input.getUnspentTransaction());
-				}
+			if (transactionBlockChain.getReceiverTransactionOperationBlockChain() != null) {
+				previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getReceiverTransactionOperationBlockChain());
 			}
-			for(TransactionOutput output: currentBlock.getTransactionOutputs()) {
-				tempTransactionsOutputs.add(output);
-			}
+		}
+		previousBlockData.setPreviousHash(blockBlockChainGenesis.getHash());
+	}
+	public void isValid() {
+		PreviousBlockData previousBlockData = new PreviousBlockData(Difficulty.getInstance().getDifficulty());
+
+		this.bootstrapIsChainValid(previousBlockData);
+
+		for(BlockBlockChain currentBlockBlockChain : this.blockchain) {
+			currentBlockBlockChain.isConsistent(previousBlockData);
 		}
 		SystemOutPrintlnDecorator.roxo("Blockchain is valid");
 	}
 
-	private static void isConsistent(Block block, String previousHash, int difficulty) {
-		if (!block.compareRegisteredAndCalculatedHash()) {
-			throw new BlockChainException("Current Hashes not equal");
+	public class PreviousBlockData {
+
+		private Integer difficulty;
+
+		private String previousHash;
+
+		private List<TransactionOperationBlockChain> transactionOperationBlockChains;
+
+		public PreviousBlockData(Integer difficulty) {
+			this.setTransactionOperationBlockChains(new ArrayList<>());
+			this.setDifficulty(difficulty);
 		}
-		if (!block.compareHash(previousHash)) {
-			throw new BlockChainException("Previous Hashes not equal");
+
+		public Integer getDifficulty() {
+			return difficulty;
 		}
-		if(!block.hashIsSolved(difficulty)) {
-			throw new BlockChainException("This block hasn't been mined");
+
+		private void setDifficulty(Integer difficulty) {
+			this.difficulty = difficulty;
+		}
+
+		public String getPreviousHash() {
+			return previousHash;
+		}
+
+		public void setPreviousHash(String previousHash) {
+			this.previousHash = previousHash;
+		}
+
+		public List<TransactionOperationBlockChain> getTransactionOperationBlockChains() {
+			return transactionOperationBlockChains;
+		}
+
+		private void setTransactionOperationBlockChains(List<TransactionOperationBlockChain> transactionOperationBlockChains) {
+			this.transactionOperationBlockChains = transactionOperationBlockChains;
+		}
+
+		public void addTransactionOperationBlockChains(TransactionOperationBlockChain transactionOperationBlockChain) {
+			if (transactionOperationBlockChain != null) {
+				this.getTransactionOperationBlockChains().add(transactionOperationBlockChain);
+			}
+		}
+
+		public void removeTransactionOperationBlockChains(TransactionOperationBlockChain transactionOperationBlockChain) {
+			this.getTransactionOperationBlockChains().remove(transactionOperationBlockChain);
 		}
 	}
-
-	private static void isConsistent(Transaction transaction) {
-		if (!transaction.verifiySignature()) {
-			throw new BlockChainException("Transaction Signature failed to verify");
-		}
-
-		if (!transaction.isInputEqualOutputValue()) {
-			throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + transaction.getHash() + ")");
-		}
-
-		TransactionOutput senderTransactionOutput = transaction.getSenderTransactionOutput();
-		if (!senderTransactionOutput.isMine(transaction.getReceiverPublicKey())) {
-			throw new BlockChainException("#TransactionOutput(" + senderTransactionOutput.getId() + ") is not who it should be");
-		}
-
-		TransactionOutput receiverTransactionOutput = transaction.getReceiverTransactionOutput();
-		if (!receiverTransactionOutput.isMine(transaction.getSenderPublicKey())) {
-			throw new BlockChainException("#TransactionOutput(" + receiverTransactionOutput.getId() + ") is not who it should be");
-		}
-	}
-
-	private static void isConsistent(TransactionInput transactionInput, TransactionOutput referenceTransactionOutput) {
-		if(referenceTransactionOutput == null) {
-			throw new BlockChainException("#Referenced input on Transaction(" + transactionInput.getUnspentTransaction().getId() + ") is Missing");
-		}
-		if(transactionInput.getUnspentTransaction().getValue() != referenceTransactionOutput.getValue()) {
-			throw new BlockChainException("#Referenced input Transaction(" + transactionInput.getUnspentTransaction().getId() + ") value is Invalid");
-		}
-	}
-
-	
 
 }

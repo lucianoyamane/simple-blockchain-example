@@ -1,9 +1,7 @@
 package br.com.lucianoyamane.example.dundermifflin;
 
 import br.com.lucianoyamane.example.BlockChainApp;
-import br.com.lucianoyamane.example.block.Block;
 import br.com.lucianoyamane.example.configurations.CarteirasRegistradas;
-import br.com.lucianoyamane.example.configurations.Difficulty;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 
 import java.util.ArrayList;
@@ -37,12 +35,15 @@ public class DunderMifflinCompanhiaDePapel {
     }
 
     public void processa() {
+        SystemOutPrintlnDecorator.ciano("******************************************************");
+        SystemOutPrintlnDecorator.ciano("Creating and Mining Genesis block... ");
         String previousHash = this.blockChainApp.genesisBlock(this.transacaoBootstrap.toTransaction());
         for(Transacao transacao : this.transacoes) {
+            SystemOutPrintlnDecorator.ciano("******************************************************");
             previousHash = this.blockChainApp.transactionBlock(previousHash, transacao.toTransaction());
             CarteirasRegistradas.abre().getFinalBalances();
         }
-        this.blockChainApp.isChainValid();
+        this.blockChainApp.isValid();
 
     }
 

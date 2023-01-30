@@ -31,8 +31,4 @@ public class PublicData {
     private void setName(String name) {
         this.name = name;
     }
-
-    public String getPublicKeyString() {
-        return publicKey.toString();
-    }
 }

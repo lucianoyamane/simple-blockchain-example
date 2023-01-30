@@ -1,6 +1,6 @@
 package br.com.lucianoyamane.example.configurations;
 
-import br.com.lucianoyamane.example.transaction.TransactionOutput;
+import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 
 import java.util.ArrayList;
@@ -16,28 +16,28 @@ public class UnspentTransactions {
         }
         return instance;
     }
-    private List<TransactionOutput> transactionOutputs;
+    private List<TransactionOperationBlockChain> transactionOperationBlockChains;
 
     private UnspentTransactions() {
-        this.transactionOutputs = new ArrayList<>();
+        this.transactionOperationBlockChains = new ArrayList<>();
     }
 
-    public void add(TransactionOutput transactionOutput) {
-        this.transactionOutputs.add(transactionOutput);
+    public void add(TransactionOperationBlockChain transactionOperationBlockChain) {
+        this.transactionOperationBlockChains.add(transactionOperationBlockChain);
     }
 
-    public void remove(TransactionOutput transactionOutput) {
-        this.transactionOutputs.remove(transactionOutput);
+    public void remove(TransactionOperationBlockChain transactionOperationBlockChain) {
+        this.transactionOperationBlockChains.remove(transactionOperationBlockChain);
     }
 
     public Integer getWalletBalance(PublicKeyDecorator publicKeyDecorator) {
-        return this.transactionOutputs.stream()
+        return this.transactionOperationBlockChains.stream()
                 .filter(output -> output.isMine(publicKeyDecorator))
-                .mapToInt(TransactionOutput::getValue).sum();
+                .mapToInt(TransactionOperationBlockChain::getValue).sum();
     }
 
-    public List<TransactionOutput> loadUnspentUTXO(PublicKeyDecorator publicKeyDecorator) {
-        return this.transactionOutputs.stream()
+    public List<TransactionOperationBlockChain> loadUnspentUTXO(PublicKeyDecorator publicKeyDecorator) {
+        return this.transactionOperationBlockChains.stream()
                 .filter(output -> output.isMine(publicKeyDecorator)).toList();
     }
 
