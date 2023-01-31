@@ -1,10 +1,8 @@
 package br.com.lucianoyamane.example.transaction;
 
-import br.com.lucianoyamane.example.BlockChainApp;
 import br.com.lucianoyamane.example.BlockChainObject;
 import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.UnspentTransactions;
-import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 
 import java.util.List;
@@ -13,7 +11,6 @@ import java.util.UUID;
 public class TransactionBlockChain implements BlockChainObject {
 
     private Transaction transaction;
-
     private TransactionOperationBlockChain senderTransactionOperationBlockChain;
     private TransactionOperationBlockChain receiverTransactionOperationBlockChain;
     private List<TransactionOperationBlockChain> unspentTransactionsOperationBlockChain;
@@ -95,7 +92,7 @@ public class TransactionBlockChain implements BlockChainObject {
         return signatureVerified;
     }
 
-    private Boolean verifiySignature() {
+    public Boolean verifiySignature() {
         return StringUtil.verifyECDSASig(this.getTransaction().getSenderPublicKeyDecorator().getPublicKey(), this.getTransaction().getFingerPrint(), this.getTransaction().getSignature());
     }
 
@@ -122,49 +119,12 @@ public class TransactionBlockChain implements BlockChainObject {
     }
 
     private Integer getLeftOverValue() {
-        return this.getInputValue() - this.getTransaction().getValue();
+        return this.getUnspentValue() - this.getTransaction().getValue();
     }
 
-    private Integer getInputValue() {
+    public Integer getUnspentValue() {
         List<TransactionOperationBlockChain> outputs = this.getUnspentTransactionsOperationBlockChain();
         return outputs.stream().mapToInt(output -> output.getValue()).sum();
     }
 
-    private Boolean isInputEqualOutputValue() {
-        return this.getInputValue().equals(this.getOutputsValue());
-    }
-
-    private Integer getOutputsValue() {
-        return this.getSenderTransactionOperationBlockChain().getValue() + this.getReceiverTransactionOperationBlockChain().getValue();
-    }
-
-    @Override
-    public void isConsistent(BlockChainApp.PreviousBlockData previousBlockData) {
-        if (!this.verifiySignature()) {
-            throw new BlockChainException("Transaction Signature failed to verify");
-        }
-
-        if (!this.isInputEqualOutputValue()) {
-            throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.getTransaction().getFingerPrint() + ")");
-        }
-
-        TransactionOperationBlockChain senderTransactionOperationBlockChain = this.getSenderTransactionOperationBlockChain();
-        if (!senderTransactionOperationBlockChain.isMine(this.getTransaction().getReceiverPublickeyDecorator())) {
-            throw new BlockChainException("#TransactionOutput(" + senderTransactionOperationBlockChain + ") is not who it should be");
-        }
-
-        TransactionOperationBlockChain receiverTransactionOperationBlockChain = this.getReceiverTransactionOperationBlockChain();
-        if (!receiverTransactionOperationBlockChain.isMine(this.getTransaction().getSenderPublicKeyDecorator())) {
-            throw new BlockChainException("#TransactionOutput(" + receiverTransactionOperationBlockChain + ") is not who it should be");
-        }
-
-        List<TransactionOperationBlockChain> transactionsOperationBlockChain = this.getUnspentTransactionsOperationBlockChain();
-
-        for(TransactionOperationBlockChain output : transactionsOperationBlockChain) {
-            output.isConsistent(previousBlockData);
-        }
-
-        previousBlockData.addTransactionOperationBlockChains(this.getSenderTransactionOperationBlockChain());
-        previousBlockData.addTransactionOperationBlockChains(this.getReceiverTransactionOperationBlockChain());
-    }
 }

@@ -1,10 +1,8 @@
 package br.com.lucianoyamane.example.block;
 
-import br.com.lucianoyamane.example.BlockChainApp;
 import br.com.lucianoyamane.example.BlockChainObject;
 import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
-import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
 
 import java.util.Objects;
@@ -110,25 +108,6 @@ public class BlockBlockChain implements BlockChainObject {
 
 	public void setBlock(Block block) {
 		this.block = block;
-	}
-
-	@Override
-	public void isConsistent(BlockChainApp.PreviousBlockData previousBlockData) {
-		if (!this.compareRegisteredAndCalculatedHash()) {
-			throw new BlockChainException("Current Hashes not equal");
-		}
-		if (!this.compareHash(previousBlockData.getPreviousHash())) {
-			throw new BlockChainException("Previous Hashes not equal");
-		}
-		if(!this.hashIsSolved(previousBlockData.getDifficulty())) {
-			throw new BlockChainException("This block hasn't been mined");
-		}
-
-		TransactionBlockChain currentBlockTransaction = this.getTransactionBlockChain();
-		if (currentBlockTransaction != null) {
-			currentBlockTransaction.isConsistent(previousBlockData);
-		}
-		previousBlockData.setPreviousHash(this.getHash());
 	}
 
 }

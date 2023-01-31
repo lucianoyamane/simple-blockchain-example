@@ -3,9 +3,8 @@ package br.com.lucianoyamane.example;
 
 import br.com.lucianoyamane.example.block.BlockBlockChain;
 import br.com.lucianoyamane.example.configurations.Difficulty;
-import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
-import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
+import br.com.lucianoyamane.example.valida.BlockChainValida;
 
 import java.util.ArrayList;
 //import java.util.Base64;
@@ -44,7 +43,6 @@ public class BlockChainApp {
 				.getHash();
 	}
 
-
 	private void addBlock(BlockBlockChain newBlockBlockChain) {
 		blockchain.add(newBlockBlockChain);
 	}
@@ -57,76 +55,8 @@ public class BlockChainApp {
 		return this.genesis;
 	}
 
-
-	private void bootstrapIsChainValid(PreviousBlockData previousBlockData) {
-		BlockBlockChain blockBlockChainGenesis = this.getGenesis();
-
-		TransactionBlockChain transactionBlockChain = blockBlockChainGenesis.getTransactionBlockChain();
-		if (transactionBlockChain.getSenderTransactionOperationBlockChain() != null) {
-			previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getSenderTransactionOperationBlockChain());
-		}
-		if (transactionBlockChain.getReceiverTransactionOperationBlockChain() != null) {
-			previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getReceiverTransactionOperationBlockChain());
-		}
-		previousBlockData.setPreviousHash(blockBlockChainGenesis.getHash());
-	}
 	public void isValid() {
-		PreviousBlockData previousBlockData = new PreviousBlockData(Difficulty.getInstance().getDifficulty());
-
-		this.bootstrapIsChainValid(previousBlockData);
-
-		for(BlockBlockChain currentBlockBlockChain : this.blockchain) {
-			currentBlockBlockChain.isConsistent(previousBlockData);
-		}
-		SystemOutPrintlnDecorator.roxo("Blockchain is valid");
-	}
-
-	public class PreviousBlockData {
-
-		private Integer difficulty;
-
-		private String previousHash;
-
-		private List<TransactionOperationBlockChain> transactionOperationBlockChains;
-
-		public PreviousBlockData(Integer difficulty) {
-			this.setTransactionOperationBlockChains(new ArrayList<>());
-			this.setDifficulty(difficulty);
-		}
-
-		public Integer getDifficulty() {
-			return difficulty;
-		}
-
-		private void setDifficulty(Integer difficulty) {
-			this.difficulty = difficulty;
-		}
-
-		public String getPreviousHash() {
-			return previousHash;
-		}
-
-		public void setPreviousHash(String previousHash) {
-			this.previousHash = previousHash;
-		}
-
-		public List<TransactionOperationBlockChain> getTransactionOperationBlockChains() {
-			return transactionOperationBlockChains;
-		}
-
-		private void setTransactionOperationBlockChains(List<TransactionOperationBlockChain> transactionOperationBlockChains) {
-			this.transactionOperationBlockChains = transactionOperationBlockChains;
-		}
-
-		public void addTransactionOperationBlockChains(TransactionOperationBlockChain transactionOperationBlockChain) {
-			if (transactionOperationBlockChain != null) {
-				this.getTransactionOperationBlockChains().add(transactionOperationBlockChain);
-			}
-		}
-
-		public void removeTransactionOperationBlockChains(TransactionOperationBlockChain transactionOperationBlockChain) {
-			this.getTransactionOperationBlockChains().remove(transactionOperationBlockChain);
-		}
+		new BlockChainValida().isValid(this.getGenesis(), this.blockchain);
 	}
 
 }
