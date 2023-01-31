@@ -37,7 +37,7 @@ public class BlockBlockChain implements BlockChainObject {
 		this.getBlock().setMerkleRoot(StringUtil.getMerkleRoot(this.getTransactionId()));
 		return this;
 	}
-	private String calculateHash() {
+	public String calculateHash() {
 		return StringUtil.encode(this.createCompositionToHash());
 	}
 
@@ -81,19 +81,6 @@ public class BlockBlockChain implements BlockChainObject {
 		}
 		return this;
 	}
-
-	public Boolean compareRegisteredAndCalculatedHash() {
-		return this.getBlock().getHash().equals(this.calculateHash());
-	}
-
-	public Boolean compareHash(String previousHash) {
-		return previousHash.equals(this.getBlock().getPreviousHash());
-	}
-
-	public Boolean hashIsSolved(int difficulty) {
-		return this.getBlock().getHash().substring( 0, difficulty).equals(StringUtil.getCharsZeroByDifficuty(difficulty));
-	}
-
 	public String getHash() {
 		return this.getBlock().getHash();
 	}

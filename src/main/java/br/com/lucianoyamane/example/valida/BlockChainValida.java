@@ -27,11 +27,11 @@ public class BlockChainValida {
         BlockBlockChain blockBlockChainGenesis = genesis;
 
         TransactionBlockChain transactionBlockChain = blockBlockChainGenesis.getTransactionBlockChain();
-        if (transactionBlockChain.getSenderTransactionOperationBlockChain() != null) {
-            previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getSenderTransactionOperationBlockChain());
+        if (transactionBlockChain.getCurrentTransactionOperationBlockChain() != null) {
+            previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getCurrentTransactionOperationBlockChain());
         }
-        if (transactionBlockChain.getReceiverTransactionOperationBlockChain() != null) {
-            previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getReceiverTransactionOperationBlockChain());
+        if (transactionBlockChain.getLeftOverTransactionOperationBlockChain() != null) {
+            previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getLeftOverTransactionOperationBlockChain());
         }
         previousBlockData.setPreviousHash(blockBlockChainGenesis.getHash());
     }

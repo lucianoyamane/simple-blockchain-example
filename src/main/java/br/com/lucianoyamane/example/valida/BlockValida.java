@@ -1,5 +1,6 @@
 package br.com.lucianoyamane.example.valida;
 
+import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.block.BlockBlockChain;
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
@@ -24,15 +25,26 @@ public class BlockValida implements Valida{
         this.blockBlockChain = blockBlockChain;
     }
 
+    public Boolean compareRegisteredAndCalculatedHash() {
+        return this.getBlockBlockChain().getBlock().getHash().equals(this.getBlockBlockChain().calculateHash());
+    }
+    public Boolean compareWithPreviousHash(String previousHash) {
+        return this.getBlockBlockChain().getBlock().getPreviousHash().equals(previousHash);
+    }
+
+    public Boolean hashIsSolved(int difficulty) {
+        return this.getBlockBlockChain().getBlock().getHash().substring( 0, difficulty).equals(StringUtil.getCharsZeroByDifficuty(difficulty));
+    }
+
     @Override
     public void isConsistent(BlockChainValida.PreviousBlockData previousBlockData) {
-        if (!this.getBlockBlockChain().compareRegisteredAndCalculatedHash()) {
+        if (!this.compareRegisteredAndCalculatedHash()) {
             throw new BlockChainException("Current Hashes not equal");
         }
-        if (!this.getBlockBlockChain().compareHash(previousBlockData.getPreviousHash())) {
+        if (!this.compareWithPreviousHash(previousBlockData.getPreviousHash())) {
             throw new BlockChainException("Previous Hashes not equal");
         }
-        if(!this.getBlockBlockChain().hashIsSolved(previousBlockData.getDifficulty())) {
+        if(!this.hashIsSolved(previousBlockData.getDifficulty())) {
             throw new BlockChainException("This block hasn't been mined");
         }
 

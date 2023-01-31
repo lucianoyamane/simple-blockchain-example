@@ -11,8 +11,8 @@ import java.util.UUID;
 public class TransactionBlockChain implements BlockChainObject {
 
     private Transaction transaction;
-    private TransactionOperationBlockChain senderTransactionOperationBlockChain;
-    private TransactionOperationBlockChain receiverTransactionOperationBlockChain;
+    private TransactionOperationBlockChain currentTransactionOperationBlockChain;
+    private TransactionOperationBlockChain leftOverTransactionOperationBlockChain;
     private List<TransactionOperationBlockChain> unspentTransactionsOperationBlockChain;
 
     private TransactionBlockChain(Transaction transaction) {
@@ -30,20 +30,20 @@ public class TransactionBlockChain implements BlockChainObject {
         this.setUnspentTransactionsOperationBlockChain(transactionOperationBlockChains);
     }
 
-    public TransactionOperationBlockChain getSenderTransactionOperationBlockChain() {
-        return senderTransactionOperationBlockChain;
+    public TransactionOperationBlockChain getCurrentTransactionOperationBlockChain() {
+        return currentTransactionOperationBlockChain;
     }
 
-    public void setSenderTransactionOperationBlockChain(TransactionOperationBlockChain senderTransactionOperationBlockChain) {
-        this.senderTransactionOperationBlockChain = senderTransactionOperationBlockChain;
+    public void setCurrentTransactionOperationBlockChain(TransactionOperationBlockChain currentTransactionOperationBlockChain) {
+        this.currentTransactionOperationBlockChain = currentTransactionOperationBlockChain;
     }
 
-    public TransactionOperationBlockChain getReceiverTransactionOperationBlockChain() {
-        return receiverTransactionOperationBlockChain;
+    public TransactionOperationBlockChain getLeftOverTransactionOperationBlockChain() {
+        return leftOverTransactionOperationBlockChain;
     }
 
-    public void setReceiverTransactionOperationBlockChain(TransactionOperationBlockChain receiverTransactionOperationBlockChain) {
-        this.receiverTransactionOperationBlockChain = receiverTransactionOperationBlockChain;
+    public void setLeftOverTransactionOperationBlockChain(TransactionOperationBlockChain leftOverTransactionOperationBlockChain) {
+        this.leftOverTransactionOperationBlockChain = leftOverTransactionOperationBlockChain;
     }
 
     public List<TransactionOperationBlockChain> getUnspentTransactionsOperationBlockChain() {
@@ -104,13 +104,13 @@ public class TransactionBlockChain implements BlockChainObject {
 
     private void addCurrentTransactionOutput() {
         TransactionOperationBlockChain current = TransactionOperationBlockChain.create( this.getTransaction().getReceiverPublickeyDecorator(), this.getTransaction().getValue());
-        this.setSenderTransactionOperationBlockChain(current);
+        this.setCurrentTransactionOperationBlockChain(current);
         this.addUnspentTransaction(current);
     }
 
     private void addLeftOverTransactionOutput() {
         TransactionOperationBlockChain leftover = TransactionOperationBlockChain.create( this.getTransaction().getSenderPublicKeyDecorator(), this.getLeftOverValue());
-        this.setReceiverTransactionOperationBlockChain(leftover);
+        this.setLeftOverTransactionOperationBlockChain(leftover);
         this.addUnspentTransaction(leftover);
     }
 

@@ -31,7 +31,7 @@ public class TransactionValida implements Valida {
     }
 
     public Integer getOutputsValue() {
-        return this.getTransactionBlockChain().getSenderTransactionOperationBlockChain().getValue() + this.getTransactionBlockChain().getReceiverTransactionOperationBlockChain().getValue();
+        return this.getTransactionBlockChain().getCurrentTransactionOperationBlockChain().getValue() + this.getTransactionBlockChain().getLeftOverTransactionOperationBlockChain().getValue();
     }
 
     @Override
@@ -44,14 +44,12 @@ public class TransactionValida implements Valida {
             throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.getTransactionBlockChain().getTransaction().getFingerPrint() + ")");
         }
 
-        TransactionOperationBlockChain senderTransactionOperationBlockChain = this.getTransactionBlockChain().getSenderTransactionOperationBlockChain();
-        if (!senderTransactionOperationBlockChain.isMine(this.getTransactionBlockChain().getTransaction().getReceiverPublickeyDecorator())) {
-            throw new BlockChainException("#TransactionOutput(" + senderTransactionOperationBlockChain + ") is not who it should be");
+        if (!this.getTransactionBlockChain().getCurrentTransactionOperationBlockChain().isMine(this.getTransactionBlockChain().getTransaction().getReceiverPublickeyDecorator())) {
+            throw new BlockChainException("#TransactionOutput(" + this.getTransactionBlockChain().getCurrentTransactionOperationBlockChain() + ") is not who it should be");
         }
 
-        TransactionOperationBlockChain receiverTransactionOperationBlockChain = this.getTransactionBlockChain().getReceiverTransactionOperationBlockChain();
-        if (!receiverTransactionOperationBlockChain.isMine(this.getTransactionBlockChain().getTransaction().getSenderPublicKeyDecorator())) {
-            throw new BlockChainException("#TransactionOutput(" + receiverTransactionOperationBlockChain + ") is not who it should be");
+        if (!this.getTransactionBlockChain().getLeftOverTransactionOperationBlockChain().isMine(this.getTransactionBlockChain().getTransaction().getSenderPublicKeyDecorator())) {
+            throw new BlockChainException("#TransactionOutput(" + this.getTransactionBlockChain().getLeftOverTransactionOperationBlockChain() + ") is not who it should be");
         }
 
         List<TransactionOperationBlockChain> transactionsOperationBlockChain = this.getTransactionBlockChain().getUnspentTransactionsOperationBlockChain();
@@ -60,7 +58,7 @@ public class TransactionValida implements Valida {
             TransactionOperationValida.valida(output).isConsistent(previousBlockData);
         }
 
-        previousBlockData.addTransactionOperationBlockChains(this.getTransactionBlockChain().getSenderTransactionOperationBlockChain());
-        previousBlockData.addTransactionOperationBlockChains(this.getTransactionBlockChain().getReceiverTransactionOperationBlockChain());
+        previousBlockData.addTransactionOperationBlockChains(this.getTransactionBlockChain().getCurrentTransactionOperationBlockChain());
+        previousBlockData.addTransactionOperationBlockChains(this.getTransactionBlockChain().getLeftOverTransactionOperationBlockChain());
     }
 }
