@@ -1,6 +1,13 @@
 package br.com.lucianoyamane.example.valida;
 
-public interface Valida {
+public abstract class Valida {
 
-    void isConsistent(BlockChainValida.PreviousBlockData previousBlockData);
+    abstract void valida(BlockChainValida.PreviousBlockData previousBlockData);
+
+    abstract void processaDadosProximoBloco(BlockChainValida.PreviousBlockData previousBlockData);
+
+    void executa(BlockChainValida.PreviousBlockData previousBlockData){
+        this.valida(previousBlockData);
+        this.processaDadosProximoBloco(previousBlockData);
+    }
 }

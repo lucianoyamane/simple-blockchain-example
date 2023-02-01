@@ -6,7 +6,7 @@ import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
 
 import java.util.List;
 
-public class TransactionValida implements Valida {
+public class TransactionValida extends Valida {
 
     private TransactionBlockChain transactionBlockChain;
 
@@ -35,7 +35,7 @@ public class TransactionValida implements Valida {
     }
 
     @Override
-    public void isConsistent(BlockChainValida.PreviousBlockData previousBlockData) {
+    void valida(BlockChainValida.PreviousBlockData previousBlockData) {
         if (!this.getTransactionBlockChain().verifiySignature()) {
             throw new BlockChainException("Transaction Signature failed to verify");
         }
@@ -51,11 +51,14 @@ public class TransactionValida implements Valida {
         if (!this.getTransactionBlockChain().getLeftOverTransactionOperationBlockChain().isMine(this.getTransactionBlockChain().getTransaction().getSenderPublicKeyDecorator())) {
             throw new BlockChainException("#TransactionOutput(" + this.getTransactionBlockChain().getLeftOverTransactionOperationBlockChain() + ") is not who it should be");
         }
+    }
 
+    @Override
+    void processaDadosProximoBloco(BlockChainValida.PreviousBlockData previousBlockData) {
         List<TransactionOperationBlockChain> transactionsOperationBlockChain = this.getTransactionBlockChain().getUnspentTransactionsOperationBlockChain();
 
         for(TransactionOperationBlockChain output : transactionsOperationBlockChain) {
-            TransactionOperationValida.valida(output).isConsistent(previousBlockData);
+            TransactionOperationValida.valida(output).executa(previousBlockData);
         }
 
         previousBlockData.addTransactionOperationBlockChains(this.getTransactionBlockChain().getCurrentTransactionOperationBlockChain());

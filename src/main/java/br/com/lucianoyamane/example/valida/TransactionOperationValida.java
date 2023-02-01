@@ -5,7 +5,7 @@ import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
 
 import java.util.Objects;
 
-public class TransactionOperationValida implements Valida {
+public class TransactionOperationValida extends Valida {
 
     private TransactionOperationBlockChain transactionOperationBlockChain;
 
@@ -30,7 +30,7 @@ public class TransactionOperationValida implements Valida {
     }
 
     @Override
-    public void isConsistent(BlockChainValida.PreviousBlockData previousBlockData) {
+    void valida(BlockChainValida.PreviousBlockData previousBlockData) {
         TransactionOperationBlockChain referenceTransactionOperationBlockChain = previousBlockData.findReferencedTransactionOperationBlockChain(this.getTransactionOperationBlockChain());
         if(Objects.isNull(referenceTransactionOperationBlockChain)) {
             throw new BlockChainException("#Referenced input on Transaction(" + this.getTransactionOperationBlockChain().getTransactionOperationId() + ") is Missing");
@@ -38,8 +38,10 @@ public class TransactionOperationValida implements Valida {
         if(!this.possueMesmoValor(referenceTransactionOperationBlockChain)) {
             throw new BlockChainException("#Referenced input Transaction(" + this.getTransactionOperationBlockChain().getTransactionOperationId() + ") value is Invalid");
         }
+    }
+
+    @Override
+    void processaDadosProximoBloco(BlockChainValida.PreviousBlockData previousBlockData) {
         previousBlockData.removeTransactionOperationBlockChains(this.getTransactionOperationBlockChain());
-
-
     }
 }

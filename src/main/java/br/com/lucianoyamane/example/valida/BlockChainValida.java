@@ -17,7 +17,7 @@ public class BlockChainValida {
         this.bootstrapIsChainValid(genesis, previousBlockData);
 
         for(BlockBlockChain currentBlockBlockChain : blockchain) {
-            BlockValida.valida(currentBlockBlockChain).isConsistent(previousBlockData);
+            BlockValida.valida(currentBlockBlockChain).executa(previousBlockData);
 
         }
         SystemOutPrintlnDecorator.roxo("Blockchain is valid");

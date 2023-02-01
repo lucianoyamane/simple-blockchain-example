@@ -5,7 +5,9 @@ import br.com.lucianoyamane.example.block.BlockBlockChain;
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
 
-public class BlockValida implements Valida{
+import java.util.Objects;
+
+public class BlockValida extends Valida {
 
     private BlockBlockChain blockBlockChain;
 
@@ -37,7 +39,7 @@ public class BlockValida implements Valida{
     }
 
     @Override
-    public void isConsistent(BlockChainValida.PreviousBlockData previousBlockData) {
+    void valida(BlockChainValida.PreviousBlockData previousBlockData) {
         if (!this.compareRegisteredAndCalculatedHash()) {
             throw new BlockChainException("Current Hashes not equal");
         }
@@ -47,11 +49,15 @@ public class BlockValida implements Valida{
         if(!this.hashIsSolved(previousBlockData.getDifficulty())) {
             throw new BlockChainException("This block hasn't been mined");
         }
-
-        TransactionBlockChain currentBlockTransaction = this.getBlockBlockChain().getTransactionBlockChain();
-        if (currentBlockTransaction != null) {
-            TransactionValida.valida(currentBlockTransaction).isConsistent(previousBlockData);
-        }
-        previousBlockData.setPreviousHash(blockBlockChain.getHash());
     }
+
+    @Override
+    void processaDadosProximoBloco(BlockChainValida.PreviousBlockData previousBlockData) {
+        TransactionBlockChain currentBlockTransaction = this.getBlockBlockChain().getTransactionBlockChain();
+        if (Objects.nonNull(currentBlockTransaction)) {
+            TransactionValida.valida(currentBlockTransaction).executa(previousBlockData);
+        }
+        previousBlockData.setPreviousHash(this.getBlockBlockChain().getHash());
+    }
+
 }

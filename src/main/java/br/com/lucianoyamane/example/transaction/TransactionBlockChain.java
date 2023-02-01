@@ -85,7 +85,7 @@ public class TransactionBlockChain implements BlockChainObject {
     public boolean processTransaction() {
         Boolean signatureVerified = this.verifiySignature();
         if (signatureVerified) {
-            this.removeCurrentOutput();
+            this.removePreviousTransactions();
             this.addCurrentTransactionOutput();
             this.addLeftOverTransactionOutput();
         }
@@ -96,7 +96,7 @@ public class TransactionBlockChain implements BlockChainObject {
         return StringUtil.verifyECDSASig(this.getTransaction().getSenderPublicKeyDecorator().getPublicKey(), this.getTransaction().getFingerPrint(), this.getTransaction().getSignature());
     }
 
-    private void removeCurrentOutput() {
+    private void removePreviousTransactions() {
         for(TransactionOperationBlockChain transactionOperationBlockChain : this.getUnspentTransactionsOperationBlockChain()) {
             UnspentTransactions.getInstance().remove(transactionOperationBlockChain);
         }
