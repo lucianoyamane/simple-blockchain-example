@@ -1,8 +1,14 @@
-package br.com.lucianoyamane.example.valida;
+package br.com.lucianoyamane.example.valida.transaction;
 
-import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
 import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
+import br.com.lucianoyamane.example.valida.BlockChainValidaApp;
+import br.com.lucianoyamane.example.valida.Valida;
+import br.com.lucianoyamane.example.valida.operation.TransactionOperationValida;
+import br.com.lucianoyamane.example.valida.transaction.condicao.AssinaturaNaoVerificadaCondicao;
+import br.com.lucianoyamane.example.valida.transaction.condicao.TransacaoAtualNaoPertenceAoDestinatarioCondicao;
+import br.com.lucianoyamane.example.valida.transaction.condicao.TransacaoValorRestanteNaoPertenceAoRemetenteCondicao;
+import br.com.lucianoyamane.example.valida.transaction.condicao.ValoresDeEntradaDiferenteValoresSaidaCondicao;
 
 import java.util.List;
 
@@ -14,11 +20,19 @@ public class TransactionValida extends Valida {
         this.setTransactionBlockChain(transactionBlockChain);
     }
 
+    @Override
+    protected void defineCondicoes() {
+        this.addCondicao(AssinaturaNaoVerificadaCondicao.inicia(this));
+        this.addCondicao(TransacaoAtualNaoPertenceAoDestinatarioCondicao.inicia(this));
+        this.addCondicao(TransacaoValorRestanteNaoPertenceAoRemetenteCondicao.inicia(this));
+        this.addCondicao(ValoresDeEntradaDiferenteValoresSaidaCondicao.inicia(this));
+    }
+
     public static TransactionValida valida(TransactionBlockChain transactionBlockChain) {
         return new TransactionValida(transactionBlockChain);
     }
 
-    private TransactionBlockChain getTransactionBlockChain() {
+    public TransactionBlockChain getTransactionBlockChain() {
         return transactionBlockChain;
     }
 
@@ -35,26 +49,7 @@ public class TransactionValida extends Valida {
     }
 
     @Override
-    void valida(BlockChainValida.PreviousBlockData previousBlockData) {
-        if (!this.getTransactionBlockChain().verifiySignature()) {
-            throw new BlockChainException("Transaction Signature failed to verify");
-        }
-
-        if (!this.isInputEqualOutputValue()) {
-            throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.getTransactionBlockChain().getTransaction().getFingerPrint() + ")");
-        }
-
-        if (!this.getTransactionBlockChain().getCurrentTransactionOperationBlockChain().isMine(this.getTransactionBlockChain().getTransaction().getReceiverPublickeyDecorator())) {
-            throw new BlockChainException("#TransactionOutput(" + this.getTransactionBlockChain().getCurrentTransactionOperationBlockChain() + ") is not who it should be");
-        }
-
-        if (!this.getTransactionBlockChain().getLeftOverTransactionOperationBlockChain().isMine(this.getTransactionBlockChain().getTransaction().getSenderPublicKeyDecorator())) {
-            throw new BlockChainException("#TransactionOutput(" + this.getTransactionBlockChain().getLeftOverTransactionOperationBlockChain() + ") is not who it should be");
-        }
-    }
-
-    @Override
-    void processaDadosProximoBloco(BlockChainValida.PreviousBlockData previousBlockData) {
+    public void processaDadosProximoBloco(BlockChainValidaApp.PreviousBlockData previousBlockData) {
         List<TransactionOperationBlockChain> transactionsOperationBlockChain = this.getTransactionBlockChain().getUnspentTransactionsOperationBlockChain();
 
         for(TransactionOperationBlockChain output : transactionsOperationBlockChain) {

@@ -5,11 +5,12 @@ import br.com.lucianoyamane.example.configurations.Difficulty;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
 import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
+import br.com.lucianoyamane.example.valida.block.BlockValida;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockChainValida {
+public class BlockChainValidaApp {
 
     public void isValid(BlockBlockChain genesis, List<BlockBlockChain> blockchain) {
         PreviousBlockData previousBlockData = new PreviousBlockData(Difficulty.getInstance().getDifficulty());

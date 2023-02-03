@@ -4,7 +4,7 @@ package br.com.lucianoyamane.example;
 import br.com.lucianoyamane.example.block.BlockBlockChain;
 import br.com.lucianoyamane.example.configurations.Difficulty;
 import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
-import br.com.lucianoyamane.example.valida.BlockChainValida;
+import br.com.lucianoyamane.example.valida.BlockChainValidaApp;
 
 import java.util.ArrayList;
 //import java.util.Base64;
@@ -56,7 +56,7 @@ public class BlockChainApp {
 	}
 
 	public void isValid() {
-		new BlockChainValida().isValid(this.getGenesis(), this.blockchain);
+		new BlockChainValidaApp().isValid(this.getGenesis(), this.blockchain);
 	}
 
 }
