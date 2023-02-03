@@ -16,7 +16,7 @@ public class HashRegistradoDiferenteCalculadoBlockCondicao extends Condicao<Bloc
     }
 
     @Override
-    public void executa(BlockChainValidaApp.PreviousBlockData previousBlockData) {
+    protected void definicao(BlockChainValidaApp.PreviousBlockData previousBlockData) {
         if (!this.getValida().compareRegisteredAndCalculatedHash()) {
             throw new BlockChainException("Current Hashes not equal");
         }

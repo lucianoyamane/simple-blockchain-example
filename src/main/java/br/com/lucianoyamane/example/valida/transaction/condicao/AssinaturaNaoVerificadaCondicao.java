@@ -16,7 +16,7 @@ public class AssinaturaNaoVerificadaCondicao extends Condicao<TransactionValida>
     }
 
     @Override
-    public void executa(BlockChainValidaApp.PreviousBlockData previousBlockData) {
+    protected void definicao(BlockChainValidaApp.PreviousBlockData previousBlockData) {
         if (!this.getValida().getTransactionBlockChain().verifiySignature()) {
             throw new BlockChainException("Transaction Signature failed to verify");
         }

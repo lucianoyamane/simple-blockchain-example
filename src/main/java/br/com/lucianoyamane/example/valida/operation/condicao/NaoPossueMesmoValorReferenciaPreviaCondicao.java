@@ -17,12 +17,10 @@ public class NaoPossueMesmoValorReferenciaPreviaCondicao extends Condicao<Transa
     }
 
     @Override
-    public void executa(BlockChainValidaApp.PreviousBlockData previousBlockData) {
+    protected void definicao(BlockChainValidaApp.PreviousBlockData previousBlockData) {
         TransactionOperationBlockChain referenceTransactionOperationBlockChain = previousBlockData.findReferencedTransactionOperationBlockChain(this.getValida().getTransactionOperationBlockChain());
         if (!this.getValida().possueMesmoValor(referenceTransactionOperationBlockChain)){
             throw new BlockChainException("#Referenced input Transaction(" + this.getValida().getTransactionOperationBlockChain().getTransactionOperationId() + ") value is Invalid");
         }
-
-
     }
 }

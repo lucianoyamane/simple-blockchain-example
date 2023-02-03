@@ -16,7 +16,7 @@ public class ValoresDeEntradaDiferenteValoresSaidaCondicao extends Condicao<Tran
     }
 
     @Override
-    public void executa(BlockChainValidaApp.PreviousBlockData previousBlockData) {
+    protected void definicao(BlockChainValidaApp.PreviousBlockData previousBlockData) {
         if (!this.getValida().isInputEqualOutputValue()) {
             throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.getValida().getTransactionBlockChain().getTransaction().getFingerPrint() + ")");
         }
