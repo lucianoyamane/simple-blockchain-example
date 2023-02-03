@@ -16,10 +16,14 @@ public class NaoPossueMesmoValorReferenciaPreviaCondicao extends Condicao<Transa
         return new NaoPossueMesmoValorReferenciaPreviaCondicao(valida);
     }
 
+    public Boolean possueMesmoValor(TransactionOperationBlockChain transactionOperationBlockChain) {
+        return this.getValida().getTransactionOperationBlockChain().getTransactionOperationValue().equals(transactionOperationBlockChain.getValue());
+    }
+
     @Override
     protected void definicao(BlockChainValidaApp.PreviousBlockData previousBlockData) {
         TransactionOperationBlockChain referenceTransactionOperationBlockChain = previousBlockData.findReferencedTransactionOperationBlockChain(this.getValida().getTransactionOperationBlockChain());
-        if (!this.getValida().possueMesmoValor(referenceTransactionOperationBlockChain)){
+        if (!this.possueMesmoValor(referenceTransactionOperationBlockChain)){
             throw new BlockChainException("#Referenced input Transaction(" + this.getValida().getTransactionOperationBlockChain().getTransactionOperationId() + ") value is Invalid");
         }
     }

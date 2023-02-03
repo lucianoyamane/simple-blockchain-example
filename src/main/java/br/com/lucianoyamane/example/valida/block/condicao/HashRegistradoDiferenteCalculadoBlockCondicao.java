@@ -15,9 +15,13 @@ public class HashRegistradoDiferenteCalculadoBlockCondicao extends Condicao<Bloc
         return new HashRegistradoDiferenteCalculadoBlockCondicao(valida);
     }
 
+    public Boolean compareRegisteredAndCalculatedHash() {
+        return this.getValida().getBlockBlockChain().getBlock().getHash().equals(this.getValida().getBlockBlockChain().calculateHash());
+    }
+
     @Override
     protected void definicao(BlockChainValidaApp.PreviousBlockData previousBlockData) {
-        if (!this.getValida().compareRegisteredAndCalculatedHash()) {
+        if (!this.compareRegisteredAndCalculatedHash()) {
             throw new BlockChainException("Current Hashes not equal");
         }
 

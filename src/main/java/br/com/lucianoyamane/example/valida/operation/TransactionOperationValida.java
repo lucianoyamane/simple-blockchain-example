@@ -32,10 +32,6 @@ public class TransactionOperationValida extends Valida {
         this.transactionOperationBlockChain = transactionOperationBlockChain;
     }
 
-    public Boolean possueMesmoValor(TransactionOperationBlockChain transactionOperationBlockChain) {
-        return this.getTransactionOperationBlockChain().getTransactionOperationValue().equals(transactionOperationBlockChain.getValue());
-    }
-
     @Override
     public void processaDadosProximoBloco(BlockChainValidaApp.PreviousBlockData previousBlockData) {
         previousBlockData.removeTransactionOperationBlockChains(this.getTransactionOperationBlockChain());

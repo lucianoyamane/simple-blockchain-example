@@ -31,23 +31,12 @@ public class BlockValida extends Valida {
         return new BlockValida(blockBlockChain);
     }
 
-    private BlockBlockChain getBlockBlockChain() {
+    public BlockBlockChain getBlockBlockChain() {
         return blockBlockChain;
     }
 
     private void setBlockBlockChain(BlockBlockChain blockBlockChain) {
         this.blockBlockChain = blockBlockChain;
-    }
-
-    public Boolean compareRegisteredAndCalculatedHash() {
-        return this.getBlockBlockChain().getBlock().getHash().equals(this.getBlockBlockChain().calculateHash());
-    }
-    public Boolean compareWithPreviousHash(String previousHash) {
-        return this.getBlockBlockChain().getBlock().getPreviousHash().equals(previousHash);
-    }
-
-    public Boolean hashIsSolved(int difficulty) {
-        return this.getBlockBlockChain().getBlock().getHash().substring( 0, difficulty).equals(StringUtil.getCharsZeroByDifficuty(difficulty));
     }
 
     @Override

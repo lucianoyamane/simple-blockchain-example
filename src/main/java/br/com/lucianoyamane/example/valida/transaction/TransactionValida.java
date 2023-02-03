@@ -40,14 +40,6 @@ public class TransactionValida extends Valida {
         this.transactionBlockChain = transactionBlockChain;
     }
 
-    public Boolean isInputEqualOutputValue() {
-        return this.getTransactionBlockChain().getUnspentValue().equals(this.getOutputsValue());
-    }
-
-    public Integer getOutputsValue() {
-        return this.getTransactionBlockChain().getCurrentTransactionOperationBlockChain().getValue() + this.getTransactionBlockChain().getLeftOverTransactionOperationBlockChain().getValue();
-    }
-
     @Override
     public void processaDadosProximoBloco(BlockChainValidaApp.PreviousBlockData previousBlockData) {
         List<TransactionOperationBlockChain> transactionsOperationBlockChain = this.getTransactionBlockChain().getUnspentTransactionsOperationBlockChain();

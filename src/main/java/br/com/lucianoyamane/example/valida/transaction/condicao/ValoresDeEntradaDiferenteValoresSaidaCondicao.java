@@ -15,9 +15,17 @@ public class ValoresDeEntradaDiferenteValoresSaidaCondicao extends Condicao<Tran
         return new ValoresDeEntradaDiferenteValoresSaidaCondicao(valida);
     }
 
+    public Boolean isInputEqualOutputValue() {
+        return this.getValida().getTransactionBlockChain().getUnspentValue().equals(this.getOutputsValue());
+    }
+
+    public Integer getOutputsValue() {
+        return this.getValida().getTransactionBlockChain().getCurrentTransactionOperationBlockChain().getValue() + this.getValida().getTransactionBlockChain().getLeftOverTransactionOperationBlockChain().getValue();
+    }
+
     @Override
     protected void definicao(BlockChainValidaApp.PreviousBlockData previousBlockData) {
-        if (!this.getValida().isInputEqualOutputValue()) {
+        if (!this.isInputEqualOutputValue()) {
             throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.getValida().getTransactionBlockChain().getTransaction().getFingerPrint() + ")");
         }
     }

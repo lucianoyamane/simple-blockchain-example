@@ -1,5 +1,6 @@
 package br.com.lucianoyamane.example.valida.block.condicao;
 
+import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.valida.BlockChainValidaApp;
 import br.com.lucianoyamane.example.valida.Condicao;
@@ -15,9 +16,13 @@ public class HashNaoFoiMineradoCondicao extends Condicao<BlockValida> {
         return new HashNaoFoiMineradoCondicao(valida);
     }
 
+    public Boolean hashIsSolved(int difficulty) {
+        return this.getValida().getBlockBlockChain().getBlock().getHash().substring( 0, difficulty).equals(StringUtil.getCharsZeroByDifficuty(difficulty));
+    }
+
     @Override
     protected void definicao(BlockChainValidaApp.PreviousBlockData previousBlockData) {
-        if(!this.getValida().hashIsSolved(previousBlockData.getDifficulty())) {
+        if(!this.hashIsSolved(previousBlockData.getDifficulty())) {
             throw new BlockChainException("This block hasn't been mined");
         }
     }
