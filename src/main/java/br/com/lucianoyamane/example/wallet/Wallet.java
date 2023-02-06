@@ -56,7 +56,7 @@ public class Wallet {
 	}
 
 	protected void createSignatureTransaction(TransactionBlockChain transactionBlockChain) {
-		transactionBlockChain.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transactionBlockChain.getFingerPrint()));
+		transactionBlockChain.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transactionBlockChain.getHash()));
 	}
 
 	public Boolean hasFunds(Integer value) {

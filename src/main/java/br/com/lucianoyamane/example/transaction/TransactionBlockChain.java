@@ -17,7 +17,7 @@ public class TransactionBlockChain implements BlockChainObject {
 
     private TransactionBlockChain(Transaction transaction) {
         this.setTransaction(transaction);
-        transaction.setFingerPrint(this.createFingerPrint());
+        transaction.setHash(this.createHash());
         this.createInputs(transaction.getSenderPublicKeyDecorator());
     }
 
@@ -58,16 +58,24 @@ public class TransactionBlockChain implements BlockChainObject {
         return transaction;
     }
 
+    public PublicKeyDecorator getTransactionReceiverPublicKeyDecorator() {
+        return this.getTransaction().getReceiverPublickeyDecorator();
+    }
+
+    public PublicKeyDecorator getTransactionSenderPublicKeyDecorator() {
+        return this.getTransaction().getSenderPublicKeyDecorator();
+    }
+
     public void setTransaction(Transaction transaction) {
         this.transaction = transaction;
     }
 
-    private String createFingerPrint() {
+    private String createHash() {
         return StringUtil.encode(this.getData());
     }
 
-    public String getFingerPrint() {
-        return this.getTransaction().getFingerPrint();
+    public String getHash() {
+        return this.getTransaction().getHash();
     }
 
     private String getData() {
@@ -93,7 +101,7 @@ public class TransactionBlockChain implements BlockChainObject {
     }
 
     public Boolean verifiySignature() {
-        return StringUtil.verifyECDSASig(this.getTransaction().getSenderPublicKeyDecorator().getPublicKey(), this.getTransaction().getFingerPrint(), this.getTransaction().getSignature());
+        return StringUtil.verifyECDSASig(this.getTransaction().getSenderPublicKeyDecorator().getPublicKey(), this.getTransaction().getHash(), this.getTransaction().getSignature());
     }
 
     private void removePreviousTransactions() {

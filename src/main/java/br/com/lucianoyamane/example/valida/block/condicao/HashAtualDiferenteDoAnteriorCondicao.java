@@ -15,13 +15,13 @@ public class HashAtualDiferenteDoAnteriorCondicao extends Condicao<BlockValida> 
         return new HashAtualDiferenteDoAnteriorCondicao(valida);
     }
 
-    public Boolean compareWithPreviousHash(String previousHash) {
-        return this.getValida().getBlockBlockChain().getBlock().getPreviousHash().equals(previousHash);
+    public Boolean compareWithCurrentBlockPreviousHash(String previousHash) {
+        return this.getValida().getCurrentBlockPreviousHash().equals(previousHash);
     }
 
     @Override
     protected void definicao(BlockChainValidaApp.PreviousBlockData previousBlockData) {
-        if (!this.compareWithPreviousHash(previousBlockData.getPreviousHash())){
+        if (!this.compareWithCurrentBlockPreviousHash(previousBlockData.getPreviousHash())){
             throw new BlockChainException("Previous Hashes not equal");
         }
     }

@@ -16,7 +16,7 @@ public class HashRegistradoDiferenteCalculadoBlockCondicao extends Condicao<Bloc
     }
 
     public Boolean compareRegisteredAndCalculatedHash() {
-        return this.getValida().getBlockBlockChain().getBlock().getHash().equals(this.getValida().getBlockBlockChain().calculateHash());
+        return this.getValida().getCurrentBlockHash().equals(this.getValida().getCurrentBlockCalculatedHash());
     }
 
     @Override

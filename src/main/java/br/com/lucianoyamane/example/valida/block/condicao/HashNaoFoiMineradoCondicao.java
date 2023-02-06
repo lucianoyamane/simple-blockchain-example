@@ -17,7 +17,7 @@ public class HashNaoFoiMineradoCondicao extends Condicao<BlockValida> {
     }
 
     public Boolean hashIsSolved(int difficulty) {
-        return this.getValida().getBlockBlockChain().getBlock().getHash().substring( 0, difficulty).equals(StringUtil.getCharsZeroByDifficuty(difficulty));
+        return this.getValida().getCurrentBlockHash().substring( 0, difficulty).equals(StringUtil.getCharsZeroByDifficuty(difficulty));
     }
 
     @Override

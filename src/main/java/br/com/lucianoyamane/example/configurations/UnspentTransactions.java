@@ -32,13 +32,13 @@ public class UnspentTransactions {
 
     public Integer getWalletBalance(PublicKeyDecorator publicKeyDecorator) {
         return this.transactionOperationBlockChains.stream()
-                .filter(output -> output.isMine(publicKeyDecorator))
+                .filter(output -> publicKeyDecorator.mePertence(output))
                 .mapToInt(TransactionOperationBlockChain::getValue).sum();
     }
 
     public List<TransactionOperationBlockChain> loadUnspentUTXO(PublicKeyDecorator publicKeyDecorator) {
         return this.transactionOperationBlockChains.stream()
-                .filter(output -> output.isMine(publicKeyDecorator)).toList();
+                .filter(output -> publicKeyDecorator.mePertence(output)).toList();
     }
 
 }

@@ -28,6 +28,10 @@ public class TransactionOperationValida extends Valida {
         return transactionOperationBlockChain;
     }
 
+    public Integer getTransactionOperationBlockChainValue() {
+        return this.getTransactionOperationBlockChain().getTransactionOperationValue();
+    }
+
     private void setTransactionOperationBlockChain(TransactionOperationBlockChain transactionOperationBlockChain) {
         this.transactionOperationBlockChain = transactionOperationBlockChain;
     }

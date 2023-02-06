@@ -1,6 +1,5 @@
 package br.com.lucianoyamane.example.valida.block;
 
-import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.block.BlockBlockChain;
 import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
 import br.com.lucianoyamane.example.valida.BlockChainValidaApp;
@@ -37,6 +36,18 @@ public class BlockValida extends Valida {
 
     private void setBlockBlockChain(BlockBlockChain blockBlockChain) {
         this.blockBlockChain = blockBlockChain;
+    }
+
+    public String getCurrentBlockPreviousHash() {
+        return this.getBlockBlockChain().getPreviousHash();
+    }
+
+    public String getCurrentBlockHash() {
+        return this.getBlockBlockChain().getHash();
+    }
+
+    public String getCurrentBlockCalculatedHash() {
+        return this.getBlockBlockChain().calculateHash();
     }
 
     @Override

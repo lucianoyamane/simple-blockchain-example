@@ -53,7 +53,7 @@ public class BlockBlockChain implements BlockChainObject {
 
 	private String getTransactionId() {
 		if (this.getTransactionBlockChain() != null) {
-			return this.getTransactionBlockChain().getFingerPrint();
+			return this.getTransactionBlockChain().getHash();
 		}
 		return null;
 	}
@@ -95,6 +95,10 @@ public class BlockBlockChain implements BlockChainObject {
 
 	public void setBlock(Block block) {
 		this.block = block;
+	}
+
+	public String getPreviousHash() {
+		return this.getBlock().getPreviousHash();
 	}
 
 }

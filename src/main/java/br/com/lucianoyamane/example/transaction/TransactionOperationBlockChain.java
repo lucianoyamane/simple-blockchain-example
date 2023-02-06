@@ -15,10 +15,6 @@ public class TransactionOperationBlockChain implements BlockChainObject {
 		return new TransactionOperationBlockChain(publicKeyDecorator, value);
 	}
 
-	public Boolean isMine(PublicKeyDecorator publicKey) {
-		return publicKey.equals(this.getTransactionOperation().getPublicKeyDecorator());
-	}
-
 	public Integer getValue() {
 		return this.getTransactionOperation().getValue();
 	}

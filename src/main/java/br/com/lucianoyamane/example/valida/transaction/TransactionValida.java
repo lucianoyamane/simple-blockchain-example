@@ -1,5 +1,6 @@
 package br.com.lucianoyamane.example.valida.transaction;
 
+import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
 import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
 import br.com.lucianoyamane.example.valida.BlockChainValidaApp;
@@ -34,6 +35,18 @@ public class TransactionValida extends Valida {
 
     public TransactionBlockChain getTransactionBlockChain() {
         return transactionBlockChain;
+    }
+
+    public PublicKeyDecorator getCurrentTransactionReceiverPublicKeyDecorator(){
+        return this.getTransactionBlockChain().getTransactionReceiverPublicKeyDecorator();
+    }
+
+    public PublicKeyDecorator getCurrentTransactionSenderPublicKeyDecorator(){
+        return this.getTransactionBlockChain().getTransactionSenderPublicKeyDecorator();
+    }
+
+    public TransactionOperationBlockChain getCurrentTransactionOperationBlockChain(){
+        return this.getTransactionBlockChain().getCurrentTransactionOperationBlockChain();
     }
 
     private void setTransactionBlockChain(TransactionBlockChain transactionBlockChain) {

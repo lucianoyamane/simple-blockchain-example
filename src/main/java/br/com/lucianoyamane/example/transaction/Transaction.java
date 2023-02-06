@@ -2,13 +2,11 @@ package br.com.lucianoyamane.example.transaction;
 
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 
-import java.util.List;
-
 public class Transaction {
 	private PublicKeyDecorator senderPublicKeyDecorator;
 	private PublicKeyDecorator receiverPublickeyDecorator;
 	private Integer value;
-	private String fingerPrint;
+	private String hash;
 	private byte[] signature;
 
 	protected Transaction(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value) {
@@ -45,12 +43,12 @@ public class Transaction {
 		this.value = value;
 	}
 
-	public String getFingerPrint() {
-		return fingerPrint;
+	public String getHash() {
+		return hash;
 	}
 
-	public void setFingerPrint(String fingerPrint) {
-		this.fingerPrint = fingerPrint;
+	public void setHash(String hash) {
+		this.hash = hash;
 	}
 
 	public byte[] getSignature() {
