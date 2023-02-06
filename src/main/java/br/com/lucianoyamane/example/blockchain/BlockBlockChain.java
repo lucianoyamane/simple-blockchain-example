@@ -1,9 +1,8 @@
-package br.com.lucianoyamane.example.block;
+package br.com.lucianoyamane.example.blockchain;
 
-import br.com.lucianoyamane.example.BlockChainObject;
+import br.com.lucianoyamane.example.models.Block;
 import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
-import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
 
 import java.util.Objects;
 

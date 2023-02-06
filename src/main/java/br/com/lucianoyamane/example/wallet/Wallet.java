@@ -3,7 +3,7 @@ package br.com.lucianoyamane.example.wallet;
 import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.configurations.UnspentTransactions;
-import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
+import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
 import br.com.lucianoyamane.example.keypair.BouncyCastleKeyPair;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 

@@ -1,24 +1,24 @@
-package br.com.lucianoyamane.example.transaction;
+package br.com.lucianoyamane.example.models;
 
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import com.google.gson.Gson;
 
 import java.util.UUID;
 
-public class TransactionOperation {
+public class Operation {
 
     private String id;
     private PublicKeyDecorator publicKeyDecorator;
     private Integer value;
 
-    private TransactionOperation(PublicKeyDecorator publicKeyDecorator, Integer value) {
+    private Operation(PublicKeyDecorator publicKeyDecorator, Integer value) {
         this.setPublicKeyDecorator(publicKeyDecorator);
         this.setValue(value);
         this.setId(UUID.randomUUID().toString());
     }
 
-    public static TransactionOperation init(PublicKeyDecorator publicKeyDecorator, Integer value) {
-        return new TransactionOperation(publicKeyDecorator, value);
+    public static Operation init(PublicKeyDecorator publicKeyDecorator, Integer value) {
+        return new Operation(publicKeyDecorator, value);
     }
 
     public String getId() {
@@ -50,10 +50,10 @@ public class TransactionOperation {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof TransactionOperation)) {
+        if (!(obj instanceof Operation)) {
             return false;
         }
-        TransactionOperation other = (TransactionOperation) obj;
+        Operation other = (Operation) obj;
         return this.getId().equals(other.getId());
     }
 

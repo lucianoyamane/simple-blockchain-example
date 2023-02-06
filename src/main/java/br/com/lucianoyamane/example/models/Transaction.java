@@ -1,4 +1,4 @@
-package br.com.lucianoyamane.example.transaction;
+package br.com.lucianoyamane.example.models;
 
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 

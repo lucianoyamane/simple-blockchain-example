@@ -1,7 +1,7 @@
 package br.com.lucianoyamane.example.dundermifflin;
 
 import br.com.lucianoyamane.example.configurations.CarteirasRegistradas;
-import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
+import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
 
 public class Transacao {
 

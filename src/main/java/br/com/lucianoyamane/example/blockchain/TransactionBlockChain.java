@@ -1,9 +1,9 @@
-package br.com.lucianoyamane.example.transaction;
+package br.com.lucianoyamane.example.blockchain;
 
-import br.com.lucianoyamane.example.BlockChainObject;
 import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.UnspentTransactions;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
+import br.com.lucianoyamane.example.models.Transaction;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,9 +11,9 @@ import java.util.UUID;
 public class TransactionBlockChain implements BlockChainObject {
 
     private Transaction transaction;
-    private TransactionOperationBlockChain currentTransactionOperationBlockChain;
-    private TransactionOperationBlockChain leftOverTransactionOperationBlockChain;
-    private List<TransactionOperationBlockChain> unspentTransactionsOperationBlockChain;
+    private OperationBlockChain currentOperationBlockChain;
+    private OperationBlockChain leftOverOperationBlockChain;
+    private List<OperationBlockChain> unspentTransactionsOperationBlockChain;
 
     private TransactionBlockChain(Transaction transaction) {
         this.setTransaction(transaction);
@@ -26,31 +26,31 @@ public class TransactionBlockChain implements BlockChainObject {
     }
 
     private void createInputs(PublicKeyDecorator senderPublicKeyDecorator) {
-        List<TransactionOperationBlockChain> transactionOperationBlockChains = UnspentTransactions.getInstance().loadUnspentUTXO(senderPublicKeyDecorator);
-        this.setUnspentTransactionsOperationBlockChain(transactionOperationBlockChains);
+        List<OperationBlockChain> operationBlockChains = UnspentTransactions.getInstance().loadUnspentUTXO(senderPublicKeyDecorator);
+        this.setUnspentTransactionsOperationBlockChain(operationBlockChains);
     }
 
-    public TransactionOperationBlockChain getCurrentTransactionOperationBlockChain() {
-        return currentTransactionOperationBlockChain;
+    public OperationBlockChain getCurrentTransactionOperationBlockChain() {
+        return currentOperationBlockChain;
     }
 
-    public void setCurrentTransactionOperationBlockChain(TransactionOperationBlockChain currentTransactionOperationBlockChain) {
-        this.currentTransactionOperationBlockChain = currentTransactionOperationBlockChain;
+    public void setCurrentTransactionOperationBlockChain(OperationBlockChain currentOperationBlockChain) {
+        this.currentOperationBlockChain = currentOperationBlockChain;
     }
 
-    public TransactionOperationBlockChain getLeftOverTransactionOperationBlockChain() {
-        return leftOverTransactionOperationBlockChain;
+    public OperationBlockChain getLeftOverTransactionOperationBlockChain() {
+        return leftOverOperationBlockChain;
     }
 
-    public void setLeftOverTransactionOperationBlockChain(TransactionOperationBlockChain leftOverTransactionOperationBlockChain) {
-        this.leftOverTransactionOperationBlockChain = leftOverTransactionOperationBlockChain;
+    public void setLeftOverTransactionOperationBlockChain(OperationBlockChain leftOverOperationBlockChain) {
+        this.leftOverOperationBlockChain = leftOverOperationBlockChain;
     }
 
-    public List<TransactionOperationBlockChain> getUnspentTransactionsOperationBlockChain() {
+    public List<OperationBlockChain> getUnspentTransactionsOperationBlockChain() {
         return unspentTransactionsOperationBlockChain;
     }
 
-    public void setUnspentTransactionsOperationBlockChain(List<TransactionOperationBlockChain> unspentTransactionsOperationBlockChain) {
+    public void setUnspentTransactionsOperationBlockChain(List<OperationBlockChain> unspentTransactionsOperationBlockChain) {
         this.unspentTransactionsOperationBlockChain = unspentTransactionsOperationBlockChain;
     }
 
@@ -105,25 +105,21 @@ public class TransactionBlockChain implements BlockChainObject {
     }
 
     private void removePreviousTransactions() {
-        for(TransactionOperationBlockChain transactionOperationBlockChain : this.getUnspentTransactionsOperationBlockChain()) {
-            UnspentTransactions.getInstance().remove(transactionOperationBlockChain);
+        for(OperationBlockChain operationBlockChain : this.getUnspentTransactionsOperationBlockChain()) {
+            UnspentTransactions.getInstance().remove(operationBlockChain);
         }
     }
 
     private void addCurrentTransactionOutput() {
-        TransactionOperationBlockChain current = TransactionOperationBlockChain.create( this.getTransaction().getReceiverPublickeyDecorator(), this.getTransaction().getValue());
+        OperationBlockChain current = OperationBlockChain.create( this.getTransaction().getReceiverPublickeyDecorator(), this.getTransaction().getValue());
         this.setCurrentTransactionOperationBlockChain(current);
-        this.addUnspentTransaction(current);
+        UnspentTransactions.getInstance().add(current);
     }
 
     private void addLeftOverTransactionOutput() {
-        TransactionOperationBlockChain leftover = TransactionOperationBlockChain.create( this.getTransaction().getSenderPublicKeyDecorator(), this.getLeftOverValue());
+        OperationBlockChain leftover = OperationBlockChain.create( this.getTransaction().getSenderPublicKeyDecorator(), this.getLeftOverValue());
         this.setLeftOverTransactionOperationBlockChain(leftover);
-        this.addUnspentTransaction(leftover);
-    }
-
-    private void addUnspentTransaction(TransactionOperationBlockChain transactionOperationBlockChain) {
-        UnspentTransactions.getInstance().add(transactionOperationBlockChain);
+        UnspentTransactions.getInstance().add(leftover);
     }
 
     private Integer getLeftOverValue() {
@@ -131,7 +127,7 @@ public class TransactionBlockChain implements BlockChainObject {
     }
 
     public Integer getUnspentValue() {
-        List<TransactionOperationBlockChain> outputs = this.getUnspentTransactionsOperationBlockChain();
+        List<OperationBlockChain> outputs = this.getUnspentTransactionsOperationBlockChain();
         return outputs.stream().mapToInt(output -> output.getValue()).sum();
     }
 

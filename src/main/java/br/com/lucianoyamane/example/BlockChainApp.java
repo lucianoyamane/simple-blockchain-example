@@ -1,10 +1,10 @@
 package br.com.lucianoyamane.example;
 
 
-import br.com.lucianoyamane.example.block.BlockBlockChain;
+import br.com.lucianoyamane.example.blockchain.BlockBlockChain;
 import br.com.lucianoyamane.example.configurations.Difficulty;
-import br.com.lucianoyamane.example.transaction.TransactionBlockChain;
-import br.com.lucianoyamane.example.valida.BlockChainValidaApp;
+import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
+import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 
 import java.util.ArrayList;
 //import java.util.Base64;
@@ -25,13 +25,13 @@ public class BlockChainApp {
 		return new BlockChainApp();
 	}
 
-	public String registraTransacaoGenesis(TransactionBlockChain transaction) {
+	public String transactionGenesis(TransactionBlockChain transaction) {
 		BlockBlockChain genesis = BlockBlockChain.genesis(transaction);
 		this.setGenesis(genesis);
 		return this.proofOfWork(genesis);
 	}
 
-	public String registraTransacao(TransactionBlockChain transaction, String previousHash) {
+	public String transaction(TransactionBlockChain transaction, String previousHash) {
 		BlockBlockChain blockBlockChain = BlockBlockChain.init(transaction, previousHash);
 		this.addBlock(blockBlockChain);
 		return this.proofOfWork(blockBlockChain);
@@ -55,8 +55,8 @@ public class BlockChainApp {
 		return this.genesis;
 	}
 
-	public void isValid() {
-		new BlockChainValidaApp().isValid(this.getGenesis(), this.blockchain);
+	public void validate() {
+		new BlockChainValidateApp().validate(this.getGenesis(), this.blockchain);
 	}
 
 }

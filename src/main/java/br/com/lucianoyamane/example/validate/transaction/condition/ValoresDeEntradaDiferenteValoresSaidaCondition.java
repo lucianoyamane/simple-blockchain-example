@@ -1,18 +1,18 @@
-package br.com.lucianoyamane.example.valida.transaction.condicao;
+package br.com.lucianoyamane.example.validate.transaction.condition;
 
 import br.com.lucianoyamane.example.exception.BlockChainException;
-import br.com.lucianoyamane.example.valida.BlockChainValidaApp;
-import br.com.lucianoyamane.example.valida.Condicao;
-import br.com.lucianoyamane.example.valida.transaction.TransactionValida;
+import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
+import br.com.lucianoyamane.example.validate.Condition;
+import br.com.lucianoyamane.example.validate.transaction.TransactionValidate;
 
-public class ValoresDeEntradaDiferenteValoresSaidaCondicao extends Condicao<TransactionValida> {
+public class ValoresDeEntradaDiferenteValoresSaidaCondition extends Condition<TransactionValidate> {
 
-    private ValoresDeEntradaDiferenteValoresSaidaCondicao(TransactionValida valida) {
+    private ValoresDeEntradaDiferenteValoresSaidaCondition(TransactionValidate valida) {
         super(valida);
     }
 
-    public static ValoresDeEntradaDiferenteValoresSaidaCondicao inicia(TransactionValida valida) {
-        return new ValoresDeEntradaDiferenteValoresSaidaCondicao(valida);
+    public static ValoresDeEntradaDiferenteValoresSaidaCondition inicia(TransactionValidate valida) {
+        return new ValoresDeEntradaDiferenteValoresSaidaCondition(valida);
     }
 
     public Boolean isInputEqualOutputValue() {
@@ -24,7 +24,7 @@ public class ValoresDeEntradaDiferenteValoresSaidaCondicao extends Condicao<Tran
     }
 
     @Override
-    protected void definicao(BlockChainValidaApp.PreviousBlockData previousBlockData) {
+    protected void definicao(BlockChainValidateApp.PreviousBlockData previousBlockData) {
         if (!this.isInputEqualOutputValue()) {
             throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.getValida().getTransactionBlockChain().getTransaction().getHash() + ")");
         }
