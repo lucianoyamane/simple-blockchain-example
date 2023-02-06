@@ -16,7 +16,7 @@ public class TransacaoValorRestanteNaoPertenceAoRemetenteCondition extends Condi
     }
 
     @Override
-    protected void definicao(BlockChainValidateApp.PreviousBlockData previousBlockData) {
+    protected void rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
         if (!this.getValida().getCurrentTransactionSenderPublicKeyDecorator().mePertence(this.getValida().getTransactionBlockChain().getLeftOverTransactionOperationBlockChain())) {
             throw new BlockChainException("#TransactionOutput(" + this.getValida().getTransactionBlockChain().getLeftOverTransactionOperationBlockChain() + ") is not who it should be");
         }

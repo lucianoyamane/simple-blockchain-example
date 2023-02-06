@@ -16,10 +16,10 @@ public abstract class Condition<T extends Validate> {
         this.valida = valida;
     }
 
-    protected abstract void definicao(BlockChainValidateApp.PreviousBlockData previousBlockData);
+    protected abstract void rule(BlockChainValidateApp.PreviousBlockData previousBlockData);
 
-    public void executa(BlockChainValidateApp.PreviousBlockData previousBlockData){
-        this.definicao(previousBlockData);
+    public void execute(BlockChainValidateApp.PreviousBlockData previousBlockData){
+        this.rule(previousBlockData);
     }
 
 }

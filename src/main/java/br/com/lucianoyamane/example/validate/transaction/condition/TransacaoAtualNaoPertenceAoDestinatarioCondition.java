@@ -16,7 +16,7 @@ public class TransacaoAtualNaoPertenceAoDestinatarioCondition extends Condition<
     }
 
     @Override
-    protected void definicao(BlockChainValidateApp.PreviousBlockData previousBlockData) {
+    protected void rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
         if (!this.getValida().getCurrentTransactionReceiverPublicKeyDecorator().mePertence(this.getValida().getCurrentTransactionOperationBlockChain())) {
             throw new BlockChainException("#TransactionOutput(" + this.getValida().getCurrentTransactionOperationBlockChain() + ") is not who it should be");
         }

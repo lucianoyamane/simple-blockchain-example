@@ -24,7 +24,7 @@ public class ValoresDeEntradaDiferenteValoresSaidaCondition extends Condition<Tr
     }
 
     @Override
-    protected void definicao(BlockChainValidateApp.PreviousBlockData previousBlockData) {
+    protected void rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
         if (!this.isInputEqualOutputValue()) {
             throw new BlockChainException("Inputs are note equal to outputs on Transaction(" + this.getValida().getTransactionBlockChain().getTransaction().getHash() + ")");
         }

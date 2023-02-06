@@ -17,7 +17,7 @@ public abstract class Validate {
     public void validate(BlockChainValidateApp.PreviousBlockData previousBlockData) {
         List<Condition> conditions = this.getConditions();
         for(Condition condition : conditions) {
-            condition.executa(previousBlockData);
+            condition.execute(previousBlockData);
         }
     };
 

@@ -19,7 +19,7 @@ public class NaoPossueReferenciaOperacaoPreviaCondition extends Condition<Operat
     }
 
     @Override
-    protected void definicao(BlockChainValidateApp.PreviousBlockData previousBlockData) {
+    protected void rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
         OperationBlockChain referenceOperationBlockChain = previousBlockData.findReferencedTransactionOperationBlockChain(this.getValida().getTransactionOperationBlockChain());
         if (Objects.isNull(referenceOperationBlockChain)) {
             throw new BlockChainException("#Referenced input on Transaction(" + this.getValida().getTransactionOperationBlockChain().getTransactionOperationId() + ") is Missing");

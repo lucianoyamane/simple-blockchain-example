@@ -20,7 +20,7 @@ public class HashAtualDiferenteDoAnteriorCondition extends Condition<BlockValida
     }
 
     @Override
-    protected void definicao(BlockChainValidateApp.PreviousBlockData previousBlockData) {
+    protected void rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
         if (!this.compareWithCurrentBlockPreviousHash(previousBlockData.getPreviousHash())){
             throw new BlockChainException("Previous Hashes not equal");
         }

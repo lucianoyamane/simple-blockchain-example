@@ -21,7 +21,7 @@ public class HashNaoFoiMineradoCondition extends Condition<BlockValidate> {
     }
 
     @Override
-    protected void definicao(BlockChainValidateApp.PreviousBlockData previousBlockData) {
+    protected void rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
         if(!this.hashIsSolved(previousBlockData.getDifficulty())) {
             throw new BlockChainException("This block hasn't been mined");
         }

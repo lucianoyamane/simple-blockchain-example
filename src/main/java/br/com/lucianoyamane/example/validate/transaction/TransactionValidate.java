@@ -6,7 +6,7 @@ import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Validate;
 import br.com.lucianoyamane.example.validate.operation.OperationValidate;
-import br.com.lucianoyamane.example.validate.transaction.condition.AssinaturaNaoVerificadaCondition;
+import br.com.lucianoyamane.example.validate.transaction.condition.NotCheckSignatureCondition;
 import br.com.lucianoyamane.example.validate.transaction.condition.TransacaoAtualNaoPertenceAoDestinatarioCondition;
 import br.com.lucianoyamane.example.validate.transaction.condition.TransacaoValorRestanteNaoPertenceAoRemetenteCondition;
 import br.com.lucianoyamane.example.validate.transaction.condition.ValoresDeEntradaDiferenteValoresSaidaCondition;
@@ -23,7 +23,7 @@ public class TransactionValidate extends Validate {
 
     @Override
     protected void setConditions() {
-        this.addCondition(AssinaturaNaoVerificadaCondition.inicia(this));
+        this.addCondition(NotCheckSignatureCondition.inicia(this));
         this.addCondition(TransacaoAtualNaoPertenceAoDestinatarioCondition.inicia(this));
         this.addCondition(TransacaoValorRestanteNaoPertenceAoRemetenteCondition.inicia(this));
         this.addCondition(ValoresDeEntradaDiferenteValoresSaidaCondition.inicia(this));
