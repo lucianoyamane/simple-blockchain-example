@@ -1,6 +1,5 @@
 package br.com.lucianoyamane.example.validate.operation.condicao;
 
-import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Condition;
@@ -21,10 +20,13 @@ public class NaoPossueMesmoValorReferenciaPreviaCondition extends Condition<Oper
     }
 
     @Override
-    protected void rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
+    protected String getMessage() {
+        return "#Referenced input Transaction(" + this.getValida().getTransactionOperationBlockChain().getTransactionOperationId() + ") value is Invalid";
+    }
+
+    @Override
+    protected Boolean rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
         OperationBlockChain previousReferenceOperationBlockChain = previousBlockData.findReferencedTransactionOperationBlockChain(this.getValida().getTransactionOperationBlockChain());
-        if (!this.possueMesmoValor(previousReferenceOperationBlockChain)){
-            throw new BlockChainException("#Referenced input Transaction(" + this.getValida().getTransactionOperationBlockChain().getTransactionOperationId() + ") value is Invalid");
-        }
+        return !this.possueMesmoValor(previousReferenceOperationBlockChain);
     }
 }

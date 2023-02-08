@@ -20,10 +20,13 @@ public class HashRegistradoDiferenteCalculadoBlockCondition extends Condition<Bl
     }
 
     @Override
-    protected void rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
-        if (!this.compareRegisteredAndCalculatedHash()) {
-            throw new BlockChainException("Current Hashes not equal");
-        }
+    protected String getMessage() {
+        return "Current Hashes not equal";
+    }
+
+    @Override
+    protected Boolean rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
+        return !this.compareRegisteredAndCalculatedHash();
 
     }
 }

@@ -9,6 +9,9 @@ import br.com.lucianoyamane.example.validate.block.condicao.HashNaoFoiMineradoCo
 import br.com.lucianoyamane.example.validate.block.condicao.HashRegistradoDiferenteCalculadoBlockCondition;
 import br.com.lucianoyamane.example.validate.transaction.TransactionValidate;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class BlockValidate extends Validate {
@@ -20,7 +23,7 @@ public class BlockValidate extends Validate {
     }
 
     @Override
-    protected void setConditions() {
+    protected void configConditions() {
         this.addCondition(HashAtualDiferenteDoAnteriorCondition.inicia(this));
         this.addCondition(HashRegistradoDiferenteCalculadoBlockCondition.inicia(this));
         this.addCondition(HashNaoFoiMineradoCondition.inicia(this));
@@ -54,9 +57,14 @@ public class BlockValidate extends Validate {
     public void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData) {
         TransactionBlockChain currentBlockTransaction = this.getBlockBlockChain().getTransactionBlockChain();
         if (Objects.nonNull(currentBlockTransaction)) {
-            TransactionValidate.valida(currentBlockTransaction).execute(previousBlockData);
+            this.addValidate(TransactionValidate.valida(currentBlockTransaction).execute(previousBlockData));
         }
         previousBlockData.setPreviousHash(this.getBlockBlockChain().getHash());
+    }
+
+    @Override
+    protected String getLevel() {
+        return "BLOCK";
     }
 
 }

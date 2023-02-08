@@ -16,9 +16,12 @@ public class TransacaoAtualNaoPertenceAoDestinatarioCondition extends Condition<
     }
 
     @Override
-    protected void rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
-        if (!this.getValida().getCurrentTransactionReceiverPublicKeyDecorator().mePertence(this.getValida().getCurrentTransactionOperationBlockChain())) {
-            throw new BlockChainException("#TransactionOutput(" + this.getValida().getCurrentTransactionOperationBlockChain() + ") is not who it should be");
-        }
+    protected String getMessage() {
+        return "#TransactionOutput(" + this.getValida().getCurrentTransactionOperationBlockChain() + ") is not who it should be";
+    }
+
+    @Override
+    protected Boolean rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
+        return !this.getValida().getCurrentTransactionReceiverPublicKeyDecorator().mePertence(this.getValida().getCurrentTransactionOperationBlockChain());
     }
 }

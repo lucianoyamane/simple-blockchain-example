@@ -21,9 +21,12 @@ public class HashNaoFoiMineradoCondition extends Condition<BlockValidate> {
     }
 
     @Override
-    protected void rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
-        if(!this.hashIsSolved(previousBlockData.getDifficulty())) {
-            throw new BlockChainException("This block hasn't been mined");
-        }
+    protected String getMessage() {
+        return "This block hasn't been mined";
+    }
+
+    @Override
+    protected Boolean rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
+        return !this.hashIsSolved(previousBlockData.getDifficulty());
     }
 }

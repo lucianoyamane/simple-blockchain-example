@@ -11,7 +11,9 @@ import br.com.lucianoyamane.example.validate.transaction.condition.TransacaoAtua
 import br.com.lucianoyamane.example.validate.transaction.condition.TransacaoValorRestanteNaoPertenceAoRemetenteCondition;
 import br.com.lucianoyamane.example.validate.transaction.condition.ValoresDeEntradaDiferenteValoresSaidaCondition;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class TransactionValidate extends Validate {
 
@@ -22,7 +24,7 @@ public class TransactionValidate extends Validate {
     }
 
     @Override
-    protected void setConditions() {
+    protected void configConditions() {
         this.addCondition(NotCheckSignatureCondition.inicia(this));
         this.addCondition(TransacaoAtualNaoPertenceAoDestinatarioCondition.inicia(this));
         this.addCondition(TransacaoValorRestanteNaoPertenceAoRemetenteCondition.inicia(this));
@@ -53,15 +55,22 @@ public class TransactionValidate extends Validate {
         this.transactionBlockChain = transactionBlockChain;
     }
 
+
+
     @Override
     public void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData) {
         List<OperationBlockChain> transactionsOperationBlockChain = this.getTransactionBlockChain().getUnspentTransactionsOperationBlockChain();
 
-        for(OperationBlockChain output : transactionsOperationBlockChain) {
-            OperationValidate.valida(output).execute(previousBlockData);
+        for(OperationBlockChain operationBlockChain : transactionsOperationBlockChain) {
+            this.addValidate(OperationValidate.validate(operationBlockChain).execute(previousBlockData));
         }
 
         previousBlockData.addTransactionOperationBlockChains(this.getTransactionBlockChain().getCurrentTransactionOperationBlockChain());
         previousBlockData.addTransactionOperationBlockChains(this.getTransactionBlockChain().getLeftOverTransactionOperationBlockChain());
+    }
+
+    @Override
+    protected String getLevel() {
+        return "TRANSACTION";
     }
 }

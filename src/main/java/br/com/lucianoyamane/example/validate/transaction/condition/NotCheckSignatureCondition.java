@@ -11,14 +11,17 @@ public class NotCheckSignatureCondition extends Condition<TransactionValidate> {
         super(valida);
     }
 
+    @Override
+    protected String getMessage() {
+        return "Transaction " + this.getValida().getTransactionBlockChain().getHash()  + " Signature failed to verify";
+    }
+
     public static NotCheckSignatureCondition inicia(TransactionValidate valida) {
         return new NotCheckSignatureCondition(valida);
     }
 
     @Override
-    protected void rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
-        if (!this.getValida().getTransactionBlockChain().verifiySignature()) {
-            throw new BlockChainException("Transaction Signature failed to verify");
-        }
+    protected Boolean rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
+        return !this.getValida().getTransactionBlockChain().verifiySignature();
     }
 }

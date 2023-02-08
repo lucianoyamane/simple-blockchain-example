@@ -9,8 +9,19 @@ import br.com.lucianoyamane.example.validate.block.BlockValidate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class BlockChainValidateApp {
+
+    private BlockChainValidateApp() {
+        this.setValidates(new ArrayList<>());
+    }
+
+    public static BlockChainValidateApp init() {
+        return new BlockChainValidateApp();
+    }
+
+    private List<Validate> validates;
 
     public void validate(BlockBlockChain genesis, List<BlockBlockChain> blockchain) {
         PreviousBlockData previousBlockData = new PreviousBlockData(Difficulty.getInstance().getDifficulty());
@@ -18,8 +29,7 @@ public class BlockChainValidateApp {
         this.bootstrap(genesis, previousBlockData);
 
         for(BlockBlockChain currentBlockBlockChain : blockchain) {
-            BlockValidate.valida(currentBlockBlockChain).execute(previousBlockData);
-
+            this.addValidate(BlockValidate.valida(currentBlockBlockChain).execute(previousBlockData));
         }
         SystemOutPrintlnDecorator.roxo("Blockchain is valid");
     }
@@ -35,6 +45,27 @@ public class BlockChainValidateApp {
             previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getLeftOverTransactionOperationBlockChain());
         }
         previousBlockData.setPreviousHash(blockBlockChainGenesis.getHash());
+    }
+
+    public List<Map<String, String>> getErrorsMessages() {
+        List<Map<String, String>> errorsMessages = new ArrayList<>();
+        for (Validate validate : this.getValidates()) {
+            errorsMessages.addAll(validate.getErrorsMessages());
+        }
+        return errorsMessages;
+    }
+
+
+    private List<Validate> getValidates() {
+        return validates;
+    }
+
+    private void setValidates(List<Validate> validates) {
+        this.validates = validates;
+    }
+
+    private void addValidate(Validate validate) {
+        this.getValidates().add(validate);
     }
 
     public class PreviousBlockData {

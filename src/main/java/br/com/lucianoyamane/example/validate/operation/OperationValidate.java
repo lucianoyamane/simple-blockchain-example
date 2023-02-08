@@ -10,12 +10,12 @@ public class OperationValidate extends Validate {
 
     private OperationBlockChain operationBlockChain;
 
-    public static OperationValidate valida(OperationBlockChain operationBlockChain) {
+    public static OperationValidate validate(OperationBlockChain operationBlockChain) {
         return new OperationValidate(operationBlockChain);
     }
 
     @Override
-    protected void setConditions() {
+    protected void configConditions() {
         this.addCondition(NaoPossueMesmoValorReferenciaPreviaCondition.inicia(this));
         this.addCondition(NaoPossueReferenciaOperacaoPreviaCondition.inicia(this));
     }
@@ -39,5 +39,10 @@ public class OperationValidate extends Validate {
     @Override
     public void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData) {
         previousBlockData.removeTransactionOperationBlockChains(this.getTransactionOperationBlockChain());
+    }
+
+    @Override
+    protected String getLevel() {
+        return "OPERATION";
     }
 }
