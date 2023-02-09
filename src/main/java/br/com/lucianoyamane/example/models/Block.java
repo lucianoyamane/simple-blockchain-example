@@ -1,4 +1,4 @@
-package br.com.lucianoyamane.example.block;
+package br.com.lucianoyamane.example.models;
 
 public class Block {
 

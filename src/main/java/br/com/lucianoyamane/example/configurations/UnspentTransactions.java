@@ -1,6 +1,6 @@
 package br.com.lucianoyamane.example.configurations;
 
-import br.com.lucianoyamane.example.transaction.TransactionOperationBlockChain;
+import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 
 import java.util.ArrayList;
@@ -16,29 +16,29 @@ public class UnspentTransactions {
         }
         return instance;
     }
-    private List<TransactionOperationBlockChain> transactionOperationBlockChains;
+    private List<OperationBlockChain> operationBlockChains;
 
     private UnspentTransactions() {
-        this.transactionOperationBlockChains = new ArrayList<>();
+        this.operationBlockChains = new ArrayList<>();
     }
 
-    public void add(TransactionOperationBlockChain transactionOperationBlockChain) {
-        this.transactionOperationBlockChains.add(transactionOperationBlockChain);
+    public void add(OperationBlockChain operationBlockChain) {
+        this.operationBlockChains.add(operationBlockChain);
     }
 
-    public void remove(TransactionOperationBlockChain transactionOperationBlockChain) {
-        this.transactionOperationBlockChains.remove(transactionOperationBlockChain);
+    public void remove(OperationBlockChain operationBlockChain) {
+        this.operationBlockChains.remove(operationBlockChain);
     }
 
     public Integer getWalletBalance(PublicKeyDecorator publicKeyDecorator) {
-        return this.transactionOperationBlockChains.stream()
-                .filter(output -> output.isMine(publicKeyDecorator))
-                .mapToInt(TransactionOperationBlockChain::getValue).sum();
+        return this.operationBlockChains.stream()
+                .filter(output -> publicKeyDecorator.mePertence(output))
+                .mapToInt(OperationBlockChain::getValue).sum();
     }
 
-    public List<TransactionOperationBlockChain> loadUnspentUTXO(PublicKeyDecorator publicKeyDecorator) {
-        return this.transactionOperationBlockChains.stream()
-                .filter(output -> output.isMine(publicKeyDecorator)).toList();
+    public List<OperationBlockChain> loadUnspentUTXO(PublicKeyDecorator publicKeyDecorator) {
+        return this.operationBlockChains.stream()
+                .filter(output -> publicKeyDecorator.mePertence(output)).toList();
     }
 
 }

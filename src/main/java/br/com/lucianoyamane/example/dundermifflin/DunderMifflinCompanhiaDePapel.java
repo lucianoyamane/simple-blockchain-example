@@ -3,6 +3,7 @@ package br.com.lucianoyamane.example.dundermifflin;
 import br.com.lucianoyamane.example.BlockChainApp;
 import br.com.lucianoyamane.example.configurations.CarteirasRegistradas;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
+import br.com.lucianoyamane.example.exception.BlockChainException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +38,18 @@ public class DunderMifflinCompanhiaDePapel {
     public void processa() {
         SystemOutPrintlnDecorator.ciano("******************************************************");
         SystemOutPrintlnDecorator.ciano("Creating and Mining Genesis block... ");
-        String previousHash = this.blockChainApp.genesisBlock(this.transacaoBootstrap.toTransaction());
+        String previousHash = this.blockChainApp.transactionGenesis(this.transacaoBootstrap.toTransaction());
         for(Transacao transacao : this.transacoes) {
             SystemOutPrintlnDecorator.ciano("******************************************************");
-            previousHash = this.blockChainApp.transactionBlock(previousHash, transacao.toTransaction());
+            previousHash = this.blockChainApp.transaction(transacao.toTransaction(), previousHash);
             CarteirasRegistradas.abre().getFinalBalances();
         }
-        this.blockChainApp.isValid();
+        try {
+            this.blockChainApp.validate();
+        } catch (BlockChainException e) {
+            SystemOutPrintlnDecorator.vermelho(e.getMessage());
+        }
+
 
     }
 
