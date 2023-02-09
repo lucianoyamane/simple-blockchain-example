@@ -1,10 +1,10 @@
 package br.com.lucianoyamane.example.validate;
 
-public abstract class Condition<T extends Validate> {
+public abstract class Condicao<T extends Validate> {
 
     private T valida;
 
-    protected Condition(T valida) {
+    protected Condicao(T valida) {
         this.setValida(valida);
     }
 

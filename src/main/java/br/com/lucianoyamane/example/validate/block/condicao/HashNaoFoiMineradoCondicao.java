@@ -1,19 +1,18 @@
 package br.com.lucianoyamane.example.validate.block.condicao;
 
 import br.com.lucianoyamane.example.StringUtil;
-import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
-import br.com.lucianoyamane.example.validate.Condition;
+import br.com.lucianoyamane.example.validate.Condicao;
 import br.com.lucianoyamane.example.validate.block.BlockValidate;
 
-public class HashNaoFoiMineradoCondition extends Condition<BlockValidate> {
+public class HashNaoFoiMineradoCondicao extends Condicao<BlockValidate> {
 
-    private HashNaoFoiMineradoCondition(BlockValidate valida) {
+    private HashNaoFoiMineradoCondicao(BlockValidate valida) {
         super(valida);
     }
 
-    public static HashNaoFoiMineradoCondition inicia(BlockValidate valida) {
-        return new HashNaoFoiMineradoCondition(valida);
+    public static HashNaoFoiMineradoCondicao inicia(BlockValidate valida) {
+        return new HashNaoFoiMineradoCondicao(valida);
     }
 
     public Boolean hashIsSolved(int difficulty) {

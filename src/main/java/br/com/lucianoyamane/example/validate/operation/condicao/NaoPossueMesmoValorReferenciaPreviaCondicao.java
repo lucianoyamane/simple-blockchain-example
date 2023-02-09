@@ -2,17 +2,17 @@ package br.com.lucianoyamane.example.validate.operation.condicao;
 
 import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
-import br.com.lucianoyamane.example.validate.Condition;
+import br.com.lucianoyamane.example.validate.Condicao;
 import br.com.lucianoyamane.example.validate.operation.OperationValidate;
 
-public class NaoPossueMesmoValorReferenciaPreviaCondition extends Condition<OperationValidate> {
+public class NaoPossueMesmoValorReferenciaPreviaCondicao extends Condicao<OperationValidate> {
 
-    private NaoPossueMesmoValorReferenciaPreviaCondition(OperationValidate valida) {
+    private NaoPossueMesmoValorReferenciaPreviaCondicao(OperationValidate valida) {
         super(valida);
     }
 
-    public static NaoPossueMesmoValorReferenciaPreviaCondition inicia(OperationValidate valida) {
-        return new NaoPossueMesmoValorReferenciaPreviaCondition(valida);
+    public static NaoPossueMesmoValorReferenciaPreviaCondicao inicia(OperationValidate valida) {
+        return new NaoPossueMesmoValorReferenciaPreviaCondicao(valida);
     }
 
     public Boolean possueMesmoValor(OperationBlockChain previousReferenceOperationBlockChain) {

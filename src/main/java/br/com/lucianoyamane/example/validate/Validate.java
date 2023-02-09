@@ -16,19 +16,19 @@ public abstract class Validate {
 
     abstract protected void configConditions();
 
-    private List<Condition> conditions;
+    private List<Condicao> condicaos;
 
     private List<Map<String, String>> conditionsErrors;
 
     private List<Validate> validates;
 
     public void validate(BlockChainValidateApp.PreviousBlockData previousBlockData) {
-        List<Condition> conditions = this.getConditions();
-        for(Condition condition : conditions) {
-            if (condition.check(previousBlockData)) {
+        List<Condicao> condicaos = this.getConditions();
+        for(Condicao condicao : condicaos) {
+            if (condicao.check(previousBlockData)) {
                 Map<String, String> errorMap = new HashMap<>();
                 errorMap.put("LEVEL", this.getLevel());
-                errorMap.put("MESSAGE", condition.getMessage());
+                errorMap.put("MESSAGE", condicao.getMessage());
                 this.addConditionError(errorMap);
             }
         }
@@ -44,16 +44,16 @@ public abstract class Validate {
         return this;
     }
 
-    public List<Condition> getConditions() {
-        return conditions;
+    public List<Condicao> getConditions() {
+        return condicaos;
     }
 
-    private void setConditions(List<Condition> conditions) {
-        this.conditions = conditions;
+    private void setConditions(List<Condicao> condicaos) {
+        this.condicaos = condicaos;
     }
 
-    protected void addCondition(Condition condition) {
-        this.getConditions().add(condition);
+    protected void addCondition(Condicao condicao) {
+        this.getConditions().add(condicao);
     }
 
     public List<Map<String, String>> getConditionsErrors() {

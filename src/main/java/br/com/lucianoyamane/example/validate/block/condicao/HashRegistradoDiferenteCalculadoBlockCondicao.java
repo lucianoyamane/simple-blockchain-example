@@ -1,18 +1,17 @@
 package br.com.lucianoyamane.example.validate.block.condicao;
 
-import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
-import br.com.lucianoyamane.example.validate.Condition;
+import br.com.lucianoyamane.example.validate.Condicao;
 import br.com.lucianoyamane.example.validate.block.BlockValidate;
 
-public class HashRegistradoDiferenteCalculadoBlockCondition extends Condition<BlockValidate> {
+public class HashRegistradoDiferenteCalculadoBlockCondicao extends Condicao<BlockValidate> {
 
-    private HashRegistradoDiferenteCalculadoBlockCondition(BlockValidate valida) {
+    private HashRegistradoDiferenteCalculadoBlockCondicao(BlockValidate valida) {
         super(valida);
     }
 
-    public static HashRegistradoDiferenteCalculadoBlockCondition inicia(BlockValidate valida) {
-        return new HashRegistradoDiferenteCalculadoBlockCondition(valida);
+    public static HashRegistradoDiferenteCalculadoBlockCondicao inicia(BlockValidate valida) {
+        return new HashRegistradoDiferenteCalculadoBlockCondicao(valida);
     }
 
     public Boolean compareRegisteredAndCalculatedHash() {

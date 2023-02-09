@@ -31,7 +31,6 @@ public class BlockChainValidateApp {
         for(BlockBlockChain currentBlockBlockChain : blockchain) {
             this.addValidate(BlockValidate.valida(currentBlockBlockChain).execute(previousBlockData));
         }
-        SystemOutPrintlnDecorator.roxo("Blockchain is valid");
     }
 
     private void bootstrap(BlockBlockChain genesis, PreviousBlockData previousBlockData) {

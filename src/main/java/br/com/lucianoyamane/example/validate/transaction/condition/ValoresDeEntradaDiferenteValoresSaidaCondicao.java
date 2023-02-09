@@ -1,18 +1,17 @@
 package br.com.lucianoyamane.example.validate.transaction.condition;
 
-import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
-import br.com.lucianoyamane.example.validate.Condition;
+import br.com.lucianoyamane.example.validate.Condicao;
 import br.com.lucianoyamane.example.validate.transaction.TransactionValidate;
 
-public class ValoresDeEntradaDiferenteValoresSaidaCondition extends Condition<TransactionValidate> {
+public class ValoresDeEntradaDiferenteValoresSaidaCondicao extends Condicao<TransactionValidate> {
 
-    private ValoresDeEntradaDiferenteValoresSaidaCondition(TransactionValidate valida) {
+    private ValoresDeEntradaDiferenteValoresSaidaCondicao(TransactionValidate valida) {
         super(valida);
     }
 
-    public static ValoresDeEntradaDiferenteValoresSaidaCondition inicia(TransactionValidate valida) {
-        return new ValoresDeEntradaDiferenteValoresSaidaCondition(valida);
+    public static ValoresDeEntradaDiferenteValoresSaidaCondicao inicia(TransactionValidate valida) {
+        return new ValoresDeEntradaDiferenteValoresSaidaCondicao(valida);
     }
 
     public Boolean isInputEqualOutputValue() {
@@ -25,7 +24,7 @@ public class ValoresDeEntradaDiferenteValoresSaidaCondition extends Condition<Tr
 
     @Override
     protected String getMessage() {
-        return "Inputs are note equal to outputs on Transaction(" + this.getValida().getTransactionBlockChain().getTransaction().getHash() + ")";
+        return "Valores divegentes de entrada e saida(" + this.getValida().getTransactionBlockChain().getTransaction().getHash() + ")";
     }
 
     @Override

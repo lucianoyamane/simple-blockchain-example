@@ -6,14 +6,12 @@ import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Validate;
 import br.com.lucianoyamane.example.validate.operation.OperationValidate;
-import br.com.lucianoyamane.example.validate.transaction.condition.NotCheckSignatureCondition;
-import br.com.lucianoyamane.example.validate.transaction.condition.TransacaoAtualNaoPertenceAoDestinatarioCondition;
-import br.com.lucianoyamane.example.validate.transaction.condition.TransacaoValorRestanteNaoPertenceAoRemetenteCondition;
-import br.com.lucianoyamane.example.validate.transaction.condition.ValoresDeEntradaDiferenteValoresSaidaCondition;
+import br.com.lucianoyamane.example.validate.transaction.condition.AssinaturaNaoVerificadaCondicao;
+import br.com.lucianoyamane.example.validate.transaction.condition.TransacaoAtualNaoPertenceAoDestinatarioCondicao;
+import br.com.lucianoyamane.example.validate.transaction.condition.TransacaoValorRestanteNaoPertenceAoRemetenteCondicao;
+import br.com.lucianoyamane.example.validate.transaction.condition.ValoresDeEntradaDiferenteValoresSaidaCondicao;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class TransactionValidate extends Validate {
 
@@ -25,10 +23,10 @@ public class TransactionValidate extends Validate {
 
     @Override
     protected void configConditions() {
-        this.addCondition(NotCheckSignatureCondition.inicia(this));
-        this.addCondition(TransacaoAtualNaoPertenceAoDestinatarioCondition.inicia(this));
-        this.addCondition(TransacaoValorRestanteNaoPertenceAoRemetenteCondition.inicia(this));
-        this.addCondition(ValoresDeEntradaDiferenteValoresSaidaCondition.inicia(this));
+        this.addCondition(AssinaturaNaoVerificadaCondicao.inicia(this));
+        this.addCondition(TransacaoAtualNaoPertenceAoDestinatarioCondicao.inicia(this));
+        this.addCondition(TransacaoValorRestanteNaoPertenceAoRemetenteCondicao.inicia(this));
+        this.addCondition(ValoresDeEntradaDiferenteValoresSaidaCondicao.inicia(this));
     }
 
     public static TransactionValidate valida(TransactionBlockChain transactionBlockChain) {

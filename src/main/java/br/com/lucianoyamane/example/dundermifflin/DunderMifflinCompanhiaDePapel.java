@@ -3,6 +3,7 @@ package br.com.lucianoyamane.example.dundermifflin;
 import br.com.lucianoyamane.example.BlockChainApp;
 import br.com.lucianoyamane.example.configurations.CarteirasRegistradas;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
+import br.com.lucianoyamane.example.exception.BlockChainException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,12 @@ public class DunderMifflinCompanhiaDePapel {
             previousHash = this.blockChainApp.transaction(transacao.toTransaction(), previousHash);
             CarteirasRegistradas.abre().getFinalBalances();
         }
-        this.blockChainApp.validate();
+        try {
+            this.blockChainApp.validate();
+        } catch (BlockChainException e) {
+            SystemOutPrintlnDecorator.vermelho(e.getMessage());
+        }
+
 
     }
 

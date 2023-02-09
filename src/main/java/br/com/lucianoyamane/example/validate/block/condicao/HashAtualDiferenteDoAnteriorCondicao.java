@@ -1,18 +1,17 @@
 package br.com.lucianoyamane.example.validate.block.condicao;
 
-import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
-import br.com.lucianoyamane.example.validate.Condition;
+import br.com.lucianoyamane.example.validate.Condicao;
 import br.com.lucianoyamane.example.validate.block.BlockValidate;
 
-public class HashAtualDiferenteDoAnteriorCondition extends Condition<BlockValidate> {
+public class HashAtualDiferenteDoAnteriorCondicao extends Condicao<BlockValidate> {
 
-    private HashAtualDiferenteDoAnteriorCondition(BlockValidate valida) {
+    private HashAtualDiferenteDoAnteriorCondicao(BlockValidate valida) {
         super(valida);
     }
 
-    public static HashAtualDiferenteDoAnteriorCondition inicia(BlockValidate valida) {
-        return new HashAtualDiferenteDoAnteriorCondition(valida);
+    public static HashAtualDiferenteDoAnteriorCondicao inicia(BlockValidate valida) {
+        return new HashAtualDiferenteDoAnteriorCondicao(valida);
     }
 
     public Boolean compareWithCurrentBlockPreviousHash(String previousHash) {

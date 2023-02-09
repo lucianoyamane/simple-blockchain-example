@@ -4,14 +4,11 @@ import br.com.lucianoyamane.example.blockchain.BlockBlockChain;
 import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Validate;
-import br.com.lucianoyamane.example.validate.block.condicao.HashAtualDiferenteDoAnteriorCondition;
-import br.com.lucianoyamane.example.validate.block.condicao.HashNaoFoiMineradoCondition;
-import br.com.lucianoyamane.example.validate.block.condicao.HashRegistradoDiferenteCalculadoBlockCondition;
+import br.com.lucianoyamane.example.validate.block.condicao.HashAtualDiferenteDoAnteriorCondicao;
+import br.com.lucianoyamane.example.validate.block.condicao.HashNaoFoiMineradoCondicao;
+import br.com.lucianoyamane.example.validate.block.condicao.HashRegistradoDiferenteCalculadoBlockCondicao;
 import br.com.lucianoyamane.example.validate.transaction.TransactionValidate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class BlockValidate extends Validate {
@@ -24,9 +21,9 @@ public class BlockValidate extends Validate {
 
     @Override
     protected void configConditions() {
-        this.addCondition(HashAtualDiferenteDoAnteriorCondition.inicia(this));
-        this.addCondition(HashRegistradoDiferenteCalculadoBlockCondition.inicia(this));
-        this.addCondition(HashNaoFoiMineradoCondition.inicia(this));
+        this.addCondition(HashAtualDiferenteDoAnteriorCondicao.inicia(this));
+        this.addCondition(HashRegistradoDiferenteCalculadoBlockCondicao.inicia(this));
+        this.addCondition(HashNaoFoiMineradoCondicao.inicia(this));
     }
 
     public static BlockValidate valida(BlockBlockChain blockBlockChain) {

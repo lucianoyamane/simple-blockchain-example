@@ -2,13 +2,14 @@ package br.com.lucianoyamane.example;
 
 
 import br.com.lucianoyamane.example.blockchain.BlockBlockChain;
-import br.com.lucianoyamane.example.configurations.Difficulty;
 import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
+import br.com.lucianoyamane.example.configurations.Difficulty;
+import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.exception.BlockChainException;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
-//import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -62,8 +63,11 @@ public class BlockChainApp {
 		blockChainValidateApp.validate(this.getGenesis(), this.blockchain);
 		List<Map<String, String>> errorMessage = blockChainValidateApp.getErrorsMessages();
 		if (!errorMessage.isEmpty()) {
-			throw new BlockChainException(errorMessage.toString());
+			SystemOutPrintlnDecorator.vermelho("INVÀLIDO!!");
+			throw new BlockChainException(new Gson().toJson(errorMessage));
+
 		}
+		SystemOutPrintlnDecorator.roxo("Blockchain is valid");
 	}
 
 }
