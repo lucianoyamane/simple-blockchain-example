@@ -1,4 +1,4 @@
-package br.com.lucianoyamane.example.validate.operation.condicao;
+package br.com.lucianoyamane.example.validate.operation.condition;
 
 import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;

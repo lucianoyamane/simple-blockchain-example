@@ -8,7 +8,7 @@ public class GenesisWallet extends Wallet {
         super(name);
     }
 
-    public static GenesisWallet novo() {
+    public static GenesisWallet create() {
         return new GenesisWallet("Genesis");
     }
 

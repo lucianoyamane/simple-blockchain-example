@@ -1,7 +1,6 @@
 package br.com.lucianoyamane.example.dundermifflin;
 
-import br.com.lucianoyamane.example.dundermifflin.DunderMifflinCompanhiaDePapel;
-import br.com.lucianoyamane.example.configurations.CarteirasRegistradas;
+import br.com.lucianoyamane.example.configurations.Wallets;
 
 public class ExecuteBlockChain {
 
@@ -12,37 +11,37 @@ public class ExecuteBlockChain {
                 .iniciaOsTrabalhos()
                     .michaelScott()
                         .estaTransferindo(100)
-                        .para(CarteirasRegistradas.LUCIANO)
+                        .para(Wallets.SICRANO)
                     .confirmaAOperacao();
 
         dunderMifflinCompanhiaDePapel
-                    .cliente(CarteirasRegistradas.LUCIANO)
+                    .cliente(Wallets.SICRANO)
                         .estaTransferindo(40)
-                        .para(CarteirasRegistradas.AUGUSTO)
+                        .para(Wallets.BELTRANO)
                     .confirmaAOperacao();
 
         dunderMifflinCompanhiaDePapel
-                    .cliente(CarteirasRegistradas.LUCIANO)
+                    .cliente(Wallets.SICRANO)
                         .estaTransferindo(1000)
-                        .para(CarteirasRegistradas.AUGUSTO)
+                        .para(Wallets.BELTRANO)
                     .confirmaAOperacao();
 
         dunderMifflinCompanhiaDePapel
-                    .cliente(CarteirasRegistradas.AUGUSTO)
+                    .cliente(Wallets.BELTRANO)
                         .estaTransferindo(20)
-                        .para(CarteirasRegistradas.LUCIANO)
+                        .para(Wallets.SICRANO)
                     .confirmaAOperacao();
 
         dunderMifflinCompanhiaDePapel
-                    .cliente(CarteirasRegistradas.LUCIANO)
+                    .cliente(Wallets.SICRANO)
                         .estaTransferindo(10)
-                        .para(CarteirasRegistradas.AUGUSTO)
+                        .para(Wallets.BELTRANO)
                     .confirmaAOperacao();
 
         dunderMifflinCompanhiaDePapel
-                    .cliente(CarteirasRegistradas.LUCIANO)
+                    .cliente(Wallets.SICRANO)
                         .estaTransferindo(70)
-                        .para(CarteirasRegistradas.AUGUSTO)
+                        .para(Wallets.BELTRANO)
                     .confirmaAOperacao();
         dunderMifflinCompanhiaDePapel.processa();
 

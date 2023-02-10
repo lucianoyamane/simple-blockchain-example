@@ -3,8 +3,8 @@ package br.com.lucianoyamane.example.validate.operation;
 import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Validate;
-import br.com.lucianoyamane.example.validate.operation.condicao.PreviousOperationReferenceNotExistsCondition;
-import br.com.lucianoyamane.example.validate.operation.condicao.PreviousReferenceValueInvalidCondition;
+import br.com.lucianoyamane.example.validate.operation.condition.PreviousOperationReferenceNotExistsCondition;
+import br.com.lucianoyamane.example.validate.operation.condition.PreviousReferenceValueInvalidCondition;
 
 public class OperationValidate extends Validate {
 

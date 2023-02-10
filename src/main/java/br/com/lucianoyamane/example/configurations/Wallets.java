@@ -6,36 +6,36 @@ import br.com.lucianoyamane.example.wallet.Wallet;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CarteirasRegistradas {
+public class Wallets {
 
-    public static final String LUCIANO = "Luciano";
-    public static final String AUGUSTO = "Augusto";
+    public static final String SICRANO = "SICRANO";
+    public static final String BELTRANO = "BELTRANO";
 
-    private static CarteirasRegistradas instance;
+    private static Wallets instance;
 
-    public static CarteirasRegistradas abre() {
+    public static Wallets open() {
         if (instance == null) {
-            instance = new CarteirasRegistradas();
+            instance = new Wallets();
         }
         return instance;
     }
     private Map<String, Wallet> registeredMap;
 
-    public CarteirasRegistradas() {
+    public Wallets() {
         this.registeredMap = new HashMap<>();
-        this.registra(GenesisWallet.novo());
-        this.registra(Wallet.novo(LUCIANO));
-        this.registra(Wallet.novo(AUGUSTO));
+        this.register(GenesisWallet.create());
+        this.register(Wallet.create(SICRANO));
+        this.register(Wallet.create(BELTRANO));
     }
 
 
 
-    public CarteirasRegistradas registra(Wallet wallet) {
+    public Wallets register(Wallet wallet) {
         this.registeredMap.put(wallet.getName(), wallet);
         return this;
     }
 
-    public Wallet carteira(String name) {
+    public Wallet wallet(String name) {
         return this.registeredMap.get(name);
     }
 

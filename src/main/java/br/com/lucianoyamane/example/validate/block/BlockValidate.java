@@ -4,9 +4,9 @@ import br.com.lucianoyamane.example.blockchain.BlockBlockChain;
 import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Validate;
-import br.com.lucianoyamane.example.validate.block.condicao.CurrentAndPreviousHashNotEqualsCondition;
-import br.com.lucianoyamane.example.validate.block.condicao.NotMineHashCondition;
-import br.com.lucianoyamane.example.validate.block.condicao.RegisteredAndCalculatedHashNotEqualsCondition;
+import br.com.lucianoyamane.example.validate.block.condition.CurrentAndPreviousHashNotEqualsCondition;
+import br.com.lucianoyamane.example.validate.block.condition.NotMineHashCondition;
+import br.com.lucianoyamane.example.validate.block.condition.RegisteredAndCalculatedHashNotEqualsCondition;
 import br.com.lucianoyamane.example.validate.transaction.TransactionValidate;
 
 import java.util.Objects;

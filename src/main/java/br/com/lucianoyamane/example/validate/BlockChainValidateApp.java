@@ -9,6 +9,7 @@ import br.com.lucianoyamane.example.validate.block.BlockValidate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class BlockChainValidateApp {
 
@@ -36,10 +37,10 @@ public class BlockChainValidateApp {
         BlockBlockChain blockBlockChainGenesis = genesis;
 
         TransactionBlockChain transactionBlockChain = blockBlockChainGenesis.getTransactionBlockChain();
-        if (transactionBlockChain.getCurrentTransactionOperationBlockChain() != null) {
+        if (Objects.nonNull(transactionBlockChain.getCurrentTransactionOperationBlockChain())) {
             previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getCurrentTransactionOperationBlockChain());
         }
-        if (transactionBlockChain.getLeftOverTransactionOperationBlockChain() != null) {
+        if (Objects.nonNull(transactionBlockChain.getLeftOverTransactionOperationBlockChain())) {
             previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getLeftOverTransactionOperationBlockChain());
         }
         previousBlockData.setPreviousHash(blockBlockChainGenesis.getHash());

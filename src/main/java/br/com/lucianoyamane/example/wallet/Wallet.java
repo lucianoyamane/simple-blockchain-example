@@ -17,7 +17,7 @@ public class Wallet {
 	private PublicKeyDecorator publicKeyDecorator;
 	private String name;
 
-	public static Wallet novo(String name) {
+	public static Wallet create(String name) {
 		return new Wallet(name);
 	}
 
