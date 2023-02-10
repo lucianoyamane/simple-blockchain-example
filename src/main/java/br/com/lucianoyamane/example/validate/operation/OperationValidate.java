@@ -3,8 +3,8 @@ package br.com.lucianoyamane.example.validate.operation;
 import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Validate;
-import br.com.lucianoyamane.example.validate.operation.condicao.NaoPossueMesmoValorReferenciaPreviaCondicao;
-import br.com.lucianoyamane.example.validate.operation.condicao.NaoPossueReferenciaOperacaoPreviaCondicao;
+import br.com.lucianoyamane.example.validate.operation.condicao.PreviousOperationReferenceNotExistsCondition;
+import br.com.lucianoyamane.example.validate.operation.condicao.PreviousReferenceValueInvalidCondition;
 
 public class OperationValidate extends Validate {
 
@@ -16,8 +16,8 @@ public class OperationValidate extends Validate {
 
     @Override
     protected void configConditions() {
-        this.addCondition(NaoPossueMesmoValorReferenciaPreviaCondicao.inicia(this));
-        this.addCondition(NaoPossueReferenciaOperacaoPreviaCondicao.inicia(this));
+        this.addCondition(PreviousReferenceValueInvalidCondition.init(this));
+        this.addCondition(PreviousOperationReferenceNotExistsCondition.init(this));
     }
 
     private OperationValidate(OperationBlockChain operationBlockChain) {

@@ -6,10 +6,10 @@ import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Validate;
 import br.com.lucianoyamane.example.validate.operation.OperationValidate;
-import br.com.lucianoyamane.example.validate.transaction.condition.AssinaturaNaoVerificadaCondicao;
-import br.com.lucianoyamane.example.validate.transaction.condition.TransacaoAtualNaoPertenceAoDestinatarioCondicao;
-import br.com.lucianoyamane.example.validate.transaction.condition.TransacaoValorRestanteNaoPertenceAoRemetenteCondicao;
-import br.com.lucianoyamane.example.validate.transaction.condition.ValoresDeEntradaDiferenteValoresSaidaCondicao;
+import br.com.lucianoyamane.example.validate.transaction.condition.InputAndOutputValuesNotEqualsCondition;
+import br.com.lucianoyamane.example.validate.transaction.condition.NotCheckedSignatureCondition;
+import br.com.lucianoyamane.example.validate.transaction.condition.CurrentOperationDoesntBelongToReceiverCondition;
+import br.com.lucianoyamane.example.validate.transaction.condition.LeftoverOperationDoesntBelongToSenderCondition;
 
 import java.util.List;
 
@@ -23,13 +23,13 @@ public class TransactionValidate extends Validate {
 
     @Override
     protected void configConditions() {
-        this.addCondition(AssinaturaNaoVerificadaCondicao.inicia(this));
-        this.addCondition(TransacaoAtualNaoPertenceAoDestinatarioCondicao.inicia(this));
-        this.addCondition(TransacaoValorRestanteNaoPertenceAoRemetenteCondicao.inicia(this));
-        this.addCondition(ValoresDeEntradaDiferenteValoresSaidaCondicao.inicia(this));
+        this.addCondition(NotCheckedSignatureCondition.init(this));
+        this.addCondition(CurrentOperationDoesntBelongToReceiverCondition.init(this));
+        this.addCondition(LeftoverOperationDoesntBelongToSenderCondition.init(this));
+        this.addCondition(InputAndOutputValuesNotEqualsCondition.init(this));
     }
 
-    public static TransactionValidate valida(TransactionBlockChain transactionBlockChain) {
+    public static TransactionValidate validate(TransactionBlockChain transactionBlockChain) {
         return new TransactionValidate(transactionBlockChain);
     }
 

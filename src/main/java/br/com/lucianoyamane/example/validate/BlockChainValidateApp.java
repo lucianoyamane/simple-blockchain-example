@@ -2,7 +2,6 @@ package br.com.lucianoyamane.example.validate;
 
 import br.com.lucianoyamane.example.blockchain.BlockBlockChain;
 import br.com.lucianoyamane.example.configurations.Difficulty;
-import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
 import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
 import br.com.lucianoyamane.example.validate.block.BlockValidate;
@@ -29,7 +28,7 @@ public class BlockChainValidateApp {
         this.bootstrap(genesis, previousBlockData);
 
         for(BlockBlockChain currentBlockBlockChain : blockchain) {
-            this.addValidate(BlockValidate.valida(currentBlockBlockChain).execute(previousBlockData));
+            this.addValidate(BlockValidate.validate(currentBlockBlockChain).execute(previousBlockData));
         }
     }
 

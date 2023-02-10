@@ -1,19 +1,19 @@
 package br.com.lucianoyamane.example.validate;
 
-public abstract class Condicao<T extends Validate> {
+public abstract class Condition<T extends Validate> {
 
     private T valida;
 
-    protected Condicao(T valida) {
-        this.setValida(valida);
+    protected Condition(T validate) {
+        this.setValidate(validate);
     }
 
-    protected T getValida() {
+    protected T getValidate() {
         return valida;
     }
 
-    private void setValida(T valida) {
-        this.valida = valida;
+    private void setValidate(T validate) {
+        this.valida = validate;
     }
 
     protected abstract String getMessage();

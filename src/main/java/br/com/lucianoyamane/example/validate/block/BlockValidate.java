@@ -4,9 +4,9 @@ import br.com.lucianoyamane.example.blockchain.BlockBlockChain;
 import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Validate;
-import br.com.lucianoyamane.example.validate.block.condicao.HashAtualDiferenteDoAnteriorCondicao;
-import br.com.lucianoyamane.example.validate.block.condicao.HashNaoFoiMineradoCondicao;
-import br.com.lucianoyamane.example.validate.block.condicao.HashRegistradoDiferenteCalculadoBlockCondicao;
+import br.com.lucianoyamane.example.validate.block.condicao.CurrentAndPreviousHashNotEqualsCondition;
+import br.com.lucianoyamane.example.validate.block.condicao.NotMineHashCondition;
+import br.com.lucianoyamane.example.validate.block.condicao.RegisteredAndCalculatedHashNotEqualsCondition;
 import br.com.lucianoyamane.example.validate.transaction.TransactionValidate;
 
 import java.util.Objects;
@@ -21,12 +21,12 @@ public class BlockValidate extends Validate {
 
     @Override
     protected void configConditions() {
-        this.addCondition(HashAtualDiferenteDoAnteriorCondicao.inicia(this));
-        this.addCondition(HashRegistradoDiferenteCalculadoBlockCondicao.inicia(this));
-        this.addCondition(HashNaoFoiMineradoCondicao.inicia(this));
+        this.addCondition(CurrentAndPreviousHashNotEqualsCondition.init(this));
+        this.addCondition(RegisteredAndCalculatedHashNotEqualsCondition.init(this));
+        this.addCondition(NotMineHashCondition.init(this));
     }
 
-    public static BlockValidate valida(BlockBlockChain blockBlockChain) {
+    public static BlockValidate validate(BlockBlockChain blockBlockChain) {
         return new BlockValidate(blockBlockChain);
     }
 
@@ -54,7 +54,7 @@ public class BlockValidate extends Validate {
     public void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData) {
         TransactionBlockChain currentBlockTransaction = this.getBlockBlockChain().getTransactionBlockChain();
         if (Objects.nonNull(currentBlockTransaction)) {
-            this.addValidate(TransactionValidate.valida(currentBlockTransaction).execute(previousBlockData));
+            this.addValidate(TransactionValidate.validate(currentBlockTransaction).execute(previousBlockData));
         }
         previousBlockData.setPreviousHash(this.getBlockBlockChain().getHash());
     }
