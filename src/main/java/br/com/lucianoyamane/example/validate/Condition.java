@@ -16,7 +16,7 @@ public abstract class Condition<T extends Validate> {
         this.valida = validate;
     }
 
-    protected abstract String getMessage();
+    public abstract String getMessage();
 
     protected abstract Boolean rule(BlockChainValidateApp.PreviousBlockData previousBlockData);
 

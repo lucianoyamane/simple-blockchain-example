@@ -15,7 +15,7 @@ public class LeftoverOperationDoesntBelongToSenderCondition extends Condition<Tr
     }
 
     @Override
-    protected String getMessage() {
+    public String getMessage() {
         return "Looks like Leftover Operation (" + this.getValidate().getTransactionBlockChain().getLeftOverTransactionOperationBlockChain().getTransactionOperationId() + ") doesn't belong to sender  ";
     }
 

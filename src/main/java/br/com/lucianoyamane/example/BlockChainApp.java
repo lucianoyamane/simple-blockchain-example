@@ -46,7 +46,7 @@ public class BlockChainApp {
 				.getHash();
 	}
 
-	private void addBlock(BlockBlockChain newBlockBlockChain) {
+	public void addBlock(BlockBlockChain newBlockBlockChain) {
 		blockchain.add(newBlockBlockChain);
 	}
 
@@ -63,7 +63,7 @@ public class BlockChainApp {
 		blockChainValidateApp.validate(this.getGenesis(), this.blockchain);
 		List<Map<String, String>> errorMessage = blockChainValidateApp.getErrorsMessages();
 		if (!errorMessage.isEmpty()) {
-			SystemOutPrintlnDecorator.vermelho("INVÀLIDO!!");
+			SystemOutPrintlnDecorator.vermelho("INVALID!!");
 			throw new BlockChainException(new Gson().toJson(errorMessage));
 
 		}

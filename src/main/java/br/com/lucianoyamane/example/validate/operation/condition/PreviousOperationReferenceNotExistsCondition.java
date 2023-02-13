@@ -18,7 +18,7 @@ public class PreviousOperationReferenceNotExistsCondition extends Condition<Oper
     }
 
     @Override
-    protected String getMessage() {
+    public String getMessage() {
         return "#Referenced operation on Transaction(" + this.getValidate().getTransactionOperationBlockChain().getTransactionOperationId() + ") is Missing";
     }
 

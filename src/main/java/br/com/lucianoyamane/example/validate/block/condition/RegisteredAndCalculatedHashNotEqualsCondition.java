@@ -19,7 +19,7 @@ public class RegisteredAndCalculatedHashNotEqualsCondition extends Condition<Blo
     }
 
     @Override
-    protected String getMessage() {
+    public String getMessage() {
         return "Current Hash(" + this.getValidate().getCurrentBlockHash() + ") and Calculated Hash(" + this.getValidate().getCurrentBlockCalculatedHash()   + ") not equal";
     }
 

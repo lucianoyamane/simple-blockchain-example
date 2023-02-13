@@ -15,7 +15,7 @@ public class NotCheckedSignatureCondition extends Condition<TransactionValidate>
     }
 
     @Override
-    protected String getMessage() {
+    public String getMessage() {
         return "Signature not valid on Transaction( " + this.getValidate().getTransactionBlockChain().getHash() + ")";
     }
 
