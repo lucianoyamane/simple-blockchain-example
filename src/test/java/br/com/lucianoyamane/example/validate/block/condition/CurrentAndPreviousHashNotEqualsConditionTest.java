@@ -12,21 +12,21 @@ class CurrentAndPreviousHashNotEqualsConditionTest {
     @Test
     void testInitState() {
         BlockValidate blockValidateMock = mock(BlockValidate.class);
-        CurrentAndPreviousHashNotEqualsCondition testObject = CurrentAndPreviousHashNotEqualsCondition.init(blockValidateMock);
-        assertNotNull(testObject);
-        assertEquals("Previous Hashes not equal", testObject.getMessage());
+        CurrentAndPreviousHashNotEqualsCondition testCondition = CurrentAndPreviousHashNotEqualsCondition.init(blockValidateMock);
+        assertNotNull(testCondition);
+        assertEquals("Previous Hashes not equal", testCondition.getMessage());
     }
 
     @Test
     void testTrueCheck() {
         BlockValidate blockValidateMock = mock(BlockValidate.class);
         when(blockValidateMock.getCurrentBlockPreviousHash()).thenReturn("hash_current_block");
-        CurrentAndPreviousHashNotEqualsCondition testObject = CurrentAndPreviousHashNotEqualsCondition.init(blockValidateMock);
+        CurrentAndPreviousHashNotEqualsCondition testCondition = CurrentAndPreviousHashNotEqualsCondition.init(blockValidateMock);
 
         BlockChainValidateApp.PreviousBlockData previousBlockDataMock = mock(BlockChainValidateApp.PreviousBlockData.class);
         when(previousBlockDataMock.getPreviousHash()).thenReturn("hash_previous_block_data");
 
-        Boolean result = testObject.check(previousBlockDataMock);
+        Boolean result = testCondition.check(previousBlockDataMock);
         assertTrue(result);
     }
 
@@ -34,12 +34,12 @@ class CurrentAndPreviousHashNotEqualsConditionTest {
     void testFalseCheck() {
         BlockValidate blockValidateMock = mock(BlockValidate.class);
         when(blockValidateMock.getCurrentBlockPreviousHash()).thenReturn("hash_equals");
-        CurrentAndPreviousHashNotEqualsCondition testObject = CurrentAndPreviousHashNotEqualsCondition.init(blockValidateMock);
+        CurrentAndPreviousHashNotEqualsCondition testCondition = CurrentAndPreviousHashNotEqualsCondition.init(blockValidateMock);
 
         BlockChainValidateApp.PreviousBlockData previousBlockDataMock = mock(BlockChainValidateApp.PreviousBlockData.class);
         when(previousBlockDataMock.getPreviousHash()).thenReturn("hash_equals");
 
-        Boolean result = testObject.check(previousBlockDataMock);
+        Boolean result = testCondition.check(previousBlockDataMock);
         assertFalse(result);
     }
 
@@ -47,12 +47,12 @@ class CurrentAndPreviousHashNotEqualsConditionTest {
     void testCurrentBlockPreviousHashNull() {
         BlockValidate blockValidateMock = mock(BlockValidate.class);
         when(blockValidateMock.getCurrentBlockPreviousHash()).thenReturn(null);
-        CurrentAndPreviousHashNotEqualsCondition testObject = CurrentAndPreviousHashNotEqualsCondition.init(blockValidateMock);
+        CurrentAndPreviousHashNotEqualsCondition testCondition = CurrentAndPreviousHashNotEqualsCondition.init(blockValidateMock);
 
         BlockChainValidateApp.PreviousBlockData previousBlockDataMock = mock(BlockChainValidateApp.PreviousBlockData.class);
         when(previousBlockDataMock.getPreviousHash()).thenReturn("hash_previous_block_data");
 
-        Boolean result = testObject.check(previousBlockDataMock);
+        Boolean result = testCondition.check(previousBlockDataMock);
         assertTrue(result);
     }
 
@@ -60,12 +60,12 @@ class CurrentAndPreviousHashNotEqualsConditionTest {
     void testPreviousHashNull() {
         BlockValidate blockValidateMock = mock(BlockValidate.class);
         when(blockValidateMock.getCurrentBlockPreviousHash()).thenReturn(null);
-        CurrentAndPreviousHashNotEqualsCondition testObject = CurrentAndPreviousHashNotEqualsCondition.init(blockValidateMock);
+        CurrentAndPreviousHashNotEqualsCondition testCondition = CurrentAndPreviousHashNotEqualsCondition.init(blockValidateMock);
 
         BlockChainValidateApp.PreviousBlockData previousBlockDataMock = mock(BlockChainValidateApp.PreviousBlockData.class);
         when(previousBlockDataMock.getPreviousHash()).thenReturn("hash_previous_block_data");
 
-        Boolean result = testObject.check(previousBlockDataMock);
+        Boolean result = testCondition.check(previousBlockDataMock);
         assertTrue(result);
     }
 

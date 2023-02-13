@@ -4,6 +4,8 @@ import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Condition;
 import br.com.lucianoyamane.example.validate.block.BlockValidate;
 
+import java.util.Objects;
+
 public class RegisteredAndCalculatedHashNotEqualsCondition extends Condition<BlockValidate> {
 
     private RegisteredAndCalculatedHashNotEqualsCondition(BlockValidate valida) {
@@ -14,18 +16,21 @@ public class RegisteredAndCalculatedHashNotEqualsCondition extends Condition<Blo
         return new RegisteredAndCalculatedHashNotEqualsCondition(valida);
     }
 
-    public Boolean compareRegisteredAndCalculatedHash() {
+    public Boolean registeredAndCalculatedHashAreEquals() {
+        if (Objects.isNull(this.getValidate().getCurrentBlockHash())) {
+            return Boolean.FALSE;
+        }
         return this.getValidate().getCurrentBlockHash().equals(this.getValidate().getCurrentBlockCalculatedHash());
     }
 
     @Override
     public String getMessage() {
-        return "Current Hash(" + this.getValidate().getCurrentBlockHash() + ") and Calculated Hash(" + this.getValidate().getCurrentBlockCalculatedHash()   + ") not equal";
+        return "Current(" + this.getValidate().getCurrentBlockHash() + ") and Calculated(" + this.getValidate().getCurrentBlockCalculatedHash()   + ") are not equal.";
     }
 
     @Override
     protected Boolean rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
-        return !this.compareRegisteredAndCalculatedHash();
+        return !this.registeredAndCalculatedHashAreEquals();
 
     }
 }
