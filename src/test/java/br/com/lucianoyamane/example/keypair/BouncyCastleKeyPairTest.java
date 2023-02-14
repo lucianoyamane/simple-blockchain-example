@@ -25,6 +25,5 @@ class BouncyCastleKeyPairTest {
 
         PublicKey publicKey = keyPair.getPublic();
         assertEquals("ECDSA", publicKey.getAlgorithm());
-        assertEquals("[B@4b520ea8", new String(publicKey.getEncoded(), StandardCharsets.UTF_8));
     }
 }

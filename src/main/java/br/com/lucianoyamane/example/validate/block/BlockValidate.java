@@ -30,7 +30,7 @@ public class BlockValidate extends Validate {
         return new BlockValidate(blockBlockChain);
     }
 
-    public BlockBlockChain getBlockBlockChain() {
+    private BlockBlockChain getBlockBlockChain() {
         return blockBlockChain;
     }
 
@@ -51,7 +51,7 @@ public class BlockValidate extends Validate {
     }
 
     @Override
-    public void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData) {
+    protected void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData) {
         TransactionBlockChain currentBlockTransaction = this.getBlockBlockChain().getTransactionBlockChain();
         if (Objects.nonNull(currentBlockTransaction)) {
             this.addValidate(TransactionValidate.validate(currentBlockTransaction).execute(previousBlockData));

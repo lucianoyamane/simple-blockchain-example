@@ -34,7 +34,7 @@ public abstract class Validate {
         }
     }
 
-    abstract public void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData);
+    abstract protected void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData);
 
     abstract protected String getLevel();
 
