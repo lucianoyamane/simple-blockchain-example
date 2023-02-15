@@ -34,7 +34,11 @@ public abstract class Validate {
         }
     }
 
-    abstract protected void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData);
+    protected void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData) {
+        for(Validate validate : this.getValidates()) {
+            validate.execute(previousBlockData);
+        }
+    }
 
     abstract protected String getLevel();
 

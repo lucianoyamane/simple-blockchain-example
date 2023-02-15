@@ -19,6 +19,16 @@ public class TransactionValidate extends Validate {
 
     private TransactionValidate(TransactionBlockChain transactionBlockChain) {
         this.setTransactionBlockChain(transactionBlockChain);
+        this.createValidates(transactionBlockChain);
+    }
+
+    private void createValidates(TransactionBlockChain transactionBlockChain) {
+        List<OperationBlockChain> transactionsOperationBlockChain = transactionBlockChain.getUnspentTransactionsOperationBlockChain();
+
+        for(OperationBlockChain operationBlockChain : transactionsOperationBlockChain) {
+            this.addValidate(OperationValidate.validate(operationBlockChain));
+        }
+
     }
 
     @Override
@@ -57,12 +67,7 @@ public class TransactionValidate extends Validate {
 
     @Override
     protected void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData) {
-        List<OperationBlockChain> transactionsOperationBlockChain = this.getTransactionBlockChain().getUnspentTransactionsOperationBlockChain();
-
-        for(OperationBlockChain operationBlockChain : transactionsOperationBlockChain) {
-            this.addValidate(OperationValidate.validate(operationBlockChain).execute(previousBlockData));
-        }
-
+        super.processNextBlockData(previousBlockData);
         previousBlockData.addTransactionOperationBlockChains(this.getTransactionBlockChain().getCurrentTransactionOperationBlockChain());
         previousBlockData.addTransactionOperationBlockChains(this.getTransactionBlockChain().getLeftOverTransactionOperationBlockChain());
     }

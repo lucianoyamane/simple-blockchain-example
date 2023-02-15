@@ -17,6 +17,7 @@ public class BlockValidate extends Validate {
 
     private BlockValidate(BlockBlockChain blockBlockChain) {
         this.setBlockBlockChain(blockBlockChain);
+        this.createValidate(blockBlockChain);
     }
 
     @Override
@@ -38,6 +39,13 @@ public class BlockValidate extends Validate {
         this.blockBlockChain = blockBlockChain;
     }
 
+    private void createValidate(BlockBlockChain blockBlockChain) {
+        TransactionBlockChain currentBlockTransaction = blockBlockChain.getTransactionBlockChain();
+        if (Objects.nonNull(currentBlockTransaction)) {
+            this.addValidate(TransactionValidate.validate(currentBlockTransaction));
+        }
+    }
+
     public String getCurrentBlockPreviousHash() {
         return this.getBlockBlockChain().getPreviousHash();
     }
@@ -52,10 +60,7 @@ public class BlockValidate extends Validate {
 
     @Override
     protected void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData) {
-        TransactionBlockChain currentBlockTransaction = this.getBlockBlockChain().getTransactionBlockChain();
-        if (Objects.nonNull(currentBlockTransaction)) {
-            this.addValidate(TransactionValidate.validate(currentBlockTransaction).execute(previousBlockData));
-        }
+        super.processNextBlockData(previousBlockData);
         previousBlockData.setPreviousHash(this.getBlockBlockChain().getHash());
     }
 
