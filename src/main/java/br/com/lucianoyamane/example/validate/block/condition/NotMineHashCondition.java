@@ -17,7 +17,10 @@ public class NotMineHashCondition extends Condition<BlockValidate> {
         return new NotMineHashCondition(valida);
     }
 
-    public Boolean hashIsMined(Integer difficulty) {
+    private Boolean hashIsMined(Integer difficulty) {
+        if (Objects.isNull(this.getValidate().getCurrentBlockHash())) {
+            return Boolean.FALSE;
+        }
         return this.getValidate().getCurrentBlockHash().substring( 0, difficulty).equals(StringUtil.getCharsZeroByDifficuty(difficulty));
     }
 

@@ -3,60 +3,55 @@ package br.com.lucianoyamane.example.validate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ValidateTest {
 
-    static Validate anonymousValidate;
 
-    static Condition conditionMock;
+    static Validate validateAnonymous;
+
+    static Condition condition;
 
     @BeforeEach
-    public void createValidate() {
-        anonymousValidate = new Validate() {
+    void setUp() {
+        validateAnonymous = new Validate() {
             @Override
             protected void configConditions() {
-                conditionMock = mock(Condition.class);
-                this.addCondition(conditionMock);
+                condition = mock(Condition.class);
+                this.addCondition(condition);
             }
 
             @Override
             protected void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData) {
-                previousBlockData.setPreviousHash("test_previous_hash");
+
             }
 
             @Override
             protected String getLevel() {
-                return "test_anonymous_level";
+                return "level_test";
             }
-        };
+        } ;
     }
 
     @Test
     void testValidate() {
         BlockChainValidateApp.PreviousBlockData previousBlockDataMock = mock(BlockChainValidateApp.PreviousBlockData.class);
-        when(conditionMock.getMessage()).thenReturn("condition_message");
-        when(conditionMock.check(previousBlockDataMock)).thenReturn(Boolean.TRUE);
 
-        anonymousValidate.validate(previousBlockDataMock);
+        when(condition.check(eq(previousBlockDataMock))).thenReturn(Boolean.TRUE);
+        when(condition.getMessage()).thenReturn("condition_message");
+        validateAnonymous.validate(previousBlockDataMock);
 
-        List<Map<String, String>> result = anonymousValidate.getConditionsErrors();
+        List<Map<String, String>> result = validateAnonymous.getConditionsErrors();
         assertTrue(result.size() == 1);
-        Map<String, String> itemResult = result.get(0);
-        assertEquals("test_anonymous_level", itemResult.get("LEVEL"));
-        assertEquals("condition_message", itemResult.get("MESSAGE"));
+        Map<String, String> item = result.get(0);
+        assertEquals("level_test", item.get("LEVEL"));
+        assertEquals("condition_message", item.get("MESSAGE"));
+
     }
-
-    @Test
-    void testProcessNextBlockData() {
-        BlockChainValidateApp.PreviousBlockData previousBlockDataMock = mock(BlockChainValidateApp.PreviousBlockData.class);
-
-        anonymousValidate.processNextBlockData(previousBlockDataMock);
-        verify(previousBlockDataMock, times(1)).setPreviousHash(eq("test_previous_hash"));
-    }
-
 }
