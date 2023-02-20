@@ -63,11 +63,8 @@ public class TransactionValidate extends Validate {
         this.transactionBlockChain = transactionBlockChain;
     }
 
-
-
     @Override
     protected void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData) {
-        super.processNextBlockData(previousBlockData);
         previousBlockData.addTransactionOperationBlockChains(this.getTransactionBlockChain().getCurrentTransactionOperationBlockChain());
         previousBlockData.addTransactionOperationBlockChains(this.getTransactionBlockChain().getLeftOverTransactionOperationBlockChain());
     }

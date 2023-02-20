@@ -8,10 +8,10 @@ import java.util.Map;
 public abstract class Validate {
 
     protected Validate() {
-        this.setConditions(new ArrayList<>());
-        this.setConditionsErrors(new ArrayList<>());
+        this.initConditions();
+        this.initConditionsErrors();
+        this.initValidates();
         this.configConditions();
-        this.setValidates(new ArrayList<>());
     }
 
     abstract protected void configConditions();
@@ -22,7 +22,7 @@ public abstract class Validate {
 
     private List<Validate> validates;
 
-    public void validate(BlockChainValidateApp.PreviousBlockData previousBlockData) {
+    private void validate(BlockChainValidateApp.PreviousBlockData previousBlockData) {
         List<Condition> conditions = this.getConditions();
         for(Condition condition : conditions) {
             if (condition.check(previousBlockData)) {
@@ -34,16 +34,19 @@ public abstract class Validate {
         }
     }
 
-    protected void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData) {
+    private void executeSubValidates(BlockChainValidateApp.PreviousBlockData previousBlockData) {
         for(Validate validate : this.getValidates()) {
             validate.execute(previousBlockData);
         }
     }
 
+    protected abstract void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData);
+
     abstract protected String getLevel();
 
     public Validate execute(BlockChainValidateApp.PreviousBlockData previousBlockData){
         this.validate(previousBlockData);
+        this.executeSubValidates(previousBlockData);
         this.processNextBlockData(previousBlockData);
         return this;
     }
@@ -52,8 +55,8 @@ public abstract class Validate {
         return conditions;
     }
 
-    private void setConditions(List<Condition> conditions) {
-        this.conditions = conditions;
+    private void initConditions() {
+        this.conditions = new ArrayList<>();
     }
 
     protected void addCondition(Condition condition) {
@@ -72,8 +75,8 @@ public abstract class Validate {
         this.getConditionsErrors().add(error);
     }
 
-    private void setConditionsErrors(List<Map<String, String>> conditionsErrors) {
-        this.conditionsErrors = conditionsErrors;
+    private void initConditionsErrors() {
+        this.conditionsErrors = new ArrayList<>();
     }
 
     protected List<Validate> getValidates() {
@@ -84,15 +87,14 @@ public abstract class Validate {
         this.getValidates().add(validate);
     }
 
-    private void setValidates(List<Validate> validates) {
-        this.validates = validates;
+    private void initValidates() {
+        this.validates = new ArrayList<>();
     }
 
     public List<Map<String, String>> getErrorsMessages() {
         List<Map<String, String>> errorsMessages = new ArrayList<>();
         for (Validate validate : this.getValidates()) {
             errorsMessages.addAll(validate.getErrorsMessages());
-
         }
         if (this.hasErrors()) {
             errorsMessages.addAll(this.getConditionsErrors());

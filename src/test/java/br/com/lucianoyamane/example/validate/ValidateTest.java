@@ -34,24 +34,22 @@ class ValidateTest {
 
             @Override
             protected String getLevel() {
-                return "level_test";
+                return "test_level";
             }
-        } ;
+        };
     }
 
     @Test
-    void testValidate() {
-        BlockChainValidateApp.PreviousBlockData previousBlockDataMock = mock(BlockChainValidateApp.PreviousBlockData.class);
-
-        when(condition.check(eq(previousBlockDataMock))).thenReturn(Boolean.TRUE);
-        when(condition.getMessage()).thenReturn("condition_message");
-        validateAnonymous.validate(previousBlockDataMock);
-
-        List<Map<String, String>> result = validateAnonymous.getConditionsErrors();
-        assertTrue(result.size() == 1);
-        Map<String, String> item = result.get(0);
-        assertEquals("level_test", item.get("LEVEL"));
-        assertEquals("condition_message", item.get("MESSAGE"));
-
+    void testConfigConditions() {
+        List<Condition> conditions = validateAnonymous.getConditions();
+        assertTrue(conditions.size() == 1);
     }
+
+    @Test
+    void testGetLevel() {
+        String result = validateAnonymous.getLevel();
+        assertEquals("test_level", result);
+    }
+
+
 }

@@ -4,6 +4,7 @@ import br.com.lucianoyamane.example.wallet.GenesisWallet;
 import br.com.lucianoyamane.example.wallet.Wallet;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Wallets {
@@ -22,7 +23,7 @@ public class Wallets {
     private Map<String, Wallet> registeredMap;
 
     public Wallets() {
-        this.registeredMap = new HashMap<>();
+        this.registeredMap = new LinkedHashMap<>();
         this.register(GenesisWallet.create());
         this.register(Wallet.create(SICRANO));
         this.register(Wallet.create(BELTRANO));

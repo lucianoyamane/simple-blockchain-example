@@ -60,7 +60,6 @@ public class BlockValidate extends Validate {
 
     @Override
     protected void processNextBlockData(BlockChainValidateApp.PreviousBlockData previousBlockData) {
-        super.processNextBlockData(previousBlockData);
         previousBlockData.setPreviousHash(this.getBlockBlockChain().getHash());
     }
 

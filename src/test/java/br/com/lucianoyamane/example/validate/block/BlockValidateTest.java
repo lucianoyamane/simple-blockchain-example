@@ -1,20 +1,21 @@
 package br.com.lucianoyamane.example.validate.block;
 
 import br.com.lucianoyamane.example.blockchain.BlockBlockChain;
-import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 class BlockValidateTest {
 
     @Test
-    void testValidate() {
+    void testInitState() {
         BlockBlockChain blockBlockChainMock = mock(BlockBlockChain.class);
         BlockValidate validateTest = BlockValidate.validate(blockBlockChainMock);
         assertNotNull(validateTest);
+        assertEquals("BLOCK", validateTest.getLevel());
     }
 
     @Test
@@ -54,9 +55,18 @@ class BlockValidateTest {
         assertEquals("BLOCK", result);
     }
 
-    //TODO: refactoring execute Validate
     @Test
     void testProcessNextBlockData() {
+        BlockBlockChain blockBlockChainMock = mock(BlockBlockChain.class);
+        when(blockBlockChainMock.getHash()).thenReturn("block_hash");
+
+        BlockChainValidateApp.PreviousBlockData previousBlockDataMock = mock(BlockChainValidateApp.PreviousBlockData.class);
+
+        BlockValidate validateTest = BlockValidate.validate(blockBlockChainMock);
+        validateTest.processNextBlockData(previousBlockDataMock);
+
+        verify(previousBlockDataMock, times(1)).setPreviousHash(eq("block_hash"));
+
     }
 
 

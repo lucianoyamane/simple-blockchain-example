@@ -25,7 +25,7 @@ public class BlockBlockChain implements BlockChainObject {
 		this.setTransactionBlockChain(transactionBlockChain);
 	}
 
-	public BlockBlockChain processAsGenesis() {
+	private BlockBlockChain processAsGenesis() {
 		this.process("0");
 		return this;
 	}
@@ -82,6 +82,10 @@ public class BlockBlockChain implements BlockChainObject {
 	}
 	public String getHash() {
 		return this.getBlock().getHash();
+	}
+
+	public String getMerklet() {
+		return this.getBlock().getMerkleRoot();
 	}
 
 	public TransactionBlockChain getTransactionBlockChain() {
