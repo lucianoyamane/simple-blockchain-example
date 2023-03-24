@@ -4,27 +4,32 @@ import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Condition;
 import br.com.lucianoyamane.example.validate.block.BlockValidate;
 
-public class CurrentAndPreviousHashNotEqualsCondition extends Condition<BlockValidate> {
+import java.util.Objects;
 
-    private CurrentAndPreviousHashNotEqualsCondition(BlockValidate valida) {
-        super(valida);
+public final class CurrentAndPreviousHashNotEqualsCondition extends Condition<BlockValidate> {
+
+    private CurrentAndPreviousHashNotEqualsCondition(BlockValidate validate) {
+        super(validate);
     }
 
-    public static CurrentAndPreviousHashNotEqualsCondition init(BlockValidate valida) {
-        return new CurrentAndPreviousHashNotEqualsCondition(valida);
+    public static CurrentAndPreviousHashNotEqualsCondition init(BlockValidate validate) {
+        return new CurrentAndPreviousHashNotEqualsCondition(validate);
     }
 
-    public Boolean compareWithCurrentBlockPreviousHash(String previousHash) {
+    private Boolean currentBlockPreviousHashAreEquals(String previousHash) {
+        if (Objects.isNull(this.getValidate().getCurrentBlockPreviousHash())) {
+            return Boolean.FALSE;
+        }
         return this.getValidate().getCurrentBlockPreviousHash().equals(previousHash);
     }
 
     @Override
-    protected String getMessage() {
+    public String getMessage() {
         return "Previous Hashes not equal";
     }
 
     @Override
     protected Boolean rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
-        return !this.compareWithCurrentBlockPreviousHash(previousBlockData.getPreviousHash());
+        return !this.currentBlockPreviousHashAreEquals(previousBlockData.getPreviousHash());
     }
 }

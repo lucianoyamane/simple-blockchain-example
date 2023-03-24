@@ -23,7 +23,7 @@ public class InputAndOutputValuesNotEqualsCondition extends Condition<Transactio
     }
 
     @Override
-    protected String getMessage() {
+    public String getMessage() {
         return "Input and Output value are not equals(" + this.getValidate().getTransactionBlockChain().getTransaction().getHash() + ")";
     }
 

@@ -15,7 +15,7 @@ public class CurrentOperationDoesntBelongToReceiverCondition extends Condition<T
     }
 
     @Override
-    protected String getMessage() {
+    public String getMessage() {
         return "Looks like current Operation (" + this.getValidate().getCurrentTransactionOperationBlockChain().getTransactionOperationId() + ") don't belong to receiver";
     }
 

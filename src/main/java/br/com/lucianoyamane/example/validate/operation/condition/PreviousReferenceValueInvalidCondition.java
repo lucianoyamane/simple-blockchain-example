@@ -20,7 +20,7 @@ public class PreviousReferenceValueInvalidCondition extends Condition<OperationV
     }
 
     @Override
-    protected String getMessage() {
+    public String getMessage() {
         return "#Referenced operation on Transaction(" + this.getValidate().getTransactionOperationBlockChain().getTransactionOperationId() + ") value is Invalid";
     }
 

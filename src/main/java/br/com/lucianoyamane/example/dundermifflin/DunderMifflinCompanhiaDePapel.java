@@ -43,12 +43,13 @@ public class DunderMifflinCompanhiaDePapel {
             SystemOutPrintlnDecorator.ciano("******************************************************");
             previousHash = this.blockChainApp.transaction(transacao.toTransaction(), previousHash);
             Wallets.open().getFinalBalances();
+            try {
+                this.blockChainApp.validate();
+            } catch (BlockChainException e) {
+                SystemOutPrintlnDecorator.vermelho(e.getMessage());
+            }
         }
-        try {
-            this.blockChainApp.validate();
-        } catch (BlockChainException e) {
-            SystemOutPrintlnDecorator.vermelho(e.getMessage());
-        }
+
 
 
     }

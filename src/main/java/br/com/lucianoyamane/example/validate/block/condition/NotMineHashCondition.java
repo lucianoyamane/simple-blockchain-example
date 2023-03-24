@@ -5,6 +5,8 @@ import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Condition;
 import br.com.lucianoyamane.example.validate.block.BlockValidate;
 
+import java.util.Objects;
+
 public class NotMineHashCondition extends Condition<BlockValidate> {
 
     private NotMineHashCondition(BlockValidate valida) {
@@ -15,13 +17,16 @@ public class NotMineHashCondition extends Condition<BlockValidate> {
         return new NotMineHashCondition(valida);
     }
 
-    public Boolean hashIsMined(int difficulty) {
+    private Boolean hashIsMined(Integer difficulty) {
+        if (Objects.isNull(this.getValidate().getCurrentBlockHash())) {
+            return Boolean.FALSE;
+        }
         return this.getValidate().getCurrentBlockHash().substring( 0, difficulty).equals(StringUtil.getCharsZeroByDifficuty(difficulty));
     }
 
     @Override
-    protected String getMessage() {
-        return "This block ("+ this.getValidate().getBlockBlockChain().getHash()  +") hasn't been mined";
+    public String getMessage() {
+        return "This block ("+ this.getValidate().getCurrentBlockHash()  +") hasn't been mined";
     }
 
     @Override

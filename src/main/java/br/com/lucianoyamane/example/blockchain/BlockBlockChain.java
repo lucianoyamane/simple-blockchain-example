@@ -25,12 +25,12 @@ public class BlockBlockChain implements BlockChainObject {
 		this.setTransactionBlockChain(transactionBlockChain);
 	}
 
-	public BlockBlockChain processAsGenesis() {
+	private BlockBlockChain processAsGenesis() {
 		this.process("0");
 		return this;
 	}
 
-	public BlockBlockChain process(String previousHash) {
+	private BlockBlockChain process(String previousHash) {
 		this.getBlock().setPreviousHash(previousHash);
 		this.getBlock().setHash(calculateHash());
 		this.getBlock().setMerkleRoot(StringUtil.getMerkleRoot(this.getTransactionId()));
@@ -84,15 +84,19 @@ public class BlockBlockChain implements BlockChainObject {
 		return this.getBlock().getHash();
 	}
 
+	public String getMerklet() {
+		return this.getBlock().getMerkleRoot();
+	}
+
 	public TransactionBlockChain getTransactionBlockChain() {
 		return transactionBlockChain;
 	}
 
-	public Block getBlock() {
+	private Block getBlock() {
 		return block;
 	}
 
-	public void setBlock(Block block) {
+	private void setBlock(Block block) {
 		this.block = block;
 	}
 
