@@ -30,7 +30,7 @@ public class BlockBlockChain implements BlockChainObject {
 		return this;
 	}
 
-	public BlockBlockChain process(String previousHash) {
+	private BlockBlockChain process(String previousHash) {
 		this.getBlock().setPreviousHash(previousHash);
 		this.getBlock().setHash(calculateHash());
 		this.getBlock().setMerkleRoot(StringUtil.getMerkleRoot(this.getTransactionId()));
@@ -92,11 +92,11 @@ public class BlockBlockChain implements BlockChainObject {
 		return transactionBlockChain;
 	}
 
-	public Block getBlock() {
+	private Block getBlock() {
 		return block;
 	}
 
-	public void setBlock(Block block) {
+	private void setBlock(Block block) {
 		this.block = block;
 	}
 

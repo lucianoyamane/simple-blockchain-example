@@ -34,7 +34,30 @@ class BlockBlockChainTest {
         assertEquals("previous_hash", resultHash);
         assertNotNull(blockBlockChain.getHash());
         assertEquals("hash_transaction_id", resultMerklet);
+    }
 
+    @Test
+    void testCalculateHash() {
+        TransactionBlockChain transactionBlockChain = mock(TransactionBlockChain.class);
+        when(transactionBlockChain.getHash()).thenReturn("hash_transaction_id");
+
+        BlockBlockChain blockBlockChain = BlockBlockChain.init(transactionBlockChain, "previous_hash");
+
+        String firstResult = blockBlockChain.calculateHash();
+        String secondResult = blockBlockChain.calculateHash();
+
+        assertEquals(firstResult, secondResult);
 
     }
+
+    @Test
+    void testMine() {
+        TransactionBlockChain transactionBlockChain = mock(TransactionBlockChain.class);
+        BlockBlockChain blockBlockChain = BlockBlockChain.init(transactionBlockChain, "previous_hash");
+        blockBlockChain.mine(3);
+        String result = blockBlockChain.getHash();
+        assertEquals("000", result.substring( 0, 3));
+    }
+
+
 }
