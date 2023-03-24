@@ -1,14 +1,15 @@
 package br.com.lucianoyamane.example.wallet;
 
-import br.com.lucianoyamane.example.*;
+import br.com.lucianoyamane.example.StringUtil;
+import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
+import br.com.lucianoyamane.example.configurations.UnspentTransactions;
+import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
 import br.com.lucianoyamane.example.keypair.BouncyCastleKeyPair;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
-import br.com.lucianoyamane.example.transactions.UnspentTransactions;
 
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.List;
 
 public class Wallet {
 
@@ -20,7 +21,7 @@ public class Wallet {
 		return new Wallet(name);
 	}
 
-    private Wallet(String name){
+    protected Wallet(String name){
 		this.setName(name);
 		this.setKeyPair(BouncyCastleKeyPair.init().getKeyPair());
 	}
@@ -54,19 +55,25 @@ public class Wallet {
 		return UnspentTransactions.getInstance().getWalletBalance(this.getPublicKeyDecorator());
 	}
 
-	public void createSignatureTransaction(Transaction transaction) {
-		transaction.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transaction.getData()));
+	protected void createSignatureTransaction(TransactionBlockChain transactionBlockChain) {
+		transactionBlockChain.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transactionBlockChain.getHash()));
 	}
-	public Transaction sendFunds(String nameReceiver, PublicKeyDecorator receiverPublicKeyDecorator, Integer value ) {
-		if (this.getBalance() < value) {
-			System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");
+
+	public Boolean hasFunds(Integer value) {
+		return this.getBalance() >= value;
+	}
+	public TransactionBlockChain sendFunds(PublicData receiverPublicData, Integer value ) {
+		SystemOutPrintlnDecorator.verde("\nWallet " + this.getName() + " is Attempting to send funds (" + value + ") to Wallet " + receiverPublicData.getName());
+		if (!this.hasFunds(value)) {
+			SystemOutPrintlnDecorator.vermelho("Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}
-		List<TransactionOutput> unspentTransactionOutputs = UnspentTransactions.getInstance().loadUnspentUTXO(this.getPublicKeyDecorator());
-		List<TransactionInput> inputs = unspentTransactionOutputs.stream().map(TransactionInput::create).toList();
-		Transaction newTransaction = Transaction.create(this.getPublicKeyDecorator(), receiverPublicKeyDecorator , value, inputs, this.getName(), nameReceiver);
-		this.createSignatureTransaction(newTransaction);
+		TransactionBlockChain transactionBlockChain = TransactionBlockChain.create(this.toPublicData().getPublicKeyDecorator(), receiverPublicData.getPublicKeyDecorator(), value);
+		createSignatureTransaction(transactionBlockChain);
+		return transactionBlockChain;
+	}
 
-		return newTransaction;
+	public PublicData toPublicData() {
+		return PublicData.create(this.getPublicKeyDecorator(), this.getName());
 	}
 }

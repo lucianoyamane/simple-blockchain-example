@@ -60,6 +60,12 @@ public class StringUtil {
 		return Base64.getEncoder().encodeToString(key.getEncoded());
 	}
 
+	public static String getMerkleRoot(String value) {
+		List<String> valuesList = new ArrayList<>();
+		valuesList.add(value);
+		return getMerkleRoot(valuesList);
+	}
+
     public static String getMerkleRoot(List<String> values) {
 		if (values.isEmpty()) {
 			return null;
