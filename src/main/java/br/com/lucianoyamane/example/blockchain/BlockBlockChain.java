@@ -62,6 +62,7 @@ public class BlockBlockChain implements BlockChainObject {
 		while(!this.testHashCondition(zeros)) {
 			this.getBlock().increaseNonce();
 			this.getBlock().setHash(calculateHash());
+			// SystemOutPrintlnDecorator.azul("Generetaed hash : " + this.getBlock().getHash());
 		}
 		SystemOutPrintlnDecorator.ciano("Block Mined!!! : " + this.getBlock().getHash());
 		return this;

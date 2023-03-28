@@ -10,7 +10,7 @@ public class Difficulty {
 
     public static Difficulty getInstance() {
         if (instance == null) {
-            instance = new Difficulty(5);
+            instance = new Difficulty(3);
         }
         return instance;
     }
