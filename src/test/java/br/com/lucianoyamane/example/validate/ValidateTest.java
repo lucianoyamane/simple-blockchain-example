@@ -40,7 +40,7 @@ class ValidateTest {
 
     @Test
     void testConfigConditions() {
-        List<Condition> conditions = validateAnonymous.getConditions();
+        List<Condition<? extends Validate>> conditions = validateAnonymous.getConditions();
         assertTrue(conditions.size() == 1);
     }
 

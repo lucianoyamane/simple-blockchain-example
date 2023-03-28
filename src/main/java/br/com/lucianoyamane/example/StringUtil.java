@@ -73,7 +73,7 @@ public class StringUtil {
 
 		List<String> treeLayer = values;
 		while(treeLayer.size() > 1) {
-			List<String> currentLayer = new ArrayList();
+			List<String> currentLayer = new ArrayList<>();
 			for(int i = 1; i < treeLayer.size(); i++) {
 				currentLayer.add(encode(treeLayer.get(i - 1) + treeLayer.get(i)));
 			}

@@ -16,15 +16,15 @@ public abstract class Validate {
 
     abstract protected void configConditions();
 
-    private List<Condition> conditions;
+    private List<Condition<? extends Validate>> conditions;
 
     private List<Map<String, String>> conditionsErrors;
 
     private List<Validate> validates;
 
     private void validate(BlockChainValidateApp.PreviousBlockData previousBlockData) {
-        List<Condition> conditions = this.getConditions();
-        for(Condition condition : conditions) {
+        List<Condition<? extends Validate>> conditions = this.getConditions();
+        for(Condition<? extends Validate> condition : conditions) {
             if (condition.check(previousBlockData)) {
                 Map<String, String> errorMap = new HashMap<>();
                 errorMap.put("LEVEL", this.getLevel());
@@ -51,7 +51,7 @@ public abstract class Validate {
         return this;
     }
 
-    public List<Condition> getConditions() {
+    public List<Condition<? extends Validate>> getConditions() {
         return conditions;
     }
 
@@ -59,7 +59,7 @@ public abstract class Validate {
         this.conditions = new ArrayList<>();
     }
 
-    protected void addCondition(Condition condition) {
+    protected void addCondition(Condition<? extends Validate> condition) {
         this.getConditions().add(condition);
     }
 

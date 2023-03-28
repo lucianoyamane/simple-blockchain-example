@@ -3,7 +3,6 @@ package br.com.lucianoyamane.example.configurations;
 import br.com.lucianoyamane.example.wallet.GenesisWallet;
 import br.com.lucianoyamane.example.wallet.Wallet;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

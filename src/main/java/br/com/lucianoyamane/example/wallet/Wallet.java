@@ -21,8 +21,16 @@ public class Wallet {
 		return new Wallet(name);
 	}
 
+	public static Wallet anonymous() {
+		return new Wallet();
+	}
+
     protected Wallet(String name){
 		this.setName(name);
+		this.setKeyPair(BouncyCastleKeyPair.init().getKeyPair());
+	}
+
+	private Wallet() {
 		this.setKeyPair(BouncyCastleKeyPair.init().getKeyPair());
 	}
 
