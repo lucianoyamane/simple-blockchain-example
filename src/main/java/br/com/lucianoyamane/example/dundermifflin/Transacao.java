@@ -1,6 +1,7 @@
 package br.com.lucianoyamane.example.dundermifflin;
 
 import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
+import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 
 public class Transacao {
 
@@ -42,8 +43,7 @@ public class Transacao {
     }
 
     public TransactionBlockChain toTransaction() {
-        return VendedoresRegistrados.abre().wallet(this.remetente).sendFunds(VendedoresRegistrados.abre().wallet(this.destinatario).toPublicData(), valor);
-
-        // return Wallets.open().wallet(this.remetente).sendFunds(Wallets.open().wallet(destinatario).toPublicData(), valor);
+        SystemOutPrintlnDecorator.verde("\nVendedor " + this.remetente.nome() + " está transferindo (" + valor + ") para " + this.destinatario.nome());
+        return VendedoresRegistrados.abre().wallet(this.remetente).sendFunds(VendedoresRegistrados.abre().wallet(this.destinatario).getPublicKeyDecorator(), valor);
     }
 }

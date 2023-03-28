@@ -2,7 +2,6 @@ package br.com.lucianoyamane.example.keypair;
 
 import org.junit.jupiter.api.Test;
 
-import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.PublicKey;
 

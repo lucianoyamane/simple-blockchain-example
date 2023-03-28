@@ -15,7 +15,7 @@ class ValidateTest {
 
     static Validate validateAnonymous;
 
-    static Condition condition;
+    static Condition<? extends Validate> condition;
 
     @BeforeEach
     void setUp() {
