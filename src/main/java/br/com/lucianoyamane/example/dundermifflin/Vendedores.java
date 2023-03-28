@@ -2,7 +2,7 @@ package br.com.lucianoyamane.example.dundermifflin;
 
 public enum Vendedores {
 
-    MICHAEL_SCOTT("Genesis"),
+    MICHAEL_SCOTT("Michael Scott"),
     DWIGHT_SCHRUTE("Dwight Schrute"),
     JIM_HALPERT("Jim Halpert"),
     PAM_BEESLY("Pam Beesly");
