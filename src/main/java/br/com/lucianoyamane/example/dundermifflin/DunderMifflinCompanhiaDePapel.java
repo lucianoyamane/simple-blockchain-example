@@ -1,7 +1,6 @@
 package br.com.lucianoyamane.example.dundermifflin;
 
 import br.com.lucianoyamane.example.BlockChainApp;
-import br.com.lucianoyamane.example.configurations.Wallets;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.exception.BlockChainException;
 
@@ -24,7 +23,7 @@ public class DunderMifflinCompanhiaDePapel {
         return new DunderMifflinCompanhiaDePapel();
     }
 
-    public Transacao cliente(String nome) {
+    public Transacao cliente(Vendedores nome) {
         Transacao transacao = Transacao.cria(this).remetente(nome);
         this.transacoes.add(transacao);
         return transacao;
@@ -39,19 +38,21 @@ public class DunderMifflinCompanhiaDePapel {
         SystemOutPrintlnDecorator.ciano("******************************************************");
         SystemOutPrintlnDecorator.ciano("Creating and Mining Genesis block... ");
         String previousHash = this.blockChainApp.transactionGenesis(this.transacaoBootstrap.toTransaction());
+        VendedoresRegistrados.abre().saldos();
         for(Transacao transacao : this.transacoes) {
             SystemOutPrintlnDecorator.ciano("******************************************************");
             previousHash = this.blockChainApp.transaction(transacao.toTransaction(), previousHash);
-            Wallets.open().getFinalBalances();
-            try {
-                this.blockChainApp.validate();
-            } catch (BlockChainException e) {
-                SystemOutPrintlnDecorator.vermelho(e.getMessage());
-            }
+            VendedoresRegistrados.abre().saldos();
+            this.validateBlockChain();
         }
+    }
 
-
-
+    public void validateBlockChain() {
+        try {
+            this.blockChainApp.validate();
+        } catch (BlockChainException e) {
+            SystemOutPrintlnDecorator.vermelho(e.getMessage());
+        }
     }
 
 }

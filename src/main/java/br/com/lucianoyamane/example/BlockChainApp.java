@@ -21,7 +21,7 @@ public class BlockChainApp {
 	private BlockBlockChain genesis;
 
 	private BlockChainApp() {
-		this.blockchain = new ArrayList();
+		this.blockchain = new ArrayList<>();
 	}
 
 	public static BlockChainApp create() {
