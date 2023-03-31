@@ -15,14 +15,12 @@ public class Wallet {
 
 	private KeyPair keyPair;
 	private PublicKeyDecorator publicKeyDecorator;
-	private String name;
 
-	public static Wallet create(String name) {
-		return new Wallet(name);
+	public static Wallet anonymous() {
+		return new Wallet();
 	}
 
-    protected Wallet(String name){
-		this.setName(name);
+	protected Wallet() {
 		this.setKeyPair(BouncyCastleKeyPair.init().getKeyPair());
 	}
 
@@ -33,14 +31,6 @@ public class Wallet {
 
 	private void setPublicKeyDecorator(PublicKey publicKey) {
 		this.publicKeyDecorator = PublicKeyDecorator.inicia(publicKey);
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	private void setName(String name) {
-		this.name = name;
 	}
 
 	public PublicKeyDecorator getPublicKeyDecorator() {
@@ -62,18 +52,14 @@ public class Wallet {
 	public Boolean hasFunds(Integer value) {
 		return this.getBalance() >= value;
 	}
-	public TransactionBlockChain sendFunds(PublicData receiverPublicData, Integer value ) {
-		SystemOutPrintlnDecorator.verde("\nWallet " + this.getName() + " is Attempting to send funds (" + value + ") to Wallet " + receiverPublicData.getName());
+	public TransactionBlockChain sendFunds(PublicKeyDecorator receiverPublicKey, Integer value ) {
 		if (!this.hasFunds(value)) {
 			SystemOutPrintlnDecorator.vermelho("Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}
-		TransactionBlockChain transactionBlockChain = TransactionBlockChain.create(this.toPublicData().getPublicKeyDecorator(), receiverPublicData.getPublicKeyDecorator(), value);
+		TransactionBlockChain transactionBlockChain = TransactionBlockChain.create(this.getPublicKeyDecorator(), receiverPublicKey, value);
 		createSignatureTransaction(transactionBlockChain);
 		return transactionBlockChain;
 	}
 
-	public PublicData toPublicData() {
-		return PublicData.create(this.getPublicKeyDecorator(), this.getName());
-	}
 }

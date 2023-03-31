@@ -1,13 +1,13 @@
 package br.com.lucianoyamane.example.dundermifflin;
 
-import br.com.lucianoyamane.example.configurations.Wallets;
 import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
+import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 
 public class Transacao {
 
-    private String remetente;
+    private Vendedores remetente;
     private Integer valor;
-    private String destinatario;
+    private Vendedores destinatario;
 
     private DunderMifflinCompanhiaDePapel dunderMifflinCompanhiaDePapel;
 
@@ -16,14 +16,14 @@ public class Transacao {
     }
 
     public static Transacao michaelScott(DunderMifflinCompanhiaDePapel dunderMifflinCompanhiaDePapel) {
-        return new Transacao(dunderMifflinCompanhiaDePapel).remetente("Genesis");
+        return new Transacao(dunderMifflinCompanhiaDePapel).remetente(Vendedores.MICHAEL_SCOTT);
     }
 
     public static Transacao cria(DunderMifflinCompanhiaDePapel dunderMifflinCompanhiaDePapel) {
         return new Transacao(dunderMifflinCompanhiaDePapel);
     }
 
-    public Transacao remetente(String remetente) {
+    public Transacao remetente(Vendedores remetente) {
         this.remetente = remetente;
         return this;
     }
@@ -33,7 +33,7 @@ public class Transacao {
         return this;
     }
 
-    public Transacao para(String destinatario) {
+    public Transacao para(Vendedores destinatario) {
         this.destinatario = destinatario;
         return this;
     }
@@ -43,6 +43,7 @@ public class Transacao {
     }
 
     public TransactionBlockChain toTransaction() {
-        return Wallets.open().wallet(this.remetente).sendFunds(Wallets.open().wallet(destinatario).toPublicData(), valor);
+        SystemOutPrintlnDecorator.verde("\nVendedor " + this.remetente.nome() + " está transferindo (" + valor + ") para " + this.destinatario.nome());
+        return VendedoresRegistrados.abre().wallet(this.remetente).sendFunds(VendedoresRegistrados.abre().wallet(this.destinatario).getPublicKeyDecorator(), valor);
     }
 }

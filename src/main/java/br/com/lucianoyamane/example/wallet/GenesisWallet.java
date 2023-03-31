@@ -1,20 +1,21 @@
 package br.com.lucianoyamane.example.wallet;
 
 import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
+import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 
 public class GenesisWallet extends Wallet {
 
-    private GenesisWallet(String name) {
-        super(name);
+    private GenesisWallet() {
+        super();
     }
 
     public static GenesisWallet create() {
-        return new GenesisWallet("Genesis");
+        return new GenesisWallet();
     }
 
     @Override
-    public TransactionBlockChain sendFunds(PublicData receiverPublicData, Integer value) {
-        TransactionBlockChain transactionBlockChain = TransactionBlockChain.create(this.toPublicData().getPublicKeyDecorator(), receiverPublicData.getPublicKeyDecorator(), value);
+    public TransactionBlockChain sendFunds(PublicKeyDecorator receiverPublicKeyDecorator, Integer value) {
+        TransactionBlockChain transactionBlockChain = TransactionBlockChain.create(this.getPublicKeyDecorator(), receiverPublicKeyDecorator, value);
         createSignatureTransaction(transactionBlockChain);
         return transactionBlockChain;
     }
