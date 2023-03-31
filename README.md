@@ -6,7 +6,7 @@ This is a simple blockchain project that was created with the aim of helping und
 
 This project was inspired by the article "Blockchain Development — Zero to Hero [Guide]", which can be found on Medium at the following link: https://medium.com/programmers-blockchain/blockchain-development-mega-guide-5a316e6d10df
 
-The article provides a comprehensive overview of blockchain technology, including the basic concepts, the underlying algorithms, and the practical applications of blockchain technology. It also includes a step-by-step guide to building a blockchain from scratch using the Python programming language.
+The article provides a comprehensive overview of blockchain technology, including the basic concepts, the underlying algorithms, and the practical applications of blockchain technology. It also includes a step-by-step guide to building a blockchain from scratch using the Java programming language.
 
 We used the article as a reference and a source of inspiration for building our blockchain project using Java. By following the basic principles outlined in the article, we were able to create a simple yet functional blockchain system that demonstrates the essential features of blockchain technology.
 
