@@ -5,9 +5,9 @@ import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 
 public class Transacao {
 
-    private Vendedores remetente;
+    private Vendedor remetente;
     private Integer valor;
-    private Vendedores destinatario;
+    private Vendedor destinatario;
 
     private DunderMifflinCompanhiaDePapelAdapter dunderMifflinCompanhiaDePapelAdapter;
 
@@ -16,14 +16,14 @@ public class Transacao {
     }
 
     public static Transacao michaelScott(DunderMifflinCompanhiaDePapelAdapter dunderMifflinCompanhiaDePapelAdapter) {
-        return new Transacao(dunderMifflinCompanhiaDePapelAdapter).remetente(Vendedores.MICHAEL_SCOTT);
+        return new Transacao(dunderMifflinCompanhiaDePapelAdapter).remetente(Vendedor.MICHAEL_SCOTT);
     }
 
     public static Transacao cria(DunderMifflinCompanhiaDePapelAdapter dunderMifflinCompanhiaDePapelAdapter) {
         return new Transacao(dunderMifflinCompanhiaDePapelAdapter);
     }
 
-    public Transacao remetente(Vendedores remetente) {
+    public Transacao remetente(Vendedor remetente) {
         this.remetente = remetente;
         return this;
     }
@@ -33,7 +33,7 @@ public class Transacao {
         return this;
     }
 
-    public Transacao para(Vendedores destinatario) {
+    public Transacao para(Vendedor destinatario) {
         this.destinatario = destinatario;
         return this;
     }
