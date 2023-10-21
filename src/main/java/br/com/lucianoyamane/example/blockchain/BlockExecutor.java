@@ -67,6 +67,7 @@ public class BlockExecutor implements Executor {
 		}
 		SystemOutPrintlnDecorator.azul("Previous Hash : " + this.getBlock().getPreviousHash());
 		SystemOutPrintlnDecorator.azul("Nonce : " + this.getBlock().getNonce());
+		SystemOutPrintlnDecorator.azul("Timestamp : " + this.getBlock().getTimeStamp());
 		SystemOutPrintlnDecorator.azul("Merkle : " + this.getBlock().getMerkleRoot());
 		SystemOutPrintlnDecorator.ciano("Block Mined!!! : " + this.getBlock().getHash());
 		return this;
