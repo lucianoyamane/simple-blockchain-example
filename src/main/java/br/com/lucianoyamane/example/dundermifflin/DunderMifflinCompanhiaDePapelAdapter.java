@@ -36,7 +36,7 @@ public class DunderMifflinCompanhiaDePapelAdapter {
 
     public void processa() {
         SystemOutPrintlnDecorator.ciano("******************************************************");
-        SystemOutPrintlnDecorator.ciano("Creating and Mining Genesis block... ");
+        SystemOutPrintlnDecorator.verde("Criando a transferência inicial");
         String previousHash = this.blockChainApp.transactionGenesis(this.transacaoBootstrap.toTransaction());
         VendedoresRegistrados.abre().saldos();
         for(Transacao transacao : this.transacoes) {
