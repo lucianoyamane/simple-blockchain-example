@@ -1,16 +1,15 @@
 package br.com.lucianoyamane.example.dundermifflin;
 
-public enum Vendedores {
+public enum Vendedor {
 
     MICHAEL_SCOTT("Michael Scott"),
     DWIGHT_SCHRUTE("Dwight Schrute"),
-    JIM_HALPERT("Jim Halpert"),
-    PAM_BEESLY("Pam Beesly");
+    JIM_HALPERT("Jim Halpert");
 
 
     private String _nome;
 
-    private Vendedores(String nome){
+    private Vendedor(String nome){
         this._nome = nome;
     }
 

@@ -23,7 +23,7 @@ public class DunderMifflinCompanhiaDePapelAdapter {
         return new DunderMifflinCompanhiaDePapelAdapter();
     }
 
-    public Transacao cliente(Vendedores nome) {
+    public Transacao emissor(Vendedor nome) {
         Transacao transacao = Transacao.cria(this).remetente(nome);
         this.transacoes.add(transacao);
         return transacao;

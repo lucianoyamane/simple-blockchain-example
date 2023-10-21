@@ -23,14 +23,13 @@ public class VendedoresRegistrados {
 
     private VendedoresRegistrados() {
         this.vendedores = new ArrayList<>();
-        this.vendedores.add(Carteira.cria(Vendedores.MICHAEL_SCOTT, GenesisWallet.create()));
-        this.vendedores.add(Carteira.cria(Vendedores.DWIGHT_SCHRUTE, Wallet.anonymous()));
-        this.vendedores.add(Carteira.cria(Vendedores.JIM_HALPERT, Wallet.anonymous()));
-        this.vendedores.add(Carteira.cria(Vendedores.PAM_BEESLY, Wallet.anonymous()));
+        this.vendedores.add(Carteira.cria(Vendedor.MICHAEL_SCOTT, GenesisWallet.create()));
+        this.vendedores.add(Carteira.cria(Vendedor.DWIGHT_SCHRUTE, Wallet.anonymous()));
+        this.vendedores.add(Carteira.cria(Vendedor.JIM_HALPERT, Wallet.anonymous()));
     }
 
 
-    public Wallet wallet(Vendedores vendedor) {
+    public Wallet wallet(Vendedor vendedor) {
         Optional<Carteira> carteiraOptional =  this.vendedores.stream().filter(carteira -> carteira.getVendedor().nome().equals(vendedor.nome())).findFirst();
         if (carteiraOptional.isEmpty()) {
             return null;

@@ -4,19 +4,19 @@ import br.com.lucianoyamane.example.wallet.Wallet;
 
 public class Carteira{
 
-    private Carteira(Vendedores nome, Wallet wallet) {
+    private Carteira(Vendedor nome, Wallet wallet) {
         this.vendedor = nome;
         this.wallet = wallet;
     }
 
-    public static Carteira cria(Vendedores nome, Wallet wallet) {
+    public static Carteira cria(Vendedor nome, Wallet wallet) {
         return new Carteira(nome, wallet);
     }
 
-    private Vendedores vendedor;
+    private Vendedor vendedor;
     private Wallet wallet;
 
-    public Vendedores getVendedor() {
+    public Vendedor getVendedor() {
         return this.vendedor;
     }
 
@@ -24,7 +24,7 @@ public class Carteira{
         return this.getVendedor().nome();
     }
 
-    public void setVendedor(Vendedores nome) {
+    public void setVendedor(Vendedor nome) {
         this.vendedor = nome;
     }
 
