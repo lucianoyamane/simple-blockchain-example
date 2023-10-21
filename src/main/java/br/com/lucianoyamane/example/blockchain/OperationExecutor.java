@@ -3,16 +3,16 @@ package br.com.lucianoyamane.example.blockchain;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 import br.com.lucianoyamane.example.models.Operation;
 
-public class OperationBlockChain implements BlockChainObject {
+public class OperationExecutor implements Executor {
 
 	private Operation operation;
 
-	private OperationBlockChain(PublicKeyDecorator publicKeyDecorator, Integer value) {
+	private OperationExecutor(PublicKeyDecorator publicKeyDecorator, Integer value) {
 		this.setTransactionOperation(Operation.init(publicKeyDecorator, value));
 	}
 
-	public static OperationBlockChain create(PublicKeyDecorator publicKeyDecorator, Integer value) {
-		return new OperationBlockChain(publicKeyDecorator, value);
+	public static OperationExecutor create(PublicKeyDecorator publicKeyDecorator, Integer value) {
+		return new OperationExecutor(publicKeyDecorator, value);
 	}
 
 	public Integer getValue() {
@@ -40,10 +40,10 @@ public class OperationBlockChain implements BlockChainObject {
 		if (obj == this) {
 			return true;
 		}
-		if (!(obj instanceof OperationBlockChain)) {
+		if (!(obj instanceof OperationExecutor)) {
 			return false;
 		}
-		OperationBlockChain other = (OperationBlockChain) obj;
+		OperationExecutor other = (OperationExecutor) obj;
 		return this.getTransactionOperation().equals(other.getTransactionOperation());
 	}
 

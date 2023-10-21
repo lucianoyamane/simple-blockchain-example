@@ -1,8 +1,8 @@
 package br.com.lucianoyamane.example;
 
 
-import br.com.lucianoyamane.example.blockchain.BlockBlockChain;
-import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
+import br.com.lucianoyamane.example.blockchain.BlockExecutor;
+import br.com.lucianoyamane.example.blockchain.TransactionExecutor;
 import br.com.lucianoyamane.example.configurations.Difficulty;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.exception.BlockChainException;
@@ -16,9 +16,9 @@ import java.util.Map;
 
 public class BlockChainApp {
 
-	private List<BlockBlockChain> blockchain;
+	private List<BlockExecutor> blockchain;
 
-	private BlockBlockChain genesis;
+	private BlockExecutor genesis;
 
 	private BlockChainApp() {
 		this.blockchain = new ArrayList<>();
@@ -28,33 +28,33 @@ public class BlockChainApp {
 		return new BlockChainApp();
 	}
 
-	public String transactionGenesis(TransactionBlockChain transaction) {
-		BlockBlockChain genesis = BlockBlockChain.genesis(transaction);
+	public String transactionGenesis(TransactionExecutor transaction) {
+		BlockExecutor genesis = BlockExecutor.genesis(transaction);
 		this.setGenesis(genesis);
 		return this.proofOfWork(genesis);
 	}
 
-	public String transaction(TransactionBlockChain transaction, String previousHash) {
-		BlockBlockChain blockBlockChain = BlockBlockChain.init(transaction, previousHash);
-		this.addBlock(blockBlockChain);
-		return this.proofOfWork(blockBlockChain);
+	public String transaction(TransactionExecutor transaction, String previousHash) {
+		BlockExecutor blockExecutor = BlockExecutor.init(transaction, previousHash);
+		this.addBlock(blockExecutor);
+		return this.proofOfWork(blockExecutor);
 	}
 
-	private String proofOfWork(BlockBlockChain blockBlockChain) {
-		return blockBlockChain
+	private String proofOfWork(BlockExecutor blockExecutor) {
+		return blockExecutor
 				.mine(Difficulty.getInstance().getDifficulty())
 				.getHash();
 	}
 
-	public void addBlock(BlockBlockChain newBlockBlockChain) {
-		blockchain.add(newBlockBlockChain);
+	public void addBlock(BlockExecutor newBlockExecutor) {
+		blockchain.add(newBlockExecutor);
 	}
 
-	private void setGenesis(BlockBlockChain newBlockBlockChain) {
-		this.genesis = newBlockBlockChain;
+	private void setGenesis(BlockExecutor newBlockExecutor) {
+		this.genesis = newBlockExecutor;
 	}
 
-	private BlockBlockChain getGenesis() {
+	private BlockExecutor getGenesis() {
 		return this.genesis;
 	}
 

@@ -1,8 +1,8 @@
 package br.com.lucianoyamane.example.validate.transaction;
 
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
-import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
-import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
+import br.com.lucianoyamane.example.blockchain.TransactionExecutor;
+import br.com.lucianoyamane.example.blockchain.OperationExecutor;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Validate;
 import br.com.lucianoyamane.example.validate.operation.OperationValidate;
@@ -15,18 +15,18 @@ import java.util.List;
 
 public class TransactionValidate extends Validate {
 
-    private TransactionBlockChain transactionBlockChain;
+    private TransactionExecutor transactionExecutor;
 
-    private TransactionValidate(TransactionBlockChain transactionBlockChain) {
-        this.setTransactionBlockChain(transactionBlockChain);
-        this.createValidates(transactionBlockChain);
+    private TransactionValidate(TransactionExecutor transactionExecutor) {
+        this.setTransactionBlockChain(transactionExecutor);
+        this.createValidates(transactionExecutor);
     }
 
-    private void createValidates(TransactionBlockChain transactionBlockChain) {
-        List<OperationBlockChain> transactionsOperationBlockChain = transactionBlockChain.getUnspentTransactionsOperationBlockChain();
+    private void createValidates(TransactionExecutor transactionExecutor) {
+        List<OperationExecutor> transactionsOperationExecutor = transactionExecutor.getUnspentTransactionsOperationBlockChain();
 
-        for(OperationBlockChain operationBlockChain : transactionsOperationBlockChain) {
-            this.addValidate(OperationValidate.validate(operationBlockChain));
+        for(OperationExecutor operationExecutor : transactionsOperationExecutor) {
+            this.addValidate(OperationValidate.validate(operationExecutor));
         }
 
     }
@@ -39,12 +39,12 @@ public class TransactionValidate extends Validate {
         this.addCondition(InputAndOutputValuesNotEqualsCondition.init(this));
     }
 
-    public static TransactionValidate validate(TransactionBlockChain transactionBlockChain) {
-        return new TransactionValidate(transactionBlockChain);
+    public static TransactionValidate validate(TransactionExecutor transactionExecutor) {
+        return new TransactionValidate(transactionExecutor);
     }
 
-    public TransactionBlockChain getTransactionBlockChain() {
-        return transactionBlockChain;
+    public TransactionExecutor getTransactionBlockChain() {
+        return transactionExecutor;
     }
 
     public PublicKeyDecorator getCurrentTransactionReceiverPublicKeyDecorator(){
@@ -55,12 +55,12 @@ public class TransactionValidate extends Validate {
         return this.getTransactionBlockChain().getTransactionSenderPublicKeyDecorator();
     }
 
-    public OperationBlockChain getCurrentTransactionOperationBlockChain(){
+    public OperationExecutor getCurrentTransactionOperationBlockChain(){
         return this.getTransactionBlockChain().getCurrentTransactionOperationBlockChain();
     }
 
-    private void setTransactionBlockChain(TransactionBlockChain transactionBlockChain) {
-        this.transactionBlockChain = transactionBlockChain;
+    private void setTransactionBlockChain(TransactionExecutor transactionExecutor) {
+        this.transactionExecutor = transactionExecutor;
     }
 
     @Override

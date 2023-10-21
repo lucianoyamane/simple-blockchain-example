@@ -1,6 +1,6 @@
 package br.com.lucianoyamane.example.validate.operation.condition;
 
-import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
+import br.com.lucianoyamane.example.blockchain.OperationExecutor;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Condition;
 import br.com.lucianoyamane.example.validate.operation.OperationValidate;
@@ -24,7 +24,7 @@ public class PreviousOperationReferenceNotExistsCondition extends Condition<Oper
 
     @Override
     protected Boolean rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
-        OperationBlockChain referenceOperationBlockChain = previousBlockData.findReferencedTransactionOperationBlockChain(this.getValidate().getTransactionOperationBlockChain());
-        return Objects.isNull(referenceOperationBlockChain);
+        OperationExecutor referenceOperationExecutor = previousBlockData.findReferencedTransactionOperationBlockChain(this.getValidate().getTransactionOperationBlockChain());
+        return Objects.isNull(referenceOperationExecutor);
     }
 }

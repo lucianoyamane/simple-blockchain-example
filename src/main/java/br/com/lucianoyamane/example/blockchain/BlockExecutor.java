@@ -6,31 +6,31 @@ import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 
 import java.util.Objects;
 
-public class BlockBlockChain implements BlockChainObject {
+public class BlockExecutor implements Executor {
 	
 	private Block block;
 
-	private TransactionBlockChain transactionBlockChain;
+	private TransactionExecutor transactionExecutor;
 
-	public static BlockBlockChain genesis(TransactionBlockChain transactionBlockChain) {
-		return new BlockBlockChain(Block.init(), transactionBlockChain).processAsGenesis();
+	public static BlockExecutor genesis(TransactionExecutor transactionExecutor) {
+		return new BlockExecutor(Block.init(), transactionExecutor).processAsGenesis();
 	}
 
-    public static BlockBlockChain init(TransactionBlockChain transactionBlockChain, String previousHash) {
-        return new BlockBlockChain(Block.init(), transactionBlockChain).process(previousHash);
+    public static BlockExecutor init(TransactionExecutor transactionExecutor, String previousHash) {
+        return new BlockExecutor(Block.init(), transactionExecutor).process(previousHash);
     }
 
-	private BlockBlockChain(Block block, TransactionBlockChain transactionBlockChain) {
+	private BlockExecutor(Block block, TransactionExecutor transactionExecutor) {
 		this.setBlock(block);
-		this.setTransactionBlockChain(transactionBlockChain);
+		this.setTransactionBlockChain(transactionExecutor);
 	}
 
-	private BlockBlockChain processAsGenesis() {
+	private BlockExecutor processAsGenesis() {
 		this.process("0");
 		return this;
 	}
 
-	private BlockBlockChain process(String previousHash) {
+	private BlockExecutor process(String previousHash) {
 		this.getBlock().setPreviousHash(previousHash);
 		this.getBlock().setHash(calculateHash());
 		this.getBlock().setMerkleRoot(StringUtil.getMerkleRoot(this.getTransactionId()));
@@ -57,13 +57,17 @@ public class BlockBlockChain implements BlockChainObject {
 		return null;
 	}
 
-	public BlockBlockChain mine(int difficulty) {
+	public BlockExecutor mine(int difficulty) {
 		String zeros = StringUtil.getCharsZeroByDifficuty(difficulty);
 		while(!this.testHashCondition(zeros)) {
 			this.getBlock().increaseNonce();
 			this.getBlock().setHash(calculateHash());
-			// SystemOutPrintlnDecorator.azul("Generetaed hash : " + this.getBlock().getHash());
+
+//			SystemOutPrintlnDecorator.azul("Genereted hash : " + this.getBlock().getHash());
 		}
+		SystemOutPrintlnDecorator.azul("Previous Hash : " + this.getBlock().getPreviousHash());
+		SystemOutPrintlnDecorator.azul("Nonce : " + this.getBlock().getNonce());
+		SystemOutPrintlnDecorator.azul("Merkle : " + this.getBlock().getMerkleRoot());
 		SystemOutPrintlnDecorator.ciano("Block Mined!!! : " + this.getBlock().getHash());
 		return this;
 	}
@@ -72,9 +76,9 @@ public class BlockBlockChain implements BlockChainObject {
 		return this.getBlock().getHash().startsWith(target);
 	}
 
-	private BlockBlockChain setTransactionBlockChain(TransactionBlockChain transactionBlockChain) {
-		if (Objects.nonNull(transactionBlockChain) && transactionBlockChain.processTransaction()) {
-			this.transactionBlockChain = transactionBlockChain;
+	private BlockExecutor setTransactionBlockChain(TransactionExecutor transactionExecutor) {
+		if (Objects.nonNull(transactionExecutor) && transactionExecutor.processTransaction()) {
+			this.transactionExecutor = transactionExecutor;
 			SystemOutPrintlnDecorator.ciano("Transaction Successfully added to Block");
 		} else {
 			SystemOutPrintlnDecorator.vermelho("Transaction failed to process. Discarded.");
@@ -89,8 +93,8 @@ public class BlockBlockChain implements BlockChainObject {
 		return this.getBlock().getMerkleRoot();
 	}
 
-	public TransactionBlockChain getTransactionBlockChain() {
-		return transactionBlockChain;
+	public TransactionExecutor getTransactionBlockChain() {
+		return transactionExecutor;
 	}
 
 	private Block getBlock() {

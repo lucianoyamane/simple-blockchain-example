@@ -1,6 +1,6 @@
 package br.com.lucianoyamane.example.configurations;
 
-import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
+import br.com.lucianoyamane.example.blockchain.OperationExecutor;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 
 import java.util.ArrayList;
@@ -16,28 +16,28 @@ public class UnspentTransactions {
         }
         return instance;
     }
-    private List<OperationBlockChain> operationBlockChains;
+    private List<OperationExecutor> operationExecutors;
 
     private UnspentTransactions() {
-        this.operationBlockChains = new ArrayList<>();
+        this.operationExecutors = new ArrayList<>();
     }
 
-    public void add(OperationBlockChain operationBlockChain) {
-        this.operationBlockChains.add(operationBlockChain);
+    public void add(OperationExecutor operationExecutor) {
+        this.operationExecutors.add(operationExecutor);
     }
 
-    public void remove(OperationBlockChain operationBlockChain) {
-        this.operationBlockChains.remove(operationBlockChain);
+    public void remove(OperationExecutor operationExecutor) {
+        this.operationExecutors.remove(operationExecutor);
     }
 
     public Integer getWalletBalance(PublicKeyDecorator publicKeyDecorator) {
-        return this.operationBlockChains.stream()
+        return this.operationExecutors.stream()
                 .filter(output -> publicKeyDecorator.mePertence(output))
-                .mapToInt(OperationBlockChain::getValue).sum();
+                .mapToInt(OperationExecutor::getValue).sum();
     }
 
-    public List<OperationBlockChain> loadUnspentUTXO(PublicKeyDecorator publicKeyDecorator) {
-        return this.operationBlockChains.stream()
+    public List<OperationExecutor> loadUnspentUTXO(PublicKeyDecorator publicKeyDecorator) {
+        return this.operationExecutors.stream()
                 .filter(output -> publicKeyDecorator.mePertence(output)).toList();
     }
 
