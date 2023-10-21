@@ -3,7 +3,7 @@ package br.com.lucianoyamane.example.wallet;
 import br.com.lucianoyamane.example.StringUtil;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import br.com.lucianoyamane.example.configurations.UnspentTransactions;
-import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
+import br.com.lucianoyamane.example.blockchain.TransactionExecutor;
 import br.com.lucianoyamane.example.keypair.BouncyCastleKeyPair;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 
@@ -45,21 +45,21 @@ public class Wallet {
 		return UnspentTransactions.getInstance().getWalletBalance(this.getPublicKeyDecorator());
 	}
 
-	protected void createSignatureTransaction(TransactionBlockChain transactionBlockChain) {
-		transactionBlockChain.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transactionBlockChain.getHash()));
+	protected void createSignatureTransaction(TransactionExecutor transactionExecutor) {
+		transactionExecutor.setSignature(StringUtil.applyECDSASig(this.getPrivateKey(), transactionExecutor.getHash()));
 	}
 
 	public Boolean hasFunds(Integer value) {
 		return this.getBalance() >= value;
 	}
-	public TransactionBlockChain sendFunds(PublicKeyDecorator receiverPublicKey, Integer value ) {
+	public TransactionExecutor sendFunds(PublicKeyDecorator receiverPublicKey, Integer value ) {
 		if (!this.hasFunds(value)) {
 			SystemOutPrintlnDecorator.vermelho("Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}
-		TransactionBlockChain transactionBlockChain = TransactionBlockChain.create(this.getPublicKeyDecorator(), receiverPublicKey, value);
-		createSignatureTransaction(transactionBlockChain);
-		return transactionBlockChain;
+		TransactionExecutor transactionExecutor = TransactionExecutor.create(this.getPublicKeyDecorator(), receiverPublicKey, value);
+		createSignatureTransaction(transactionExecutor);
+		return transactionExecutor;
 	}
 
 }

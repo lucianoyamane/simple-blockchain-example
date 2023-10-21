@@ -1,9 +1,9 @@
 package br.com.lucianoyamane.example.validate;
 
-import br.com.lucianoyamane.example.blockchain.BlockBlockChain;
+import br.com.lucianoyamane.example.blockchain.BlockExecutor;
 import br.com.lucianoyamane.example.configurations.Difficulty;
-import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
-import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
+import br.com.lucianoyamane.example.blockchain.TransactionExecutor;
+import br.com.lucianoyamane.example.blockchain.OperationExecutor;
 import br.com.lucianoyamane.example.validate.block.BlockValidate;
 
 import java.util.ArrayList;
@@ -23,27 +23,27 @@ public class BlockChainValidateApp {
 
     private List<Validate> validates;
 
-    public void validate(BlockBlockChain genesis, List<BlockBlockChain> blockchain) {
+    public void validate(BlockExecutor genesis, List<BlockExecutor> blockchain) {
         PreviousBlockData previousBlockData = new PreviousBlockData(Difficulty.getInstance().getDifficulty());
 
         this.bootstrap(genesis, previousBlockData);
 
-        for(BlockBlockChain currentBlockBlockChain : blockchain) {
-            this.addValidate(BlockValidate.validate(currentBlockBlockChain).execute(previousBlockData));
+        for(BlockExecutor currentBlockExecutor : blockchain) {
+            this.addValidate(BlockValidate.validate(currentBlockExecutor).execute(previousBlockData));
         }
     }
 
-    private void bootstrap(BlockBlockChain genesis, PreviousBlockData previousBlockData) {
-        BlockBlockChain blockBlockChainGenesis = genesis;
+    private void bootstrap(BlockExecutor genesis, PreviousBlockData previousBlockData) {
+        BlockExecutor blockExecutorGenesis = genesis;
 
-        TransactionBlockChain transactionBlockChain = blockBlockChainGenesis.getTransactionBlockChain();
-        if (Objects.nonNull(transactionBlockChain.getCurrentTransactionOperationBlockChain())) {
-            previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getCurrentTransactionOperationBlockChain());
+        TransactionExecutor transactionExecutor = blockExecutorGenesis.getTransactionBlockChain();
+        if (Objects.nonNull(transactionExecutor.getCurrentTransactionOperationBlockChain())) {
+            previousBlockData.addTransactionOperationBlockChains(transactionExecutor.getCurrentTransactionOperationBlockChain());
         }
-        if (Objects.nonNull(transactionBlockChain.getLeftOverTransactionOperationBlockChain())) {
-            previousBlockData.addTransactionOperationBlockChains(transactionBlockChain.getLeftOverTransactionOperationBlockChain());
+        if (Objects.nonNull(transactionExecutor.getLeftOverTransactionOperationBlockChain())) {
+            previousBlockData.addTransactionOperationBlockChains(transactionExecutor.getLeftOverTransactionOperationBlockChain());
         }
-        previousBlockData.setPreviousHash(blockBlockChainGenesis.getHash());
+        previousBlockData.setPreviousHash(blockExecutorGenesis.getHash());
     }
 
     public List<Map<String, String>> getErrorsMessages() {
@@ -73,7 +73,7 @@ public class BlockChainValidateApp {
 
         private String previousHash;
 
-        private List<OperationBlockChain> operationBlockChains;
+        private List<OperationExecutor> operationExecutors;
 
         public PreviousBlockData(Integer difficulty) {
             this.setTransactionOperationBlockChains(new ArrayList<>());
@@ -96,26 +96,26 @@ public class BlockChainValidateApp {
             this.previousHash = previousHash;
         }
 
-        public List<OperationBlockChain> getTransactionOperationBlockChains() {
-            return operationBlockChains;
+        public List<OperationExecutor> getTransactionOperationBlockChains() {
+            return operationExecutors;
         }
 
-        private void setTransactionOperationBlockChains(List<OperationBlockChain> operationBlockChains) {
-            this.operationBlockChains = operationBlockChains;
+        private void setTransactionOperationBlockChains(List<OperationExecutor> operationExecutors) {
+            this.operationExecutors = operationExecutors;
         }
 
-        public void addTransactionOperationBlockChains(OperationBlockChain operationBlockChain) {
-            if (operationBlockChain != null) {
-                this.getTransactionOperationBlockChains().add(operationBlockChain);
+        public void addTransactionOperationBlockChains(OperationExecutor operationExecutor) {
+            if (operationExecutor != null) {
+                this.getTransactionOperationBlockChains().add(operationExecutor);
             }
         }
 
-        public void removeTransactionOperationBlockChains(OperationBlockChain operationBlockChain) {
-            this.getTransactionOperationBlockChains().remove(operationBlockChain);
+        public void removeTransactionOperationBlockChains(OperationExecutor operationExecutor) {
+            this.getTransactionOperationBlockChains().remove(operationExecutor);
         }
 
-        public OperationBlockChain findReferencedTransactionOperationBlockChain(OperationBlockChain operationBlockChain) {
-            return this.getTransactionOperationBlockChains().stream().filter(outputTemp -> outputTemp.equals(operationBlockChain)).findFirst().orElse(null);
+        public OperationExecutor findReferencedTransactionOperationBlockChain(OperationExecutor operationExecutor) {
+            return this.getTransactionOperationBlockChains().stream().filter(outputTemp -> outputTemp.equals(operationExecutor)).findFirst().orElse(null);
         }
     }
 }

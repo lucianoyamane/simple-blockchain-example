@@ -1,6 +1,6 @@
 package br.com.lucianoyamane.example.dundermifflin;
 
-import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
+import br.com.lucianoyamane.example.blockchain.TransactionExecutor;
 import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 
 public class Transacao {
@@ -9,18 +9,18 @@ public class Transacao {
     private Integer valor;
     private Vendedores destinatario;
 
-    private DunderMifflinCompanhiaDePapel dunderMifflinCompanhiaDePapel;
+    private DunderMifflinCompanhiaDePapelAdapter dunderMifflinCompanhiaDePapelAdapter;
 
-    private Transacao(DunderMifflinCompanhiaDePapel dunderMifflinCompanhiaDePapel) {
-        this.dunderMifflinCompanhiaDePapel = dunderMifflinCompanhiaDePapel;
+    private Transacao(DunderMifflinCompanhiaDePapelAdapter dunderMifflinCompanhiaDePapelAdapter) {
+        this.dunderMifflinCompanhiaDePapelAdapter = dunderMifflinCompanhiaDePapelAdapter;
     }
 
-    public static Transacao michaelScott(DunderMifflinCompanhiaDePapel dunderMifflinCompanhiaDePapel) {
-        return new Transacao(dunderMifflinCompanhiaDePapel).remetente(Vendedores.MICHAEL_SCOTT);
+    public static Transacao michaelScott(DunderMifflinCompanhiaDePapelAdapter dunderMifflinCompanhiaDePapelAdapter) {
+        return new Transacao(dunderMifflinCompanhiaDePapelAdapter).remetente(Vendedores.MICHAEL_SCOTT);
     }
 
-    public static Transacao cria(DunderMifflinCompanhiaDePapel dunderMifflinCompanhiaDePapel) {
-        return new Transacao(dunderMifflinCompanhiaDePapel);
+    public static Transacao cria(DunderMifflinCompanhiaDePapelAdapter dunderMifflinCompanhiaDePapelAdapter) {
+        return new Transacao(dunderMifflinCompanhiaDePapelAdapter);
     }
 
     public Transacao remetente(Vendedores remetente) {
@@ -38,11 +38,11 @@ public class Transacao {
         return this;
     }
 
-    public DunderMifflinCompanhiaDePapel confirmaAOperacao() {
-        return this.dunderMifflinCompanhiaDePapel;
+    public DunderMifflinCompanhiaDePapelAdapter confirmaAOperacao() {
+        return this.dunderMifflinCompanhiaDePapelAdapter;
     }
 
-    public TransactionBlockChain toTransaction() {
+    public TransactionExecutor toTransaction() {
         SystemOutPrintlnDecorator.verde("\nVendedor " + this.remetente.nome() + " está transferindo (" + valor + ") para " + this.destinatario.nome());
         return VendedoresRegistrados.abre().wallet(this.remetente).sendFunds(VendedoresRegistrados.abre().wallet(this.destinatario).getPublicKeyDecorator(), valor);
     }

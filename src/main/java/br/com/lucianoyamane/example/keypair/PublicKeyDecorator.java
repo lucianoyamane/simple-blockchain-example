@@ -1,7 +1,7 @@
 package br.com.lucianoyamane.example.keypair;
 
 import br.com.lucianoyamane.example.StringUtil;
-import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
+import br.com.lucianoyamane.example.blockchain.OperationExecutor;
 
 import java.security.PublicKey;
 
@@ -36,8 +36,8 @@ public class PublicKeyDecorator {
         this.stringValue = StringUtil.getStringFromKey(publicKey);
     }
 
-    public Boolean mePertence(OperationBlockChain operationBlockChain) {
-        return this.equals(operationBlockChain.getTransactionOperation().getPublicKeyDecorator());
+    public Boolean mePertence(OperationExecutor operationExecutor) {
+        return this.equals(operationExecutor.getTransactionOperation().getPublicKeyDecorator());
     }
 
     @Override

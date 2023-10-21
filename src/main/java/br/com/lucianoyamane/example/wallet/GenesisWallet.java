@@ -1,6 +1,6 @@
 package br.com.lucianoyamane.example.wallet;
 
-import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
+import br.com.lucianoyamane.example.blockchain.TransactionExecutor;
 import br.com.lucianoyamane.example.keypair.PublicKeyDecorator;
 
 public class GenesisWallet extends Wallet {
@@ -14,10 +14,10 @@ public class GenesisWallet extends Wallet {
     }
 
     @Override
-    public TransactionBlockChain sendFunds(PublicKeyDecorator receiverPublicKeyDecorator, Integer value) {
-        TransactionBlockChain transactionBlockChain = TransactionBlockChain.create(this.getPublicKeyDecorator(), receiverPublicKeyDecorator, value);
-        createSignatureTransaction(transactionBlockChain);
-        return transactionBlockChain;
+    public TransactionExecutor sendFunds(PublicKeyDecorator receiverPublicKeyDecorator, Integer value) {
+        TransactionExecutor transactionExecutor = TransactionExecutor.create(this.getPublicKeyDecorator(), receiverPublicKeyDecorator, value);
+        createSignatureTransaction(transactionExecutor);
+        return transactionExecutor;
     }
 
     @Override

@@ -7,20 +7,20 @@ import br.com.lucianoyamane.example.exception.BlockChainException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DunderMifflinCompanhiaDePapel {
+public class DunderMifflinCompanhiaDePapelAdapter {
 
     private List<Transacao> transacoes;
     private Transacao transacaoBootstrap;
 
     private BlockChainApp blockChainApp;
 
-    private DunderMifflinCompanhiaDePapel() {
+    private DunderMifflinCompanhiaDePapelAdapter() {
         this.transacoes = new ArrayList<>();
         this.blockChainApp = BlockChainApp.create();
     }
 
-    public static DunderMifflinCompanhiaDePapel iniciaOsTrabalhos() {
-        return new DunderMifflinCompanhiaDePapel();
+    public static DunderMifflinCompanhiaDePapelAdapter iniciaOsTrabalhos() {
+        return new DunderMifflinCompanhiaDePapelAdapter();
     }
 
     public Transacao cliente(Vendedores nome) {

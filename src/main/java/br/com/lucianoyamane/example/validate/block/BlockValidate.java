@@ -1,7 +1,7 @@
 package br.com.lucianoyamane.example.validate.block;
 
-import br.com.lucianoyamane.example.blockchain.BlockBlockChain;
-import br.com.lucianoyamane.example.blockchain.TransactionBlockChain;
+import br.com.lucianoyamane.example.blockchain.BlockExecutor;
+import br.com.lucianoyamane.example.blockchain.TransactionExecutor;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Validate;
 import br.com.lucianoyamane.example.validate.block.condition.CurrentAndPreviousHashNotEqualsCondition;
@@ -13,11 +13,11 @@ import java.util.Objects;
 
 public class BlockValidate extends Validate {
 
-    private BlockBlockChain blockBlockChain;
+    private BlockExecutor blockExecutor;
 
-    private BlockValidate(BlockBlockChain blockBlockChain) {
-        this.setBlockBlockChain(blockBlockChain);
-        this.createValidate(blockBlockChain);
+    private BlockValidate(BlockExecutor blockExecutor) {
+        this.setBlockBlockChain(blockExecutor);
+        this.createValidate(blockExecutor);
     }
 
     @Override
@@ -27,20 +27,20 @@ public class BlockValidate extends Validate {
         this.addCondition(NotMineHashCondition.init(this));
     }
 
-    public static BlockValidate validate(BlockBlockChain blockBlockChain) {
-        return new BlockValidate(blockBlockChain);
+    public static BlockValidate validate(BlockExecutor blockExecutor) {
+        return new BlockValidate(blockExecutor);
     }
 
-    private BlockBlockChain getBlockBlockChain() {
-        return blockBlockChain;
+    private BlockExecutor getBlockBlockChain() {
+        return blockExecutor;
     }
 
-    private void setBlockBlockChain(BlockBlockChain blockBlockChain) {
-        this.blockBlockChain = blockBlockChain;
+    private void setBlockBlockChain(BlockExecutor blockExecutor) {
+        this.blockExecutor = blockExecutor;
     }
 
-    private void createValidate(BlockBlockChain blockBlockChain) {
-        TransactionBlockChain currentBlockTransaction = blockBlockChain.getTransactionBlockChain();
+    private void createValidate(BlockExecutor blockExecutor) {
+        TransactionExecutor currentBlockTransaction = blockExecutor.getTransactionBlockChain();
         if (Objects.nonNull(currentBlockTransaction)) {
             this.addValidate(TransactionValidate.validate(currentBlockTransaction));
         }

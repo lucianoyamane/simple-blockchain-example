@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import br.com.lucianoyamane.example.configurations.SystemOutPrintlnDecorator;
 import org.bouncycastle.util.encoders.Hex;
 
 public class StringUtil {

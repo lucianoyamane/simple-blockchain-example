@@ -1,6 +1,6 @@
 package br.com.lucianoyamane.example.validate.operation;
 
-import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
+import br.com.lucianoyamane.example.blockchain.OperationExecutor;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Validate;
 import br.com.lucianoyamane.example.validate.operation.condition.PreviousOperationReferenceNotExistsCondition;
@@ -8,10 +8,10 @@ import br.com.lucianoyamane.example.validate.operation.condition.PreviousReferen
 
 public class OperationValidate extends Validate {
 
-    private OperationBlockChain operationBlockChain;
+    private OperationExecutor operationExecutor;
 
-    public static OperationValidate validate(OperationBlockChain operationBlockChain) {
-        return new OperationValidate(operationBlockChain);
+    public static OperationValidate validate(OperationExecutor operationExecutor) {
+        return new OperationValidate(operationExecutor);
     }
 
     @Override
@@ -20,20 +20,20 @@ public class OperationValidate extends Validate {
         this.addCondition(PreviousOperationReferenceNotExistsCondition.init(this));
     }
 
-    private OperationValidate(OperationBlockChain operationBlockChain) {
-        this.setTransactionOperationBlockChain(operationBlockChain);
+    private OperationValidate(OperationExecutor operationExecutor) {
+        this.setTransactionOperationBlockChain(operationExecutor);
     }
 
-    public OperationBlockChain getTransactionOperationBlockChain() {
-        return operationBlockChain;
+    public OperationExecutor getTransactionOperationBlockChain() {
+        return operationExecutor;
     }
 
     public Integer getTransactionOperationBlockChainValue() {
         return this.getTransactionOperationBlockChain().getTransactionOperationValue();
     }
 
-    private void setTransactionOperationBlockChain(OperationBlockChain operationBlockChain) {
-        this.operationBlockChain = operationBlockChain;
+    private void setTransactionOperationBlockChain(OperationExecutor operationExecutor) {
+        this.operationExecutor = operationExecutor;
     }
 
     @Override

@@ -8,50 +8,50 @@ import br.com.lucianoyamane.example.models.Transaction;
 import java.util.List;
 import java.util.UUID;
 
-public class TransactionBlockChain implements BlockChainObject {
+public class TransactionExecutor implements Executor {
 
     private Transaction transaction;
-    private OperationBlockChain currentOperationBlockChain;
-    private OperationBlockChain leftOverOperationBlockChain;
-    private List<OperationBlockChain> unspentTransactionsOperationBlockChain;
+    private OperationExecutor currentOperationExecutor;
+    private OperationExecutor leftOverOperationExecutor;
+    private List<OperationExecutor> unspentTransactionsOperationExecutor;
 
-    private TransactionBlockChain(Transaction transaction) {
+    private TransactionExecutor(Transaction transaction) {
         this.setTransaction(transaction);
         transaction.setHash(this.createHash());
         this.createInputs(transaction.getSenderPublicKeyDecorator());
     }
 
-    public static TransactionBlockChain create(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value) {
-        return new TransactionBlockChain(Transaction.create(senderPublicKeyDecorator, receiverPublickeyDecorator, value));
+    public static TransactionExecutor create(PublicKeyDecorator senderPublicKeyDecorator, PublicKeyDecorator receiverPublickeyDecorator, Integer value) {
+        return new TransactionExecutor(Transaction.create(senderPublicKeyDecorator, receiverPublickeyDecorator, value));
     }
 
     private void createInputs(PublicKeyDecorator senderPublicKeyDecorator) {
-        List<OperationBlockChain> operationBlockChains = UnspentTransactions.getInstance().loadUnspentUTXO(senderPublicKeyDecorator);
-        this.setUnspentTransactionsOperationBlockChain(operationBlockChains);
+        List<OperationExecutor> operationExecutors = UnspentTransactions.getInstance().loadUnspentUTXO(senderPublicKeyDecorator);
+        this.setUnspentTransactionsOperationBlockChain(operationExecutors);
     }
 
-    public OperationBlockChain getCurrentTransactionOperationBlockChain() {
-        return currentOperationBlockChain;
+    public OperationExecutor getCurrentTransactionOperationBlockChain() {
+        return currentOperationExecutor;
     }
 
-    public void setCurrentTransactionOperationBlockChain(OperationBlockChain currentOperationBlockChain) {
-        this.currentOperationBlockChain = currentOperationBlockChain;
+    public void setCurrentTransactionOperationBlockChain(OperationExecutor currentOperationExecutor) {
+        this.currentOperationExecutor = currentOperationExecutor;
     }
 
-    public OperationBlockChain getLeftOverTransactionOperationBlockChain() {
-        return leftOverOperationBlockChain;
+    public OperationExecutor getLeftOverTransactionOperationBlockChain() {
+        return leftOverOperationExecutor;
     }
 
-    public void setLeftOverTransactionOperationBlockChain(OperationBlockChain leftOverOperationBlockChain) {
-        this.leftOverOperationBlockChain = leftOverOperationBlockChain;
+    public void setLeftOverTransactionOperationBlockChain(OperationExecutor leftOverOperationExecutor) {
+        this.leftOverOperationExecutor = leftOverOperationExecutor;
     }
 
-    public List<OperationBlockChain> getUnspentTransactionsOperationBlockChain() {
-        return unspentTransactionsOperationBlockChain;
+    public List<OperationExecutor> getUnspentTransactionsOperationBlockChain() {
+        return unspentTransactionsOperationExecutor;
     }
 
-    public void setUnspentTransactionsOperationBlockChain(List<OperationBlockChain> unspentTransactionsOperationBlockChain) {
-        this.unspentTransactionsOperationBlockChain = unspentTransactionsOperationBlockChain;
+    public void setUnspentTransactionsOperationBlockChain(List<OperationExecutor> unspentTransactionsOperationExecutor) {
+        this.unspentTransactionsOperationExecutor = unspentTransactionsOperationExecutor;
     }
 
     public Transaction getTransaction() {
@@ -105,19 +105,19 @@ public class TransactionBlockChain implements BlockChainObject {
     }
 
     private void removePreviousTransactions() {
-        for(OperationBlockChain operationBlockChain : this.getUnspentTransactionsOperationBlockChain()) {
-            UnspentTransactions.getInstance().remove(operationBlockChain);
+        for(OperationExecutor operationExecutor : this.getUnspentTransactionsOperationBlockChain()) {
+            UnspentTransactions.getInstance().remove(operationExecutor);
         }
     }
 
     private void addCurrentTransactionOutput() {
-        OperationBlockChain current = OperationBlockChain.create( this.getTransaction().getReceiverPublickeyDecorator(), this.getTransaction().getValue());
+        OperationExecutor current = OperationExecutor.create( this.getTransaction().getReceiverPublickeyDecorator(), this.getTransaction().getValue());
         this.setCurrentTransactionOperationBlockChain(current);
         UnspentTransactions.getInstance().add(current);
     }
 
     private void addLeftOverTransactionOutput() {
-        OperationBlockChain leftover = OperationBlockChain.create( this.getTransaction().getSenderPublicKeyDecorator(), this.getLeftOverValue());
+        OperationExecutor leftover = OperationExecutor.create( this.getTransaction().getSenderPublicKeyDecorator(), this.getLeftOverValue());
         this.setLeftOverTransactionOperationBlockChain(leftover);
         UnspentTransactions.getInstance().add(leftover);
     }
@@ -127,7 +127,7 @@ public class TransactionBlockChain implements BlockChainObject {
     }
 
     public Integer getUnspentValue() {
-        List<OperationBlockChain> outputs = this.getUnspentTransactionsOperationBlockChain();
+        List<OperationExecutor> outputs = this.getUnspentTransactionsOperationBlockChain();
         return outputs.stream().mapToInt(output -> output.getValue()).sum();
     }
 

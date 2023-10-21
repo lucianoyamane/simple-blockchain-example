@@ -1,6 +1,6 @@
 package br.com.lucianoyamane.example.validate.operation.condition;
 
-import br.com.lucianoyamane.example.blockchain.OperationBlockChain;
+import br.com.lucianoyamane.example.blockchain.OperationExecutor;
 import br.com.lucianoyamane.example.validate.BlockChainValidateApp;
 import br.com.lucianoyamane.example.validate.Condition;
 import br.com.lucianoyamane.example.validate.operation.OperationValidate;
@@ -15,8 +15,8 @@ public class PreviousReferenceValueInvalidCondition extends Condition<OperationV
         return new PreviousReferenceValueInvalidCondition(valida);
     }
 
-    public Boolean possueMesmoValor(OperationBlockChain previousReferenceOperationBlockChain) {
-        return this.getValidate().getTransactionOperationBlockChainValue().equals(previousReferenceOperationBlockChain.getValue());
+    public Boolean possueMesmoValor(OperationExecutor previousReferenceOperationExecutor) {
+        return this.getValidate().getTransactionOperationBlockChainValue().equals(previousReferenceOperationExecutor.getValue());
     }
 
     @Override
@@ -26,7 +26,7 @@ public class PreviousReferenceValueInvalidCondition extends Condition<OperationV
 
     @Override
     protected Boolean rule(BlockChainValidateApp.PreviousBlockData previousBlockData) {
-        OperationBlockChain previousReferenceOperationBlockChain = previousBlockData.findReferencedTransactionOperationBlockChain(this.getValidate().getTransactionOperationBlockChain());
-        return !this.possueMesmoValor(previousReferenceOperationBlockChain);
+        OperationExecutor previousReferenceOperationExecutor = previousBlockData.findReferencedTransactionOperationBlockChain(this.getValidate().getTransactionOperationBlockChain());
+        return !this.possueMesmoValor(previousReferenceOperationExecutor);
     }
 }
