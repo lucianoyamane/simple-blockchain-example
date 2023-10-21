@@ -4,9 +4,10 @@ public class ExecuteBlockChain {
 
     public static void main(String[] args) {
 
+        DunderMifflinCompanhiaDePapelAdapter dunderMifflinCompanhiaDePapel = DunderMifflinCompanhiaDePapelAdapter.iniciaOsTrabalhos();
 
-        DunderMifflinCompanhiaDePapelAdapter dunderMifflinCompanhiaDePapel = DunderMifflinCompanhiaDePapelAdapter
-                .iniciaOsTrabalhos()
+
+        dunderMifflinCompanhiaDePapel
                     .michaelScott()
                         .estaTransferindo(100)
                         .para(Vendedor.DWIGHT_SCHRUTE)
